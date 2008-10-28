@@ -1,0 +1,116 @@
+\documentclass[twoside,floatfix,a4wide]{revtex4}
+\usepackage{multirow} % common packages
+
+\usepackage{url}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\usepackage{asymptote}
+\usepackage{amsmath}
+\usepackage{eurosym} % euros
+
+\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
+\pagestyle{fancy}
+\fancyhead{} % clear all fields
+
+\fancyfoot[R]{\bf {October 28, 2008}} % Left Odd, Right Even
+\fancyfoot[L]{A.~Heikkinen {\em et al.}: 
+{\em Ideal $\tau$-tagging with TMVA multivariate data-analysis toolkit}}
+
+\fancyhead[R]{\thepage}
+
+\newcommand{\urltilde}[1]{\texttt{#1}} % solves the tilde problem
+
+\bibliographystyle{apsrev}
+
+\begin{document}
+
+\title{Ideal $\tau$-tagging with TMVA multivariate data-analysis toolkit
+\footnote{Paper \cite{ah09bProceedings} in preparation for CHEP 2009, 21 - 27 March 2009 Prague, 
+Czech Republic}}
+%\url{http://www.particle.cz/conferences/chep2009/}}
+%\title{A Geant4 physics list for spallation reactions}
+
+\author{\underline{A.~Heikkinen}, P.~Kaitaniemi, V. Karim\"{a}ki,
+ R.~Kinnunen,  M.~J.~Kortelainen, T.~Lamp\'{e}n, S.~Lehti, T.~Lind\'{e}n, and L.~Wendland} 
+\affiliation{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.
+E-mail: aatos.heikkinen@cern.ch}
+
+\begin{abstract}
+We report on our experience of using  ROOT package TMVA for multivariate data analysis,   
+for a problem of $\tau$-tagging. 
+Using Monte Carlo data 
+we investigate how in the ideal case $\tau$ tagging could be performed and
+Higgs signal separated from QCD background present in LHC experiments.
+Particularly we are interested of ideal tagging effciency  achievable at 1\% mistagging rate
+for various MVA classifiers.
+
+
+%{\bf CHEP'07 abtract (see \cite{heikkinen07lProceedings}):}
+%{\em We test the usage of a Toolkit for Multivariate Data Analysis (TMVA) in b tagging.
+%Tagging b jets associated with heavy neutral MSSM Higgs bosons at the LHC can be used to
+%extract the Higgs bosons from the Drell-Yan background, for which the associated jets are
+%mainly light quark and gluon jets. Achievable b tagging effciency is studied with more than
+%ten MVA classifiers at 1% mistagging rate. Most classifiers were found to perform better than
+%the simple track counting 
+
+\end{abstract}
+
+\maketitle
+
+\thispagestyle{fancy}
+
+\section{INTRODUCTION \label{section:intro}}
+We have previously tested TMVA software in b-tagging for the search of MSSM Higgs bosons 
+at the LHC \cite{heikkinen07lProceedings}.
+\section{MULTIVARIATE DATA ANALYSIS}
+\subsection{TMVA methodology}
+
+
+\section{DATA AND VARIABLES}
+\subsection{Event generation}
+\subsection{Ideal case vs. detector effects}
+% smearing
+\subsection{Discriminating variables}
+
+
+\section{IMPLEMENTATION \label{section:implementation}}
+
+\section{RESULTS} \label{sec:example}
+
+
+\section{CONCLUSION AND DISCUSSION} \label{sec:conclusion}
+
+\lstset{ %
+language=bash,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. 
+                                %If it's 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+%caption=Bash function to release a directory., 
+label=listing:relRef
+}
+
+%\begin{lstlisting}
+%\end{lstlisting}
+
+\subsubsection{References and notes}
+
+\bibliographystyle{unsrt}  % Options plain, unsrt, alpha, abbrv
+\bibliography{refs.bib} %10 p
+
+\input{notes} % Misc. note for the project.
+\end{document}
