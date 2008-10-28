@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99c (Web2C 7.5.4)
+The top-level auxiliary file: ah09bProceedings.aux
+The style file: unsrt.bst
+Database file #1: chep09.bib.bib
+Warning--empty booktitle in ah09bProceedings
+Warning--empty year in ah09bProceedings
+Warning--empty booktitle in heikkinen07lProceedings
+Warning--empty year in heikkinen07lProceedings
+You've used 2 entries,
+            1791 wiz_defined-function locations,
+            455 strings with 4266 characters,
+and the built_in function-call counts, 345 in all, are:
+= -- 22
+> -- 8
+< -- 0
++ -- 4
+- -- 2
+* -- 14
+:= -- 57
+add.period$ -- 7
+call.type$ -- 2
+change.case$ -- 2
+chr.to.int$ -- 0
+cite$ -- 6
+duplicate$ -- 22
+empty$ -- 47
+format.name$ -- 2
+if$ -- 75
+int.to.chr$ -- 0
+int.to.str$ -- 2
+missing$ -- 2
+newline$ -- 14
+num.names$ -- 2
+pop$ -- 14
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 7
+stack$ -- 0
+substring$ -- 0
+swap$ -- 2
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 4
+while$ -- 2
+width$ -- 3
+write$ -- 22
+(There were 4 warnings)
