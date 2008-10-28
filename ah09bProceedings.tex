@@ -1,17 +1,14 @@
 \documentclass[twoside,floatfix,a4wide]{revtex4}
 \usepackage{multirow} % common packages
-
 \usepackage{url}
+\usepackage{hyperref}
 \usepackage{listings}
 \usepackage{graphicx}
-\usepackage{wrapfig}
-\usepackage{makeidx}
 \usepackage{fancyhdr}
-\usepackage{asymptote}
-\usepackage{amsmath}
-\usepackage{eurosym} % euros
+%\usepackage{asymptote}
+%\usepackage{amsmath}
 
-\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
+%\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
 \pagestyle{fancy}
 \fancyhead{} % clear all fields
 
@@ -25,6 +22,23 @@
 
 \bibliographystyle{apsrev}
 
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=true,      % page fit to window when opened
+    pdftitle={My title},    % title
+    pdfauthor={Author},     % author
+    pdfsubject={Subject},   % subject of the document
+    pdfnewwindow=true,      % links in new window
+    pdfkeywords={keywords}, % list of keywords
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=blue,         % color of file links
+    urlcolor=red            % color of external links
+}
 \begin{document}
 
 \title{Ideal $\tau$-tagging with TMVA multivariate data-analysis toolkit
@@ -76,12 +90,18 @@ at the LHC \cite{heikkinen07lProceedings}.
 \subsection{Discriminating variables}
 
 
-\section{IMPLEMENTATION \label{section:implementation}}
+\subsection{IMPLEMENTATION \label{section:implementation}}
+[code example]
+
+[listing waht was coded, changed in TMVA]
 
 \section{RESULTS} \label{sec:example}
+[Critics: TMVA bugs, is it already mature? Problems?]
 
+[Praisal: what is now working compared to CHEP'07]
 
 \section{CONCLUSION AND DISCUSSION} \label{sec:conclusion}
+TMVA
 
 \lstset{ %
 language=bash,                % choose the language of the code
@@ -110,7 +130,8 @@ label=listing:relRef
 \subsubsection{References and notes}
 
 \bibliographystyle{unsrt}  % Options plain, unsrt, alpha, abbrv
-\bibliography{refs.bib} %10 p
+%\bibliography{refs.bib} %10 p
+\bibliography{chep09.bib} %10 p
 
 \input{notes} % Misc. note for the project.
 \end{document}
