@@ -7,6 +7,10 @@
 \usepackage{fancyhdr}
 %\usepackage{asymptote}
 %\usepackage{amsmath}
+\usepackage{color}
+\definecolor{mydarkred}{rgb}{0.7,0,0}
+\newcommand{\checkme}[1] {\textcolor{mydarkred}{{\bf CHECK ME:}  \{#1\}}}
+\newcommand{\comment}[1] {\textcolor{mydarkred}{\em  \{#1\}}} 
 
 %\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
 \pagestyle{fancy}
@@ -53,13 +57,14 @@ Czech Republic}}
 E-mail: aatos.heikkinen@cern.ch}
 
 \begin{abstract}
-We report on our experience of using  ROOT package TMVA for multivariate data analysis,   
-for a problem of $\tau$-tagging. 
-Using Monte Carlo data 
-we investigate how in the ideal case $\tau$ tagging could be performed and
-Higgs signal separated from QCD background present in LHC experiments.
-Particularly we are interested of ideal tagging effciency  achievable at 1\% mistagging rate
-for various MVA classifiers.
+We report on our experience of using ROOT package TMVA for
+multivariate data analysis, for a problem of $\tau$-tagging in the
+framework of heavy charged MSSM Higgs boson searches at the LHC.
+With a generator level analysis, we investigate how in the ideal case
+$\tau$ tagging could be performed and $\tau$ signal separated from the
+QCD multi-jet background present in LHC experiments. Tau tagging
+efficiency is studied with various MVA classifiers, and a rejection
+factor of 10$^5$ or better against QCD is expected.
 
 
 %{\bf CHEP'07 abtract (see \cite{heikkinen07lProceedings}):}
