@@ -1,9 +1,8 @@
 # Makefile by aatos.heikkinen@cern.ch
 
 # Environment variables:
+# USEVIEWER     Enable the PDF viewer
 # PDFVIEWER     The PDF viewer program (e.g. xpdf)
-# NOVIEWER     Disable the PDF viewer entirely
-#              (useful for slow SSH connections)
 
 # unset AHSYSTEM
 d = ah09bProceedings
@@ -22,7 +21,7 @@ all:
 	@echo :::preparing latex ...
 	@rm -f *.aux
 	@$(tex) $(d); bibtex $(d); $(tex) $(d); $(tex) $(d); $(tex) $(d)
-ifndef NOVIEWER
+ifdef USEVIEWER
 	$(PDFVIEWER) $(d).pdf
 endif
 
