@@ -7,17 +7,21 @@
 \usepackage{fancyhdr}
 %\usepackage{asymptote}
 %\usepackage{amsmath}
+\usepackage{color}
+\definecolor{mydarkred}{rgb}{0.7,0,0}
+\newcommand{\checkme}[1] {\textcolor{mydarkred}{{\bf CHECK ME:}  \{#1\}}}
+\newcommand{\comment}[1] {\textcolor{mydarkred}{\em  \{#1\}}} 
 
 %\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
 \pagestyle{fancy}
 \fancyhead{} % clear all fields
 
-\fancyfoot[R]{\bf {October 28, 2008}} % Left Odd, Right Even
+\fancyhead[L]{\bf {November 11, 2008}} % Left Odd, Right Even
 \fancyfoot[L]{A.~Heikkinen {\em et al.}: 
-{\em Ideal $\tau$-tagging with TMVA multivariate data-analysis toolkit}}
+{\em Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}}
 
 \fancyhead[R]{\thepage}
-
+\fancyfoot[C]{} 
 \newcommand{\urltilde}[1]{\texttt{#1}} % solves the tilde problem
 
 \bibliographystyle{apsrev}
@@ -41,7 +45,7 @@
 }
 \begin{document}
 
-\title{Ideal $\tau$-tagging with TMVA multivariate data-analysis toolkit
+\title{Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit
 \footnote{Paper \cite{ah09bProceedings} in preparation for CHEP 2009, 21 - 27 March 2009 Prague, 
 Czech Republic}}
 %\url{http://www.particle.cz/conferences/chep2009/}}
@@ -53,14 +57,16 @@ Czech Republic}}
 E-mail: aatos.heikkinen@cern.ch}
 
 \begin{abstract}
-We report on our experience of using  ROOT package TMVA for multivariate data analysis,   
-for a problem of $\tau$-tagging. 
-Using Monte Carlo data 
-we investigate how in the ideal case $\tau$ tagging could be performed and
-Higgs signal separated from QCD background present in LHC experiments.
-Particularly we are interested of ideal tagging effciency  achievable at 1\% mistagging rate
-for various MVA classifiers.
-
+We report our experience on using ROOT package TMVA for
+multivariate data analysis, for a problem of $\tau$ tagging in the
+framework of heavy charged MSSM Higgs boson searches at the LHC.
+With a generator level analysis, 
+we investigate how in the ideal case $\tau$ tagging could be performed and 
+hadronic $\tau$ decays separated from the
+hadronic jets from the QCD multi-jet background present in LHC experiments. 
+A successful separation of the Higgs signal from the background 
+requires a rejection factor of $10^5$ or better against the QCD background. 
+The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
 
 %{\bf CHEP'07 abtract (see \cite{heikkinen07lProceedings}):}
 %{\em We test the usage of a Toolkit for Multivariate Data Analysis (TMVA) in b tagging.
@@ -103,26 +109,6 @@ at the LHC \cite{heikkinen07lProceedings}.
 \section{CONCLUSION AND DISCUSSION} \label{sec:conclusion}
 TMVA
 
-\lstset{ %
-language=bash,                % choose the language of the code
-basicstyle=\footnotesize,       % the size of the fonts that are used for the code
-numbers=left,                   % where to put the line-numbers
-numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
-stepnumber=2,                   % the step between two line-numbers. 
-                                %If it's 1 each line will be numbered
-numbersep=5pt,                  % how far the line-numbers are from the code
-showspaces=false,               % show spaces adding particular underscores
-showstringspaces=false,         % underline spaces within strings
-showtabs=false,                 % show tabs within strings adding particular underscores
-frame=single,                   % adds a frame around the code
-tabsize=2,                      % sets default tabsize to 2 spaces
-captionpos=t,                   % sets the caption-position to bottom
-breaklines=true,                % sets automatic line breaking
-breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
-escapeinside={\%*}{*)},          % if you want to add a comment within your code
-%caption=Bash function to release a directory., 
-label=listing:relRef
-}
 
 %\begin{lstlisting}
 %\end{lstlisting}

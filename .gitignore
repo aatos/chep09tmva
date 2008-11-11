@@ -1,7 +1,10 @@
 *~
-*.aux
 *.bbl
+*.dvi
+*.ind
+*.aux
 *.blg
+*.ilg
 *.log
 *.out
 ah09bProceedings.pdf

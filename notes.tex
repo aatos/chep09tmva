@@ -5,6 +5,14 @@
 \item[aatos]
 Aatos: editor, NN classifiers; 
 \item Pekka: git consulting, PROOF
+\begin{itemize}
+\item git consulting: OK (setting up workflow and repositories, user
+  training, documentation, software installation)
+\item PROOF: I didn't see PROOF mentioned anywhere in the TMVA
+  documentation. Is it supported? If not, then I don't have resources
+  to do it (lesson learned in the past: PROOF-enabling an analysis
+  code can be a major undertaking...)
+\end{itemize}
 \item Sami: MC data, 
 \item Lauri 1-prog physics
 \item Ritva: 
@@ -15,7 +23,11 @@ Aatos: editor, NN classifiers;
 \end{itemize}
 \subsection{HISTORY}
 \begin{itemize}
+\item 081111 Merging branch from Lauri and including comments from Sami. 
+Based on discussion at HIP group weekly meeting made some aditional changes to abtract.
 \item 081028 Project released in \url{http://github.com/aatos/chep09tmva}. Removed proceedings notes in the Appendix A to separate file {\tt notes.tex}.
+\item 091029 PK: Commented some points in the proposed
+  responsibilities. Added a couple of links to the Git documentation.
 \item 081021 Title and abstract focus improved after discussion in the group. 
 \item 081014 First draft done after the idea to have TMVA paper at next CHEP was accepted in the group.
 \end{itemize}
@@ -27,9 +39,55 @@ To be done:
 \end{itemize}
 
 \subsection{Code repository}
-Source code for paper and TMVA scrip\url{http://github.com/aatos/chep09tmva}
+\begin{itemize}
+\item Source code for paper and TMVA script  is available at 
+{\tt git://github.com/aatos/chep09tmva.git} (\url{http://github.com/aatos/chep09tmva})
+
+\begin{itemize}
+\item Lauri:
+\begin{verbatim}
+git remote add lauri http://cmsdoc.cern.ch/~wendland/chep09tmva.git
+
+git fetch lauri
+git merge lauri/master
+\end{verbatim}
+\item Pekka:
+\begin{verbatim}
+git remote add pekka git://github.com/kaitanie/chep09tmva.git
+
+git fetch pekka
+git merge pekka/master
+\end{verbatim}
+\end{itemize}
+
+\item Alternatively LaTeX-files can be loaded form
+\url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.tar.gz}.
+\item You can also mail you comments and updates directly to editor (Aatos)
+Based on pdf version
+\url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.pdf}.
+\end{itemize}
 
 Guide \url{http://ktown.kde.org/~zrusin/git/git-cheat-sheet-medium.png}.
+
+Some git documentation:
+\begin{itemize}
+\item Git tutorial: \url{http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html}
+\item Git with HipProofAnalysis (contains instructions on how to use
+  Git on lxplus:
+  \url{http://projects.hepforge.org/radical/trac/wiki/GitWithHipProofAnalysis}
+\end{itemize}
+
+\subsection{Building the document}
+
+Building the document requires {\tt make} and \LaTeX tools. The
+document can be built using the {\tt make} command. At the end of the
+compilation this will optionally launch a PDF viewer (by default Firefox browser
+and Acrobat Reader plugin). You can change the PDF viewer program by
+setting environment variable {\tt PDFVIEWER} to point to your
+favourite PDF viewer (e.g. lightweight alternative {\tt xpdf}). To
+enable the PDF viewer feature you can set the environment
+variable {\tt USEVIEWER} to 1.
+
 \subsection{Current status of TMVA}
 For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.net/talks.shtml}.
 
@@ -58,4 +116,26 @@ For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.n
 \subsection{Code}
 A code and data will be distributed using git and made abvailable 
 at \\ \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings/code}
+
+\lstset{ %
+language=bash,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. 
+                                %If it's 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+%caption=Bash function to release a directory., 
+label=listing:relRef
+}
+
 \end{appendix}
