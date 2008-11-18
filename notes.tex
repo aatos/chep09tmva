@@ -143,6 +143,64 @@ data. Additionally also the parameters, configuration options,
 software versions, etc. used for the production of the data should
 probably be stored.
 
+\subsubsection{TMVA run configuration files}
+
+The new example program ({\tt code/chep09tmva.cc}) uses a config file
+({\tt code/tmva.conf}) for classifier configuration. There is one
+possible problem in this setup. If everyone edits the same file time
+and time again, merging everyone's work will become very painful. This
+is a problem because we would like people to merge early and
+often. There are a few proposals that should be investigated as
+possible solutions to this problem:
+\begin{enumerate}
+\item Ability to have common config options in a separate file
+(e.g. {\tt tmva-common.conf}) which could be included into
+user/usecase specific configuration files with an {\tt include}
+statement. An example of this is shown in listings \ref{commonConfig}
+and \ref{userConfig}.
+\item Each user/classifier has a separate config file. The {\tt
+chep09tmva} program should have a command line option that allows the
+user to choose which configuration is used. An example invocation of
+the {\tt chep09tmva} program is shown in listing \ref{configExample}.
+\end{enumerate}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Contents of the file {\tt tmva-common.conf} that contains config options shared by all analysis runs.,
+label=commonConfig
+}
+\begin{lstlisting}
+// String to pass TMVA::Factory::PrepareTrainingAndTestTree
+Trainer:
+NSigTrain=1000:NBkgTrain=20000:SplitMode=Random:NormMode=NumEvents:!V
+\end{lstlisting}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Contents of the user specific config file {\tt pekka.conf}.,
+label=userConfig
+}
+\begin{lstlisting}
+include ¨tmva-common.conf¨
+
+Cuts_D H:!V:FitMethod=MC:EffSel:SampleSize=20000:VarProp=FSmart:VarTransform=Decorrelate
+\end{lstlisting}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Example invocation of {\tt chep09tmva} with config file name as a parameter.,
+label=configExample
+}
+\begin{lstlisting}
+./chep09tmva -C pekka.conf
+\end{lstlisting}
+
 \lstset{ %
 language=bash,                % choose the language of the code
 basicstyle=\footnotesize,       % the size of the fonts that are used for the code
