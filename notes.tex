@@ -153,16 +153,27 @@ is a problem because we would like people to merge early and
 often. There are a few proposals that should be investigated as
 possible solutions to this problem:
 \begin{enumerate}
+\item Each user/classifier has a separate config file. The {\tt
+chep09tmva} program should have a command line option that allows the
+user to choose which configuration is used. An example invocation of
+the {\tt chep09tmva} program is shown in listing \ref{configExample}.
 \item Ability to have common config options in a separate file
 (e.g. {\tt tmva-common.conf}) which could be included into
 user/usecase specific configuration files with an {\tt include}
 statement. An example of this is shown in listings \ref{commonConfig}
 and \ref{userConfig}.
-\item Each user/classifier has a separate config file. The {\tt
-chep09tmva} program should have a command line option that allows the
-user to choose which configuration is used. An example invocation of
-the {\tt chep09tmva} program is shown in listing \ref{configExample}.
 \end{enumerate}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Example invocation of {\tt chep09tmva} with config file name as a parameter.,
+label=configExample
+}
+\begin{lstlisting}
+./chep09tmva -C pekka.conf
+\end{lstlisting}
 
 \lstset{
 language=bash,
@@ -188,17 +199,6 @@ label=userConfig
 include tmva-common.conf
 
 Cuts_D H:!V:FitMethod=MC:EffSel:SampleSize=20000:VarProp=FSmart:VarTransform=Decorrelate
-\end{lstlisting}
-
-\lstset{
-language=bash,
-numbers=left,
-stepnumber=2,
-caption=Example invocation of {\tt chep09tmva} with config file name as a parameter.,
-label=configExample
-}
-\begin{lstlisting}
-./chep09tmva -C pekka.conf
 \end{lstlisting}
 
 \lstset{ %
