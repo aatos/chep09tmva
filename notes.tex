@@ -104,6 +104,9 @@ For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.n
 
 \begin{itemize}
 \item ROOT version from 5-19-02a to 5-21-01-alice contains TMVA 3.9.4.
+\item ROOT version 5.22 is planned to be released on December 18, 2008
+  (release notes \url{http://root.cern.ch/root/v522/Version522.news.html}),
+  it has TMVA-v.3.9.5
 \end{itemize}
 
 \item In addition to many bug fixes:
@@ -166,6 +169,24 @@ statement. An example of this is shown in listings \ref{commonConfig}
 and \ref{userConfig}.
 \end{enumerate}
 
+The program has been modified as follows
+\begin{itemize}
+\item Support for \texttt{include} as shown in listing
+  \ref{commonConfig}
+\item There is now a common configuration file
+  \texttt{tmva-common.conf} (which is still more to demonstrate than
+  to really do anything useful), and an example of user configuration
+  \texttt{tmva-example.conf}
+\item By default it uses the \texttt{tmva-common.conf}, but the
+  configuration can be specified as shown in listing \ref{configExample}
+  \begin{itemize}
+  \item If the same directive (\texttt{Variables:}, \texttt{Cuts:},
+    \texttt{Trainer:}, \texttt{Classifiers:}) is given in both the
+    user configuration and common configuration, the user
+    configuration is used (i.e. e.g. variable lists are not merged).
+  \end{itemize}
+\end{itemize}
+
 \lstset{
 language=bash,
 numbers=left,
@@ -174,7 +195,7 @@ caption=Example invocation of {\tt chep09tmva} with config file name as a parame
 label=configExample
 }
 \begin{lstlisting}
-./chep09tmva -C pekka.conf
+./chep09tmva pekka.conf
 \end{lstlisting}
 
 \lstset{
