@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
   double backgroundWeight = 1.0;
 
   // parse configuration
-  std::string confFile("tmva.conf");
+  std::string confFile("tmva-common.conf");
   if(argc > 1) {
     confFile = argv[1];
   }
@@ -195,14 +195,36 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
     std::vector<std::string> parsed = preprocessLine(line);
     if(parsed.size() == 0) continue;
 
-    if(line == "Variables:")
+    if(parsed[0] == "include") {
+      if(mode != kNone) {
+        std::cout << "Include should be the first directive in the config file" << std::endl;
+        return false;
+      }
+
+      if(parsed.size() != 2) {
+        std::cout << "Include should be used like 'include file.conf' instead of '" << line << "'" << std::endl;
+        return false;
+      }
+      if(!parseConf(parsed[1], variables, cuts, trainer, classifiers))
+        return false;
+    }
+
+    if(line == "Variables:") {
       mode = kVar;
-    else if(line == "Cuts:")
+      variables.clear();
+    }
+    else if(line == "Cuts:") {
       mode = kCut;
-    else if(line == "Trainer:")
+      cuts.clear();
+    }
+    else if(line == "Trainer:") {
       mode = kTrain;
-    else if(line == "Classifiers:")
+      trainer = "";
+    }
+    else if(line == "Classifiers:") {
       mode = kClass;
+      classifiers.clear();
+    }
     else if(mode == kVar) {
       if(parsed.size() != 1) {
         std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
