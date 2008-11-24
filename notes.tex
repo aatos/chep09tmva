@@ -21,6 +21,9 @@ label=listing:relRef
 }
 
 \section{Code}
+A code and data will be distributed using git and made abvailable 
+at \\ \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings/code}
+
 \subsection{Makefile}
 \lstset{
 language=bash,
@@ -82,6 +85,24 @@ label=chep09tmvacc
 }
 \lstinputlisting{code/chep09tmva.cc}
 
+\section{Data files}
+Minimalistic example datafile (recommendation: less than 1-2 MB) can
+be included in the repository for testing and demonstration
+purpooses. Although Git can easily deal with large files, it is
+recommended that the production data would not be
+included in the repository. It should be kept in mind that GitHub
+(and shell accounts) offer relatively limited disk space (GitHub: 100
+MB, CERN default: about 150 MB) and that ROOT files can probably not be
+compressed further.
+
+For production use it is recommended to store in the repository an URL
+to the data. Then we can use the {\tt ROOT} or {\tt HTTP} protocols to
+access it or use a {\tt make} directive/shell script to copy the data to the
+user's computer. One good example of this practice is the {\tt
+HipProofAnalysis} repository. Only the URL:s are stored, not the
+data. Additionally also the parameters, configuration options,
+software versions, etc. used for the production of the data should
+probably be stored in some way in the repository.
 
 \section{WORKING NOTES}
 {\bf Suggested  responsibility}: 
@@ -210,30 +231,10 @@ For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.n
 \end{itemize}
 
 \end{itemize}
-\subsection{Code}
-A code and data will be distributed using git and made abvailable 
-at \\ \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings/code}
 
-\subsubsection{Data files}
-Minimalistic example datafile (recommendation: less than 1-2 MB) can
-be included in the repository for testing and demonstration
-purpooses. Although Git can easily deal with large files, it is
-recommended that the production data would not be
-included in the repository. It should be kept in mind that GitHub
-(and shell accounts) offer relatively limited disk space (GitHub: 100
-MB, CERN default: about 150 MB) and that ROOT files can probably not be
-compressed further.
 
-For production use it is recommended to store in the repository an URL
-to the data. Then we can use the {\tt ROOT} or {\tt HTTP} protocols to
-access it or use a {\tt make} directive/shell script to copy the data to the
-user's computer. One good example of this practice is the {\tt
-HipProofAnalysis} repository. Only the URL:s are stored, not the
-data. Additionally also the parameters, configuration options,
-software versions, etc. used for the production of the data should
-probably be stored in some way in the repository.
 
-\subsubsection{TMVA run configuration files}
+\subsection{TMVA run configuration files}
 
 The new example program ({\tt code/chep09tmva.cc}) uses a config file
 ({\tt code/tmva.conf}) for classifier configuration. There is one
