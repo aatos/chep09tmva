@@ -1,4 +1,88 @@
 \begin{appendix}
+
+\lstset{ % General settings
+language=c++,                   % choose the language of the code
+basicstyle=\ttfamily \small,    % the size of the fonts that are used for the code \footnotsize
+numbers=left,                   % where to put the line-numbers
+numberstyle=\small,             % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=10pt,                 % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=,                         % adds a frame around the code (single)
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position: top (t), bottom (b)
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},         % if you want to add a comment within your code
+caption=footnote, 
+label=listing:relRef
+}
+
+\section{Code}
+\subsection{Makefile}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/Makefile},
+label=makefile
+}
+\lstinputlisting{code/Makefile}
+
+
+\subsection{tmva-common.conf}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/tmva-common.conf},
+label=tmvacommonconf
+}
+\lstinputlisting{code/tmva-common.conf}
+
+\subsection{tmva-example.conf}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/tmva-example.conf},
+label=tmvacommonconf
+}
+\lstinputlisting{code/tmva-example.conf}
+
+\subsection{ametisti.sh.job}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/ametisti.sh.job},
+label=ametistishjob
+}
+\lstinputlisting{code/ametisti.sh.job}
+
+\subsection{chep09tmva.C}
+\lstset{
+language=C++,
+numbers=left,
+stepnumber=2,
+caption={\tt code/chep09tmva.C},
+label=chep09tmvac
+}
+\lstinputlisting{code/chep09tmva.C}
+
+\subsection{chep09tmva.cc}
+\lstset{
+language=C++,
+numbers=left,
+stepnumber=2,
+caption={\tt code/chep09tmva.cc},
+label=chep09tmvacc
+}
+\lstinputlisting{code/chep09tmva.cc}
+
+
 \section{WORKING NOTES}
 {\bf Suggested  responsibility}: 
 \begin{itemize}
@@ -23,6 +107,8 @@ Aatos: editor, NN classifiers;
 \end{itemize}
 \subsection{HISTORY}
 \begin{itemize}
+\item 081125 Merging from Lauri, Matti, and Pekka. 
+Added subsections for code listing and table of contents.
 \item 081111 Merging branch from Lauri and including comments from Sami. 
 Based on discussion at HIP group weekly meeting made some aditional changes to abtract.
 \item 081028 Project released in \url{http://github.com/aatos/chep09tmva}. Removed proceedings notes in the Appendix A to separate file {\tt notes.tex}.
@@ -42,7 +128,8 @@ To be done:
 \begin{itemize}
 \item Source code for paper and TMVA script  is available at 
 {\tt git://github.com/aatos/chep09tmva.git} (\url{http://github.com/aatos/chep09tmva})
-
+%git commit -a -m 'first commit'  (all changes)
+%git push [original master]
 \begin{itemize}
 \item Lauri:
 \begin{verbatim}
@@ -186,6 +273,8 @@ The program has been modified as follows
     configuration is used (i.e. e.g. variable lists are not merged).
   \end{itemize}
 \end{itemize}
+
+
 
 \lstset{
 language=bash,
