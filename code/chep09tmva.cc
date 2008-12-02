@@ -10,7 +10,8 @@
 #include <TMVA/Factory.h>
 
 bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& cuts, std::string& trainer,
+               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
+               std::string& trainer,
                std::vector<std::pair<std::string, std::string> >& classifiers);
 std::vector<std::string> preprocessLine(std::string& line);
 TMVA::Types::EMVA getType(std::string desc);
@@ -30,14 +31,16 @@ int main(int argc, char **argv) {
     confFile = argv[1];
   }
   std::vector<std::string> variables;
-  std::vector<std::string> cuts;
+  std::vector<std::string> signalCuts;
+  std::vector<std::string> bkgCuts;
   std::vector<std::pair<std::string, std::string> > classifiers;
   std::string trainer;
 
   // Cuts
-  TCut cut_s = "";
+  TCut signalCut_s = "";
+  TCut bkgCut_s = "";
 
-  if(!parseConf(confFile, variables, cuts, trainer, classifiers))
+  if(!parseConf(confFile, variables, signalCuts, bkgCuts, trainer, classifiers))
     return 1;
 
   std::cout << "Variables:" << std::endl;
@@ -47,11 +50,20 @@ int main(int argc, char **argv) {
   }
   std::cout << std::endl;
 
-  std::cout << "Cuts (applied to signal and bkg)" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = cuts.begin();
-      iter != cuts.end(); ++iter) {
+  std::cout << "Cuts (applied to signal)" << std::endl;
+  for(std::vector<std::string>::const_iterator iter = signalCuts.begin();
+      iter != signalCuts.end(); ++iter) {
     std::cout << *iter << std::endl;
-    cut_s = cut_s && TCut(iter->c_str());
+    signalCut_s = signalCut_s && TCut(iter->c_str());
+  }
+  //std::cout << cut_s << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "Cuts (applied to background)" << std::endl;
+  for(std::vector<std::string>::const_iterator iter = bkgCuts.begin();
+      iter != bkgCuts.end(); ++iter) {
+    std::cout << *iter << std::endl;
+    bkgCut_s = bkgCut_s && TCut(iter->c_str());
   }
   //std::cout << cut_s << std::endl;
   std::cout << std::endl;
@@ -100,7 +112,7 @@ int main(int argc, char **argv) {
 
   // Prepare training and testing
   //factory->PrepareTrainingAndTestTree(cut_s, cut_b, "NSigTrain=4000:NBkgTrain=230000:SplitMode=Random:NormMode=NumEvents:!V");
-  factory->PrepareTrainingAndTestTree(cut_s, cut_s, trainer);
+  factory->PrepareTrainingAndTestTree(signalCut_s, bkgCut_s, trainer);
 
   // Book MVA methods
   for(std::vector<std::pair<std::string, std::string> >::const_iterator iter = classifiers.begin();
@@ -170,7 +182,8 @@ TMVA::Types::EMVA getType(std::string desc) {
 }
 
 bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& cuts, std::string& trainer,
+               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
+               std::string& trainer,
                std::vector<std::pair<std::string, std::string> >& classifiers) {
   variables.clear();
   classifiers.clear();
@@ -184,7 +197,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
 
   std::string line;
 
-  enum mode_t {kNone, kVar, kCut, kTrain, kClass};
+  enum mode_t {kNone, kVar, kCutSignal, kCutBackground, kTrain, kClass};
   mode_t mode = kNone;
   int lineno = 0;
 
@@ -205,7 +218,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Include should be used like 'include file.conf' instead of '" << line << "'" << std::endl;
         return false;
       }
-      if(!parseConf(parsed[1], variables, cuts, trainer, classifiers))
+      if(!parseConf(parsed[1], variables, signalCuts, bkgCuts, trainer, classifiers))
         return false;
     }
 
@@ -213,9 +226,13 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
       mode = kVar;
       variables.clear();
     }
-    else if(line == "Cuts:") {
-      mode = kCut;
-      cuts.clear();
+    else if(line == "SignalCuts:") {
+      mode = kCutSignal;
+      signalCuts.clear();
+    }
+    else if(line == "BackgroundCuts:") {
+      mode = kCutBackground;
+      bkgCuts.clear();
     }
     else if(line == "Trainer:") {
       mode = kTrain;
@@ -233,14 +250,24 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
       }
       variables.push_back(parsed[0]);
     }
-    else if(mode == kCut) {
+    else if(mode == kCutSignal) {
       if(parsed.size() > 0) {
         std::string s(parsed[0]);
         for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
           s += " ";
           s += *iter;
         }
-        cuts.push_back(s);
+        signalCuts.push_back(s);
+      }
+    }
+    else if(mode == kCutBackground) {
+      if(parsed.size() > 0) {
+        std::string s(parsed[0]);
+        for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
+          s += " ";
+          s += *iter;
+        }
+        bkgCuts.push_back(s);
       }
     }
     else if(mode == kTrain) {
