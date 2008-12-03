@@ -7,6 +7,7 @@
 *.ilg
 *.log
 *.out
+*.toc
 ah09bProceedings.pdf
 *.o
 code/chep09tmva
