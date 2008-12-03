@@ -4,13 +4,15 @@
 #include<vector>
 
 #include <TFile.h>
+#include <TChain.h>
 #include <TString.h>
 #include <TSystem.h>
 
 #include <TMVA/Factory.h>
 
 bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
+               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts,
+               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
                std::string& trainer,
                std::vector<std::pair<std::string, std::string> >& classifiers);
 std::vector<std::string> preprocessLine(std::string& line);
@@ -20,7 +22,7 @@ void print_usage(void);
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
   // Configuration
-  TString inputfileName("mva-input.root");
+  //TString inputfileName("mva-input.root");
   TString outputfileName("TMVA.root");
 
   double signalWeight     = 1.0;
@@ -39,6 +41,8 @@ int main(int argc, char **argv) {
   std::vector<std::string> variables;
   std::vector<std::string> signalCuts;
   std::vector<std::string> bkgCuts;
+  std::vector<std::string> signalFiles;
+  std::vector<std::string> bkgFiles;
   std::vector<std::pair<std::string, std::string> > classifiers;
   std::string trainer;
 
@@ -46,8 +50,17 @@ int main(int argc, char **argv) {
   TCut signalCut_s = "";
   TCut bkgCut_s = "";
 
-  if(!parseConf(confFile, variables, signalCuts, bkgCuts, trainer, classifiers))
+  if(!parseConf(confFile, variables, signalCuts, bkgCuts, signalFiles, bkgFiles, trainer, classifiers))
     return 1;
+
+  if(signalFiles.size() == 0) {
+    std::cout << "SignalFiles is empty!" << std::endl;
+    return 1;
+  }
+  else if(bkgFiles.size() == 0) {
+    std::cout << "BackgroundFiles is empty!" << std::endl;
+    return 1;
+  }
 
   std::cout << "Variables:" << std::endl;
   for(std::vector<std::string>::const_iterator iter = variables.begin();
@@ -82,16 +95,36 @@ int main(int argc, char **argv) {
   }
   std::cout << std::endl;
 
+  // Input TChains
+  TChain *signalChain = new TChain("TauID_Pythia8_generatorLevel_HCh300");
+  TChain *bkgChain = new TChain("TauID_Pythia8_generatorLevel_QCD_120_170");
+
+  std::cout << "Files for signal TChain" << std::endl;
+  for(std::vector<std::string>::const_iterator iter = signalFiles.begin();
+      iter != signalFiles.end(); ++iter) {
+    std::cout << *iter << std::endl;
+    signalChain->AddFile(iter->c_str());
+  }
+  std::cout << "Chain has " << signalChain->GetEntries() << " entries" << std::endl << std::endl;
+  
+  std::cout << "Files for background TChain" << std::endl;
+  for(std::vector<std::string>::const_iterator iter = bkgFiles.begin();
+      iter != bkgFiles.end(); ++iter) {
+    std::cout << *iter << std::endl;
+    bkgChain->AddFile(iter->c_str());
+  }
+  std::cout << "Chain has " << bkgChain->GetEntries() << " entries" << std::endl << std::endl;
+
   // Check input file existence
   //TString pwd(getenv("LS_SUBCWD"));
   //TString ipath = pwd;
   //ipath += "/";
   //ipath += inputfileName;
-  TString ipath = inputfileName;
-  if(gSystem->AccessPathName(ipath)) {
-    std::cout << "Input file " << ipath << " does not exist!" << std::endl;
-    return 1;
-  }
+  //TString ipath = inputfileName;
+  //if(gSystem->AccessPathName(ipath)) {
+  //  std::cout << "Input file " << ipath << " does not exist!" << std::endl;
+  //  return 1;
+  //}
   
   // Create output file
   TFile *outputFile = TFile::Open(outputfileName, "RECREATE");
@@ -106,15 +139,15 @@ int main(int argc, char **argv) {
   }
 
   // Read input file
-  TFile *inputFile = TFile::Open(ipath);
+  //TFile *inputFile = TFile::Open(ipath);
   
   // Read signal and background trees, assign weights
-  TTree *signal     = dynamic_cast<TTree *>(inputFile->Get("TreeS"));
-  TTree *background = dynamic_cast<TTree *>(inputFile->Get("TreeB"));
+  //TTree *signal     = dynamic_cast<TTree *>(inputFile->Get("TreeS"));
+  //TTree *background = dynamic_cast<TTree *>(inputFile->Get("TreeB"));
   
   // Register tree
-  factory->AddSignalTree(signal, signalWeight);
-  factory->AddBackgroundTree(background, backgroundWeight);
+  factory->AddSignalTree(signalChain, signalWeight);
+  factory->AddBackgroundTree(bkgChain, backgroundWeight);
 
   // Prepare training and testing
   //factory->PrepareTrainingAndTestTree(cut_s, cut_b, "NSigTrain=4000:NBkgTrain=230000:SplitMode=Random:NormMode=NumEvents:!V");
@@ -144,7 +177,7 @@ int main(int argc, char **argv) {
 
   // Clean up
   delete factory;
-  inputFile->Close();
+  //inputFile->Close();
 }
 
 void print_usage(void) {
@@ -197,6 +230,7 @@ TMVA::Types::EMVA getType(std::string desc) {
 
 bool parseConf(std::string filename, std::vector<std::string>& variables,
                std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
+               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
                std::string& trainer,
                std::vector<std::pair<std::string, std::string> >& classifiers) {
   variables.clear();
@@ -211,7 +245,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
 
   std::string line;
 
-  enum mode_t {kNone, kVar, kCutSignal, kCutBackground, kTrain, kClass};
+  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalFiles, kBkgFiles, kTrain, kClass};
   mode_t mode = kNone;
   int lineno = 0;
 
@@ -232,7 +266,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Include should be used like 'include file.conf' instead of '" << line << "'" << std::endl;
         return false;
       }
-      if(!parseConf(parsed[1], variables, signalCuts, bkgCuts, trainer, classifiers))
+      if(!parseConf(parsed[1], variables, signalCuts, bkgCuts, signalFiles, bkgFiles, trainer, classifiers))
         return false;
     }
 
@@ -241,12 +275,20 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
       variables.clear();
     }
     else if(line == "SignalCuts:") {
-      mode = kCutSignal;
+      mode = kSignalCut;
       signalCuts.clear();
     }
     else if(line == "BackgroundCuts:") {
-      mode = kCutBackground;
+      mode = kBkgCut;
       bkgCuts.clear();
+    }
+    else if(line == "SignalFiles:") {
+      mode = kSignalFiles;
+      signalFiles.clear();
+    }
+    else if(line == "BackgroundFiles:") {
+      mode = kBkgFiles;
+      bkgFiles.clear();
     }
     else if(line == "Trainer:") {
       mode = kTrain;
@@ -264,7 +306,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
       }
       variables.push_back(parsed[0]);
     }
-    else if(mode == kCutSignal) {
+    else if(mode == kSignalCut) {
       if(parsed.size() > 0) {
         std::string s(parsed[0]);
         for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
@@ -274,7 +316,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         signalCuts.push_back(s);
       }
     }
-    else if(mode == kCutBackground) {
+    else if(mode == kBkgCut) {
       if(parsed.size() > 0) {
         std::string s(parsed[0]);
         for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
@@ -283,6 +325,22 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         }
         bkgCuts.push_back(s);
       }
+    }
+    else if(mode == kSignalFiles) {
+      if(parsed.size() != 1) {
+        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
+        std::cout << "Expected only one string at line" << std::endl;
+        return false;
+      }
+      signalFiles.push_back(parsed[0]);
+    }
+    else if(mode == kBkgFiles) {
+      if(parsed.size() != 1) {
+        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
+        std::cout << "Expected only one string at line" << std::endl;
+        return false;
+      }
+      bkgFiles.push_back(parsed[0]);
     }
     else if(mode == kTrain) {
       if(parsed.size() != 1) {
