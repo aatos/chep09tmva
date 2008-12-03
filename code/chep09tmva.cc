@@ -15,6 +15,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
                std::vector<std::pair<std::string, std::string> >& classifiers);
 std::vector<std::string> preprocessLine(std::string& line);
 TMVA::Types::EMVA getType(std::string desc);
+void print_usage(void);
 
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
@@ -30,6 +31,11 @@ int main(int argc, char **argv) {
   if(argc > 1) {
     confFile = argv[1];
   }
+  if(confFile == "-help" || confFile == "--help" || confFile == "-h" || confFile == "-?") {
+    print_usage();
+    return 0;
+  }
+
   std::vector<std::string> variables;
   std::vector<std::string> signalCuts;
   std::vector<std::string> bkgCuts;
@@ -139,6 +145,14 @@ int main(int argc, char **argv) {
   // Clean up
   delete factory;
   inputFile->Close();
+}
+
+void print_usage(void) {
+  std::cout << "Usage: chep09tmva [config_file]" << std::endl
+            << std::endl
+            << "  config_file       path to configuration file (optional)" << std::endl
+            << std::endl
+            << "  The default value for config_file is tmva-common.conf" << std::endl;
 }
 
 TMVA::Types::EMVA getType(std::string desc) {
