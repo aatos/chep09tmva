@@ -1,0 +1,31 @@
+= CHEP09 TMVA paper tools
+
+This directory contains tools that assist in repository and project
+maintenance tasks, such as fetching, reviewing and merging changes
+from contributors. The tools are implemented in Bourne Shell (sh,
+bash) language and they require Git revision control tool to work.
+
+== Repository URL file
+
+All repository URLs are stored in file "tools/repositories.conf" in a
+two-column-format:
+name URL
+Example:
+pekka git://github.com/kaitanie/chep09tmva.git
+
+This file is used by the repository management scripts to set up local
+Git environment.
+
+== Repository management tools
+
+=== Remote URL setup tool
+
+The tool "tools/setup-remotes.sh" is intended to be run after
+cloning. The tool reads repository config file and sets up remotes
+automatically.
+
+== Requirements
+
+Dependencies:
+* Bourne shell (/bin/sh)
+* Git distributed version control tool (http://git.or.cz)
