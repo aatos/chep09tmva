@@ -24,6 +24,19 @@ The tool "tools/setup-remotes.sh" is intended to be run after
 cloning. The tool reads repository config file and sets up remotes
 automatically.
 
+=== Fetch assistant
+
+Script "tools/fetch-all.sh" fetches all changes from remote
+repositories listed in "tools/repositories.conf". After fetching it
+tries to start "gitk" history visualization tool and show the master
+branch of all remote repositories. This information can be used by the
+project maintainer to track the progress of contributors, review
+available changes and to decide whether a merge is needed.
+
+NOTE: The tool does NOT (and should not) merge automatically! It
+exists solely for the purpose of fetching and reviewing available
+changes.
+
 == Requirements
 
 Dependencies:
