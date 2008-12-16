@@ -38,7 +38,7 @@ function run_command
 	if test "$verbosemode" -eq 1; then
 	    echo $command
 	fi
-	$command
+	eval $command
     fi
 }
 
