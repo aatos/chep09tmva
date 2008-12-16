@@ -22,7 +22,7 @@ IFS="
 "
 
 # Configuration
-simulatemode=1 # Don't do anything, only display commands that would be executed
+simulatemode=0 # Don't do anything, only display commands that would be executed
 verbosemode=0  # Print extra messages on screen
 helpmode=0     # Show help and exit
 
