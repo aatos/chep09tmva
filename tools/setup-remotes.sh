@@ -16,6 +16,11 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
+# Set newline as our desired field separator. Without this the config
+# file will not be read properly!
+IFS="
+"
+
 # Configuration
 simulatemode=1 # Don't do anything, only display commands that would be executed
 verbosemode=0  # Print extra messages on screen
