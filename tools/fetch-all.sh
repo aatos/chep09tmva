@@ -24,7 +24,7 @@ function get_remotes ()
 }
 
 res=$(get_remotes)
-branches=""
+branches="master"
 for repository in $(get_remotes); do
     echo -n "Fetching from: "
     echo $repository
