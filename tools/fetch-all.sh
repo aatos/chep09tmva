@@ -34,4 +34,4 @@ done
 
 # Spawn gitk viewer to visualize the state of different fetched
 # branches:
-gitk $branches
+gitk $branches &
