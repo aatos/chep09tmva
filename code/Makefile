@@ -23,3 +23,7 @@ $(EXE): $(OBJS)
 
 clean:
 	rm -f $(OBJS) $(EXE)
+
+go:
+	root chep09tmva.C
+
