@@ -35,6 +35,9 @@ function run_command
 	echo -n "simulate: would run command: "
 	echo $command
     else
+	if test "$verbosemode" -eq 1; then
+	    echo $command
+	fi
 	$command
     fi
 }
@@ -45,20 +48,25 @@ function add_remote ()
     name=$1
     url=$2
     command="git remote add $name $url"
-    echo $command
-#    run_command $command
+    run_command $command
 }
 
 function add_repositories ()
 {
     configfile=$1
+    if test "$verbosemode" -eq 1; then
+	echo -n "Using config file: "
+	echo $configfile
+    fi
     for line in $(cat $configfile); do
-	echo -n "Line: "
-	echo $line
 	name=$(echo $line | awk '{print $1}')
 	url=$(echo $line | awk '{print $2}')
-	echo $name
-	echo $url
+	if test "$verbosemode" -eq 1; then
+	    echo -n "Remote name: "
+	    echo $name
+	    echo -n "URL: "
+	    echo $url
+	fi
 	add_remote $name $url
     done;
 }
@@ -92,7 +100,6 @@ function die ()
 
 # Parse command line parameters:
 for arg in $*; do
-    echo $arg
     if test "$arg" = "--verbose"; then
 	verbosemode=1
     fi
