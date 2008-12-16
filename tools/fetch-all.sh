@@ -16,4 +16,22 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
+# Get registered remote names and filter out origin (i.e. the user's
+# own public repository.
+function get_remotes ()
+{
+    echo $(git remote | sed '/origin/ d' | xargs)
+}
 
+res=$(get_remotes)
+branches=""
+for repository in $(get_remotes); do
+    echo -n "Fetching from: "
+    echo $repository
+    eval git fetch $repository
+    branches="$branches $repository/master"
+done
+
+# Spawn gitk viewer to visualize the state of different fetched
+# branches:
+gitk $branches
