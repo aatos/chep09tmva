@@ -115,7 +115,11 @@ else
     if [ -e "./repositories.conf" ]; then # Check if we are in tools/
 	add_repositories "./repositories.conf"
     else
-	die -1 "Repository config file not found."
+	if [ -e "../tools/repositories.conf" ]; then # Check if we are in a subdirectory
+	    add_repositories "../tools/repositories.conf"
+	else
+	    die -1 "Repository config file not found."
+	fi
     fi
 fi
 
