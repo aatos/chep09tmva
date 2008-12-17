@@ -16,6 +16,10 @@
 # TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
+# Options
+vismode=1
+fetchmode=1
+
 # Get registered remote names and filter out origin (i.e. the user's
 # own public repository.
 function get_remotes ()
@@ -23,15 +27,43 @@ function get_remotes ()
     echo $(git remote | sed '/origin/ d' | xargs)
 }
 
-res=$(get_remotes)
-branches="master"
-for repository in $(get_remotes); do
-    echo -n "Fetching from: "
-    echo $repository
-    eval git fetch $repository
-    branches="$branches $repository/master"
+function usage ()
+{
+    echo "fetch-all.sh"
+    echo "Options:"
+    echo " --no-vis        Do not show gitk history visualization"
+    echo " --no-fetch      Do not fetch changes"
+    exit 0
+}
+
+for option in $*; do
+    if test "$option" = "--no-vis"; then
+	vismode=0
+    fi
+    if test "$option" = "--no-fetch"; then
+	fetchmode=0
+    fi
+    if test "$option" = "--help"; then
+	usage
+    fi
 done
+
+if test "$fetchmode" -eq 1; then
+    res=$(get_remotes)
+    branches="master"
+    for repository in $(get_remotes); do
+	echo -n "Fetching from: "
+	echo $repository
+	eval git fetch $repository
+    done
+fi
 
 # Spawn gitk viewer to visualize the state of different fetched
 # branches:
-gitk $branches &
+if test "$vismode" -eq 1; then
+    for repository in $(get_remotes); do
+	branches="$branches $repository/master"
+    done
+
+    gitk $branches &
+fi
