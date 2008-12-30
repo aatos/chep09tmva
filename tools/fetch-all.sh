@@ -65,5 +65,5 @@ if test "$vismode" -eq 1; then
 	branches="$branches $repository/master"
     done
 
-    gitk $branches &
+    gitk --date-order $branches &
 fi
