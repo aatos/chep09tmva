@@ -26,8 +26,8 @@ automatically.
 
 === Fetch assistant
 
-Script "tools/fetch-all.sh" fetches all changes from remote
-repositories listed in "tools/repositories.conf". After fetching it
+Script "tools/fetch-all.sh" fetches all changes from registered remote
+repositories except "origin" (i.e. your own public repository). After fetching it
 tries to start "gitk" history visualization tool and show the master
 branch of all remote repositories. This information can be used by the
 project maintainer to track the progress of contributors, review
