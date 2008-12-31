@@ -48,6 +48,7 @@ changes.
 ----------
  --no-vis        Do not show gitk history visualization
  --no-fetch      Do not fetch changes
+ --fetch-origin  Fetch also from origin
 ----------
 
 == Requirements
