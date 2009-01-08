@@ -25,5 +25,5 @@ clean:
 	rm -f $(OBJS) $(EXE)
 
 go:
-	root chep09tmva.C
+	root chep09tmvaAatos.C
 
