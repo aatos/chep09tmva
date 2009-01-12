@@ -109,7 +109,7 @@ probably be stored in some way in the repository.
 \begin{itemize}
 \item[aatos]
 Aatos: editor, NN classifiers; 
-\item Pekka: git consulting, PROOF
+\item Pekka: release manager, git consulting, PROOF
 \begin{itemize}
 \item git consulting: OK (setting up workflow and repositories, user
   training, documentation, software installation)
@@ -135,14 +135,6 @@ Aatos: editor, NN classifiers;
 %git push 
 %gitk 
 \begin{itemize}
-\item Lauri:
-\begin{verbatim}
-git remote add lauri http://cmsdoc.cern.ch/~wendland/chep09tmva.git
-
-git fetch lauri
-git merge lauri/master
-
-\end{verbatim}
 \item Pekka:
 \begin{verbatim}
 git remote add pekka git://github.com/kaitanie/chep09tmva.git
@@ -150,7 +142,17 @@ git remote add pekka git://github.com/kaitanie/chep09tmva.git
 git fetch pekka
 git merge pekka/master
 \end{verbatim}
-\item Matti:
+
+\item Lauri (don't do manually PK as an release manager does this):
+\begin{verbatim}
+git remote add lauri http://cmsdoc.cern.ch/~wendland/chep09tmva.git
+
+git fetch lauri
+git merge lauri/master
+
+\end{verbatim}
+
+\item Matti (don't do manually PK as an release manager does this)::
 \begin{verbatim}
 git remote add matti git://github.com/makortel/chep09tmva.git
 
