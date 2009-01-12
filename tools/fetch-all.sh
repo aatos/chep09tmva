@@ -19,12 +19,17 @@
 # Options
 vismode=1
 fetchmode=1
+fetchorigin=0
 
 # Get registered remote names and filter out origin (i.e. the user's
 # own public repository.
 function get_remotes ()
 {
-    echo $(git remote | sed '/origin/ d' | xargs)
+    if test "$fetchorigin" -eq 1; then
+	echo $(git remote | xargs)
+    else
+	echo $(git remote | sed '/origin/ d' | xargs)
+    fi
 }
 
 function usage ()
@@ -33,6 +38,7 @@ function usage ()
     echo "Options:"
     echo " --no-vis        Do not show gitk history visualization"
     echo " --no-fetch      Do not fetch changes"
+    echo " --fetch-origin  Fetch also from origin"
     exit 0
 }
 
@@ -42,6 +48,9 @@ for option in $*; do
     fi
     if test "$option" = "--no-fetch"; then
 	fetchmode=0
+    fi
+    if test "$option" = "--fetch-origin"; then
+	fetchorigin=1
     fi
     if test "$option" = "--help"; then
 	usage
@@ -65,5 +74,5 @@ if test "$vismode" -eq 1; then
 	branches="$branches $repository/master"
     done
 
-    gitk $branches &
+    gitk --date-order $branches &
 fi

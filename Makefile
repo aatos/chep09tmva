@@ -35,3 +35,13 @@ pdf:
 
 view:
 	$(PDFVIEWER) $(d).pdf
+
+release:
+	@echo "Building tarball... "
+	@./tools/create-tarball.sh
+	@echo "Done."
+
+contribution:
+	@echo "Preparing contribution tarball..."
+	./tools/create-contribution.sh
+	@echo "Done."

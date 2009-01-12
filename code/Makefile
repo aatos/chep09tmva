@@ -6,11 +6,11 @@ INC :=
 ROOTINC := $(shell root-config --cflags)
 ROOTLIBDIR := $(shell root-config --libdir)
 ROOTLIBS := $(shell root-config --glibs)
-
-ROOTLIBS += $(shell test -e $$ROOTSYS/lib/libMLP.so && echo -lMLP)
-ROOTLIBS += $(shell test -e $$ROOTSYS/lib/libMinuit.so && echo -lMinuit)
-ROOTLIBS += $(shell test -e $$ROOTSYS/lib/libTreePlayer.so && echo -lTreePlayer)
-ROOTLIBS += $(shell test -e $$ROOTSYS/lib/libTMVA.so && echo -lTMVA)
+ROOTFEATURES := $(shell root-config --features)
+ROOTLIBS += $(shell test -e $(ROOTLIBDIR)/libMLP.so && echo -lMLP)
+ROOTLIBS += $(shell test -e $(ROOTLIBDIR)/libMinuit.so && echo -lMinuit)
+ROOTLIBS += $(shell test -e $(ROOTLIBDIR)/libTreePlayer.so && echo -lTreePlayer)
+ROOTLIBS += $(shell test -e $(ROOTLIBDIR)/libTMVA.so && echo -lTMVA)
 
 CXXFLAGS := -O2 -Wall -fPIC -D_REENTRANT $(ROOTINC) $(INC)
 LDFLAGS := $(ROOTLIBS)
@@ -25,5 +25,5 @@ clean:
 	rm -f $(OBJS) $(EXE)
 
 go:
-	root chep09tmva.C
+	root chep09tmvaAatos.C
 

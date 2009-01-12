@@ -37,7 +37,7 @@ void TMVAGui( const char* fName = "TMVA.root" )
    // for further documentation, look in the individual macros
 
    TString curMacroPath(gROOT->GetMacroPath());
-   gROOT->SetMacroPath(curMacroPath+":$ROOTSYS/tmva/test/:");
+   gROOT->SetMacroPath(curMacroPath+":./scripts/:");
 
    cout << "--- Launch TMVA GUI to view input file: " << fName << endl;
 

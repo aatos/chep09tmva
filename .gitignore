@@ -12,3 +12,8 @@ ah09bProceedings.pdf
 *.o
 code/chep09tmva
 *.root
+code/*.d
+code/*.so
+code/plots
+code/weights
+.gitrevision

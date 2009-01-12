@@ -65,15 +65,15 @@ label=ametistishjob
 }
 \lstinputlisting{code/ametisti.sh.job}
 
-\subsection{chep09tmva.C}
+\subsection{chep09tmvaAatos.C}
 \lstset{
 language=C++,
 numbers=left,
 stepnumber=2,
-caption={\tt code/chep09tmva.C},
+caption={\tt code/chep09tmvaAatos.C},
 label=chep09tmvac
 }
-\lstinputlisting{code/chep09tmva.C}
+\lstinputlisting{code/chep09tmvaAatos.C}
 
 \subsection{chep09tmva.cc}
 \lstset{
@@ -163,6 +163,12 @@ git merge matti/master
 
 \item Alternatively LaTeX-files can be loaded form
 \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.tar.gz}.
+
+After this you can make your modifications and submit them as a
+tarball. The tarball can be created by using command {\tt make
+contribution}. The resulting file {\tt chep09tmva-contribution.tar.gz}
+can be sent as and e-mail attachment to: {\tt pekka.kaitaniemi@gmail.com}.
+
 \item You can also mail you comments and updates directly to editor (Aatos)
 Based on pdf version
 \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.pdf}.
@@ -193,14 +199,13 @@ variable {\tt USEVIEWER} to 1.
 For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.net/talks.shtml}.
 
 \begin{itemize}
-\item Current version is TMVA-v3.9.5 (2008 Aug. 9th).
-\item TMVA (\url{http://tmva.cvs.sourceforge.net}) is now released as ROOT package
-
+\item Current version is TMVA-v3.9.6 (2008, December. 2nd).
+\item TMVA (\url{http://tmva.cvs.sourceforge.net}) is now included in ROOT releases:
 \begin{itemize}
-\item ROOT version from 5-19-02a to 5-21-01-alice contains TMVA 3.9.4.
-\item ROOT version 5.22 is planned to be released on December 18, 2008
+\item ROOT version 5.22 has been released on December 18, 2008
   (release notes \url{http://root.cern.ch/root/v522/Version522.news.html}),
   it has TMVA-v.3.9.5
+\item ROOT version from 5-19-02a to 5-21-01-alice contains TMVA 3.9.4.
 \end{itemize}
 
 \item In addition to many bug fixes:
