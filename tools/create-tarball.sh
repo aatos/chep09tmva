@@ -8,6 +8,6 @@ git --no-pager log --pretty=oneline | awk '{print $1}' | head -1 > .gitrevision
 # of the archive:
 git archive --format=tar --prefix=chep09tmva/ HEAD > ah09bProceedings.tar
 cd ..
-tar -rf chep09tmva/ah09bProceedings.tar chep09tmva/.gitrevision
-cd chep09tmva
+tar -rf ah09bProceedings/ah09bProceedings.tar ah09bProceedings/.gitrevision
+cd ah09bProceedings
 gzip ah09bProceedings.tar
