@@ -1,13 +1,15 @@
 #!/bin/sh
 
-tarball=chep09tmva-contribution.tar.gz
-dirname=chep09tmva
+dirname=$(pwd | awk 'BEGIN{FS="/"}{print $NF}')
+tarball=$dirname-contribution.tar.gz
+
 cd ..
 if [ -e $dirname ]; then
 # The default directory name is OK.    
-    echo ""
+    echo "Creating contribution archive from directory $dirname"
 else
-    dirname="ah09bProceedings/"
+    echo "Error: Directory $dirname does not exist."
+    exit 1
 fi
 
 echo "Tarball name : $tarball"
