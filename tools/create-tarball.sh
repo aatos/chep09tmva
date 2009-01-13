@@ -7,5 +7,7 @@ git --no-pager log --pretty=oneline | awk '{print $1}' | head -1 > .gitrevision
 # Create the archive using Git and add the revision ID file to the end
 # of the archive:
 git archive --format=tar --prefix=chep09tmva/ HEAD > ah09bProceedings.tar
-tar -rf ah09bProceedings.tar .gitrevision
+cd ..
+tar -rf chep09tmva/ah09bProceedings.tar chep09tmva/.gitrevision
+cd chep09tmva
 gzip ah09bProceedings.tar
