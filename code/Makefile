@@ -22,7 +22,7 @@ $(EXE): $(OBJS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 ah0:
-	root chep09tmva_aatos.C
+	root -l chep09tmva_aatos.C
 
 ah1:
 	make
