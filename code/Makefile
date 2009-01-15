@@ -21,9 +21,19 @@ $(EXE): $(OBJS)
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+ah0:
+	root chep09tmva_aatos.C
+
+ah1:
+	make
+	./chep09tmva tmva-aatos.conf
+	root TMVAGui.C
+
 clean:
 	rm -f $(OBJS) $(EXE)
 
-go:
-	root chep09tmva_aatos.C
-
+clean_all:
+	@make clean
+	rm -f TMVA.root
+	rm -fR plots
+	rm -fR weights
