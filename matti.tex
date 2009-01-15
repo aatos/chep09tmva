@@ -1,1 +1,58 @@
-\subsection{[MATTI]}
+\subsection{[Matti] SVM}
+
+\subsubsection{General notes}
+\begin{itemize}
+\item Number of bins for the ROC curve is 100, and specified in
+  \texttt{src/Config.cxx} under the TMVA source tree.
+  \begin{itemize}
+  \item It looks like when the ROC curve is constructed (in
+    \texttt{src/MethodBase.cxx}), the background efficiency is
+    interpolated with splines from a histogram with $10^4$ bins.
+  \end{itemize}
+\item All variables (branches) in the tree are float, right?
+\item Signal and background event weights are now both 1. This should
+  probably be fixed; is hardcoding to \texttt{code/chep09tmva} ok or
+  do we want it to be a configuration parameter?
+\item The normalization mode should be checked(NormMode parameter for
+  the trainer, currently it has the value NumEvents), also the
+  SplitMode (now Random) might not be good
+\item In the case that the big data is in madhatter, we should use
+  ametisti. I think we should at least discuss about the possibility
+  of having the data in ametisti instead of madhatter.
+\item The \texttt{TestTree} tree in output \texttt{TMVA.root} can be
+  used to see the output distributions of the variables after placing
+  a cut on the classifier discriminator
+  \begin{itemize}
+  \item The branch \texttt{type} seems to be 0 for background and 1 for signal
+  \end{itemize}
+\item What number(s) should we look when optimizing the classifier?
+\end{itemize}
+
+\subsubsection{SVM Notes}
+\begin{itemize}
+\item Training time scales as $O(n^2)$ where $n$ is the size of the
+  input data (i.e. number of events)
+  \begin{itemize}
+  \item 100 signal and 200 background events took 0.125 seconds
+  \item 200 signal and 400 background events took 0.542 seconds
+  \item 500 signal and 1000 background events took 3.41 seconds
+  \item 800 signal and 1600 background events took 10 seconds
+  \item 1000 signal and 2000 background events took 13.8 seconds
+  \item If the scaling law is correct, $10^4$ events would take about 2
+    minutes, $5\times 10^4$ events would take almost an hour and $10^5$
+    events would take more than 3,5 hours.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{RuleFit Notes}
+
+\begin{itemize}
+\item I'm just testing it
+\item Works (i.e. doesn't crash or anything) with the default data
+\item Training time (scaling could be ok)
+  \begin{itemize}
+  \item 100 signal and 200 background events took 59.2 seconds
+  \item 500 signal and 1000 background events took 25.1 seconds
+  \item 1000 signal and 2000 background events took 50.3 seconds
+  \end{itemize}
+\end{itemize}
