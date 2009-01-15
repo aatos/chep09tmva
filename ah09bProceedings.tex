@@ -1,0 +1,134 @@
+\documentclass[twoside,floatfix,a4wide]{revtex4}
+\usepackage{multirow} % common packages
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+%\usepackage{asymptote}
+%\usepackage{amsmath}
+\usepackage{color}
+\definecolor{mydarkred}{rgb}{0.7,0,0}
+\newcommand{\checkme}[1] {\textcolor{mydarkred}{{\bf CHECK ME:}  \{#1\}}}
+\newcommand{\comment}[1] {\textcolor{mydarkred}{\em  \{#1\}}} 
+
+%\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
+\pagestyle{fancy}
+\fancyhead{} % clear all fields
+
+\fancyhead[L]{\bf {January 15, 2008}} % Left Odd, Right Even
+\fancyfoot[L]{A.~Heikkinen {\em et al.}: 
+{\em Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}}
+
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{} 
+\newcommand{\urltilde}[1]{\texttt{#1}} % solves the tilde problem
+
+\bibliographystyle{apsrev}
+
+\hypersetup{
+    bookmarks=true,         % show bookmarks bar?
+    unicode=false,          % non-Latin characters in Acrobat’s bookmarks
+    pdftoolbar=true,        % show Acrobat’s toolbar?
+    pdfmenubar=true,        % show Acrobat’s menu?
+    pdffitwindow=true,      % page fit to window when opened
+    pdftitle={My title},    % title
+    pdfauthor={Author},     % author
+    pdfsubject={Subject},   % subject of the document
+    pdfnewwindow=true,      % links in new window
+    pdfkeywords={keywords}, % list of keywords
+    colorlinks=true,        % false: boxed links; true: colored links
+    linkcolor=red,          % color of internal links
+    citecolor=green,        % color of links to bibliography
+    filecolor=blue,         % color of file links
+    urlcolor=red            % color of external links
+}
+
+\begin{document}
+
+\title{Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit
+\footnote{Paper \cite{ah09bProceedings} in preparation for CHEP 2009, 21 - 27 March 2009 Prague, 
+Czech Republic}}
+%\url{http://www.particle.cz/conferences/chep2009/}}
+%\title{A Geant4 physics list for spallation reactions}
+
+\author{\underline{A.~Heikkinen}, P.~Kaitaniemi, V. Karim\"{a}ki,
+ R.~Kinnunen,  M.~J.~Kortelainen, T.~Lamp\'{e}n, S.~Lehti, T.~Lind\'{e}n, and L.~Wendland} 
+\affiliation{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.
+E-mail: aatos.heikkinen@cern.ch}
+
+\begin{abstract}
+We report our experience on using ROOT package TMVA for
+multivariate data analysis, for a problem of $\tau$ tagging in the
+framework of heavy charged MSSM Higgs boson searches at the LHC.
+With a generator level analysis, 
+we investigate how in the ideal case $\tau$ tagging could be performed and 
+hadronic $\tau$ decays separated from the
+hadronic jets of QCD multi-jet background present in LHC experiments. 
+A successful separation of the Higgs signal from the background 
+requires a rejection factor of $10^5$ or better against the QCD background. 
+The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
+
+%{\bf CHEP'07 abtract (see \cite{heikkinen07lProceedings}):}
+%{\em We test the usage of a Toolkit for Multivariate Data Analysis (TMVA) in b tagging.
+%Tagging b jets associated with heavy neutral MSSM Higgs bosons at the LHC can be used to
+%extract the Higgs bosons from the Drell-Yan background, for which the associated jets are
+%mainly light quark and gluon jets. Achievable b tagging effciency is studied with more than
+%ten MVA classifiers at 1% mistagging rate. Most classifiers were found to perform better than
+%the simple track counting 
+
+\end{abstract}
+
+\maketitle
+
+
+\tableofcontents
+
+\thispagestyle{fancy}
+
+\section{INTRODUCTION \label{section:intro}}
+We have previously tested TMVA software in b-tagging for the search of MSSM Higgs bosons 
+at the LHC \cite{heikkinen07lProceedings}.
+\section{MULTIVARIATE DATA ANALYSIS}
+\subsection{TMVA methodology}
+
+
+\section{DATA AND VARIABLES}
+\subsection{Event generation}
+\subsection{Ideal case vs. detector effects}
+% smearing
+\subsection{Discriminating variables}
+
+
+\subsection{IMPLEMENTATION \label{section:implementation}}
+[code example]
+
+[listing waht was coded, changed in TMVA]
+
+\section{RESULTS} \label{sec:example}
+\input{aatos} % NN
+\input{pekka}
+\input{veikko}
+\input{ritva}
+\input{matti}
+\input{tapio}
+\input{sami}
+\input{tomas}
+\input{lauri}
+
+[Critics: TMVA bugs, is it already mature? Problems?]
+
+[Praisal: what is now working compared to CHEP'07]
+
+\section{CONCLUSION AND DISCUSSION} \label{sec:conclusion}
+TMVA
+
+%\begin{lstlisting}
+%\end{lstlisting}
+
+\bibliographystyle{unsrt}  % Options plain, unsrt, alpha, abbrv
+%\bibliography{refs.bib} %10 p
+\bibliography{chep09.bib} %10 p
+
+\input{notes} % Misc. note for the project.
+\end{document}

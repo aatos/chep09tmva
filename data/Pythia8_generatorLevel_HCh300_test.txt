@@ -1,0 +1,526 @@
+
+Untar package(s)
+
+Unpacking common.tar.gz
+bin/
+bin/hipGridAnalysis
+bin/hipGridProduction
+bin/.gitignore
+bin/makeURLs.py
+bin/analysis
+bin/cpFiles
+bin/cpRootFiles
+bin/hipsrm
+bin/hipGridAnalysis-plot.py
+libs/
+libs/libMyEvent.so
+libs/.gitignore
+libs/libFramework.so
+libs/libMySelector.so
+libs/libMyAnalysis.so
+libs/libconfig++.so.6
+libs/libconfig++.so.6.1.1
+libs/libconfig++.so
+dataURLs/
+dataURLs/w4jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3_part3.URLs
+dataURLs/tt1j_mT_70_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3_part5.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3.URLs~
+dataURLs/QCD_Pt_120_170_cmssw1612_run3_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3_part2.URLs
+dataURLs/w3jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1611_run6_merged.URLs
+dataURLs/pythiasignal.URLs
+dataURLs/QCD_Pt_80_120_cmssw1611_noTrigger_run6_merged.URLs
+dataURLs/tt0j_mT_70_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3_part1.URLs
+dataURLs/w4jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/tt0j_mT_70_tauola_cmssw1610_RECO_cmssw1611_run6_merged.URLs
+dataURLs/w3jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/test.URLs
+dataURLs/pythiasignal.URLs~
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run3_part4.URLs
+dataURLs/#Pythia8_generatorLevel_QCD_120_170_run3.URLs#
+dataURLs/hch400_tauola_cmssw1612_run3_merged.URLs
+dataURLs/QCD_Pt_170_230_cmssw1611_noTrigger_run6_merged.URLs
+dataURLs/QCD_Pt_80_120_cmssw1612_run3_merged.URLs
+dataURLs/hch200_tauola_cmssw1612_run3_merged.URLs
+dataURLs/QCD_Pt_120_170_cmssw1612_run4_merged.URLs
+dataURLs/w3jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1611_run6_merged.URLs
+dataURLs/pythiabkg.URLs
+dataURLs/hch300_tauola_cmssw1611_run6_noTrigger_merged.URLs
+dataURLs/minitest.URLs
+dataURLs/hch400_tauola_cmssw1611_run6_merged.URLs
+dataURLs/w4jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1611_run6_merged.URLs
+dataURLs/Pythia8_generatorLevel_HCh300_run4.URLs
+dataURLs/hch200_tauola_cmssw1611_run6_merged.URLs
+dataURLs/w4jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1611_run6_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run2.URLs
+dataURLs/w3jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs
+dataURLs/Pythia8_generatorLevel_QCD_120_170_run5.URLs
+dataURLs/QCD_Pt_120_170_cmssw1611_noTrigger_run6_merged.URLs
+dataURLs/hch300_tauola_cmssw1611_run6_merged.URLs
+dataURLs/QCD_Pt_170_230_cmssw1612_run3_merged.URLs
+dataURLs/hch300_tauola_cmssw1612_run3_merged.URLs
+
+Unpacking job-0.tar.gz
+dataURLs/
+dataURLs/pythiasignal-split.URLs
+workspace/
+workspace/analysis.in
+
+
+
+Set environment
+
+
+Environment
+G4LEVELGAMMADATA=/usr/local/geant4/data/PhotonEvaporation2.0
+CLHEP_LIB_DIR=/usr/local/CLHEP/lib
+MANPATH=/opt/gridengine/man:/opt/gridengine/man:/usr/share/man:/usr/local/share/man:/usr/X11R6/man:/opt/rocks/man:/opt/ganglia/man:/opt/pgi/linux86-64/6.2/man
+SELINUX_INIT=YES
+CONSOLE=/dev/console
+HOSTNAME=compute-2-48.local
+SGE_INFOTEXT_MAX_COLUMN=5000
+SGE_TASK_STEPSIZE=undefined
+TERM=linux
+SHELL=/bin/sh
+G4INSTALL=/usr/local/geant4
+NHOSTS=1
+HISTSIZE=1000
+TMPDIR=/tmp/180590.1.mgrid
+SGE_O_WORKDIR=/export/grid/session/265311227797531442409510
+SGE_CELL=default
+SGE_ARCH=lx26-amd64
+OLDPWD=/export/grid/session/265311227797531442409510
+RESTARTED=0
+ARC=lx26-amd64
+G4LEDATA=/usr/local/geant4/data/G4EMLOW2.3
+USER=mgu0030
+LS_COLORS=no=00:fi=00:di=01;34:ln=01;36:pi=40;33:so=01;35:bd=40;33;01:cd=40;33;01:or=01;05;37;41:mi=01;05;37;41:ex=01;32:*.cmd=01;32:*.exe=01;32:*.com=01;32:*.btm=01;32:*.bat=01;32:*.sh=01;32:*.csh=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.bz=01;31:*.tz=01;31:*.rpm=01;31:*.cpio=01;31:*.jpg=01;35:*.gif=01;35:*.bmp=01;35:*.xbm=01;35:*.xpm=01;35:*.png=01;35:*.tif=01;35:
+LD_LIBRARY_PATH=/export/grid/session/265311227797531442409510/workspace/../libs:/export/grid/session/265311227797531442409510/workspace/../tmva/TMVA/lib:/usr/local/root/lib:/usr/local/CLHEP/lib:/opt/gridengine/lib/lx26-amd64:/home/opt/root/root_v5.16.00/lib/root
+INIT_VERSION=sysvinit-2.85
+SGE_TASK_LAST=undefined
+VO_CMS_SW_DIR=/home/opt/cms/cmssw
+QUEUE=mgrid
+ROCKS_ROOT=/opt/rocks
+KDEDIR=/usr
+G4RADIOACTIVEDATA=/usr/local/geant4/data/RadiativeDecay3.0
+LS_SUBCWD=/export/grid/session/265311227797531442409510/workspace
+SGE_TASK_ID=undefined
+PGI=/opt/pgi
+PATH=/opt/d-cache/srm/bin:/usr/local/root/bin:/opt/gridengine/bin/lx26-amd64:/opt/pgi/linux86-64/6.2/bin:/usr/kerberos/bin:/usr/java/jdk1.6.0_05/bin:/tmp/180590.1.mgrid:/usr/local/bin:/bin:/usr/bin:/usr/X11R6/bin:/opt/ganglia/bin:/opt/pathscale/bin:/opt/rocks/bin:/opt/rocks/sbin:/home/opt/root/root_v5.16.00/bin
+SGE_BINARY_PATH=/opt/gridengine/bin/lx26-amd64
+MAIL=/var/spool/mail/mgu0030
+G4LIB=/usr/local/geant4/lib
+RUNLEVEL=3
+G4NeutronHPCrossSection=/usr/local/geant4/data/G4NDL3.7
+SGE_STDERR_PATH=/export/grid/session/265311227797531442409510.comment
+PWD=/export/grid/session/265311227797531442409510/workspace
+INPUTRC=/etc/inputrc
+JAVA_HOME=/usr/java/jdk1.6.0_05
+SGE_EXECD_PORT=537
+SGE_ACCOUNT=sge
+SGE_STDOUT_PATH=/export/grid/session/265311227797531442409510.comment
+LANG=en_US.iso885915
+CLHEP_BASE_DIR=/usr/local/CLHEP
+SGE_QMASTER_PORT=536
+JOB_NAME=HipGridAnalysis
+JOB_SCRIPT=/opt/gridengine/default/spool/compute-2-48/job_scripts/180590
+LAMRSH=ssh -x
+INPUTFILE=analysis.in
+SGE_ROOT=/opt/gridengine
+SGE_NOMSG=1
+PREVLEVEL=N
+REQNAME=HipGridAnalysis
+ENVIRONMENT=BATCH
+SGE_JOB_SPOOL_DIR=/opt/gridengine/default/spool/compute-2-48/active_jobs/180590.1
+ROOTSYS=/home/opt/root/root_v5.16.00
+HOME=/export/grid/session/265311227797531442409510
+SHLVL=6
+CLHEP_INCLUDE_DIR=/usr/local/CLHEP/include
+NQUEUES=1
+SGE_CWD_PATH=/home/mgu0030
+G4SYSTEM=Linux-g++
+DYLD_LIBRARY_PATH=/usr/local/root/lib:
+LOGNAME=mgu0030
+JOB_ID=180590
+TMP=/tmp/180590.1.mgrid
+SGE_TASK_FIRST=undefined
+LESSOPEN=|/usr/bin/lesspipe.sh %s
+SGE_O_PATH=/opt/gridengine/bin/lx26-amd64:/sbin:/usr/sbin:/bin:/usr/bin:/usr/X11R6/bin
+SGE_O_HOST=ametisti
+REQUEST=HipGridAnalysis
+NSLOTS=1
+SGE_STDIN_PATH=/dev/null
+G_BROKEN_FILENAMES=1
+_=/bin/env
+
+
+Configuration
+
+datasets = ({
+preSeleEfficiency = 1.0;
+cross_section = 1.0;
+directory = "test.URLs";
+name = "test";
+label = 1;
+}, {
+preSeleEfficiency = 1.;
+name = "h200";
+signal = true;
+label = 200;
+directory = "hch200_tauola_cmssw1612_run3_merged.URLs";
+cross_section = 1.192;
+}, {
+preSeleEfficiency = 1.;
+name = "h300";
+signal = true;
+label = 300;
+directory = "hch300_tauola_cmssw1612_run3_merged.URLs";
+cross_section = 0.1814;
+}, {
+preSeleEfficiency = 1.;
+name = "h300_noTrigger";
+signal = true;
+label = 301;
+directory = "hch300_tauola_cmssw1612_run3_noTrigger_merged.URLs";
+cross_section = 0.1814;
+}, {
+preSeleEfficiency = 1.;
+name = "h400";
+signal = true;
+label = 400;
+directory = "hch400_tauola_cmssw1612_run3_merged.URLs";
+cross_section = 0.0579;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 2.96E+6;
+directory = "QCD_Pt_80_120_cmssw1612_run3_merged.URLs";
+name = "QCD_Pt_80_120";
+label = 70;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 5.03E+5;
+directory = "QCD_Pt_120_170_cmssw1612_run3_merged.URLs";
+name = "QCD_Pt_120_170";
+label = 71;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 1.01E+5;
+directory = "QCD_Pt_170_230_cmssw1612_run3_merged.URLs";
+name = "QCD_Pt_170_230";
+label = 72;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 621.5;
+directory = "tt0j_mT_70_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "tt0j";
+label = 40;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 177.3;
+directory = "tt1j_mT_70_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "tt1j";
+label = 41;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 587.;
+directory = "w3jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "W3JetPeak";
+label = 50;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 1.060;
+directory = "w3jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "W3JetTail";
+label = 51;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 123.8;
+directory = "w4jet_0ptw100_0mw150_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "W4JetPeak";
+label = 52;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 0.2;
+directory = "w4jet_0ptw100_150mw500_tauola_cmssw1610_RECO_cmssw1612_run3_merged.URLs";
+name = "W4JetTail";
+label = 53;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 0.1814;
+directory = "pythiasignal-split.URLs";
+name = "Pythia8_generatorLevel_HCh300";
+label = 9300;
+}, {
+preSeleEfficiency = 1.;
+cross_section = 5.03E+5;
+directory = "pythiabkg.URLs";
+name = "Pythia8_generatorLevel_QCD_120_170";
+label = 9071;
+});
+config = {
+use_datasets = ["Pythia8_generatorLevel_HCh300"];
+selector = "MyAnalysis";
+};
+cuts = {
+tauIDNeutralHadronCut = 0.1;
+tauIDPFECALIsolation = 1.5;
+TauIDAnalysis = 1.;
+tauIDEtCut = 100.;
+tauIDLdgHitsCut = 8.;
+tauIDRtauCut = 0.8;
+tauIDNeutralHadronCone = (0.00, 0.50);
+tauIDetaCut = 2.0;
+tauIDIsolationPtMin = 0.9;
+tauIDLdgChi2Cut = 10.;
+tauIDProngs = -1.;
+tauIDIsolationCone = 0.45;
+tauIDPFNeutralHadronCut = 2.5;
+tauIDLdgIPtCut = (0.00, 0.03);
+tauID3prDeltaECut = (-0.2, 1.0);
+tauIDLdgPtCut = 20.;
+tauID3prTrackInvMass = (0.0, 1.4);
+tauIDElectronCut = -0.98;
+tauID3prChargeSumCut = 1.0;
+tauIDSignalCone = 0.04;
+tauIDIsolationIPzMax = 0.1;
+tauID3prFlightpathSig = 1.0;
+tauIDECALIsolation = 1.5;
+luminosity = 100.;
+tauIDECALIsolationCone = (0.10, 0.50);
+tauID3prRtauCut = 0.75;
+TauIDScanIsolationRadii = 1.;
+tauIDLdgHitsChi2Cut = 10.;
+};
+Execute
+
+  Using inputfile analysis.in
+Chain has 6704 entries
+Info in <MyAnalysis::Notify()>: File root://madhatter.csc.fi/pnfs/csc.fi/data/cms/MyEventData/Pythia8_generatorLevel_HCh300_run4/pythia8-1000001.root, entries 3323
+Info in <MyAnalysis::Notify()>: File root://madhatter.csc.fi/pnfs/csc.fi/data/cms/MyEventData/Pythia8_generatorLevel_HCh300_run4/pythia8-1000000.root, entries 3381
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Info in <MyAnalysis::Notify()>: File root://madhatter.csc.fi/pnfs/csc.fi/data/cms/MyEventData/Pythia8_generatorLevel_HCh300_run4/pythia8-1000001.root, entries 3323
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning in <TVector3::PseudoRapidity>: transvers momentum = 0! return +/- 10e10
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Warning: unknown MET correction muonCorrection
+Info in <MyAnalysis::Terminate()>: Writing output to histograms.root
+Real time 0:01:46, CP time 23.830
+
+Done
+

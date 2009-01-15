@@ -1,0 +1,360 @@
+\begin{appendix}
+
+\lstset{ % General settings
+language=c++,                   % choose the language of the code
+basicstyle=\ttfamily \small,    % the size of the fonts that are used for the code \footnotsize
+numbers=left,                   % where to put the line-numbers
+numberstyle=\small,             % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. If it's 1 each line will be numbered
+numbersep=10pt,                 % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=,                         % adds a frame around the code (single)
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position: top (t), bottom (b)
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},         % if you want to add a comment within your code
+caption=footnote, 
+label=listing:relRef
+}
+
+\section{Code}
+A code and data will be distributed using git and made abvailable 
+at \\ \url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings/code}
+
+\subsection{Makefile}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/Makefile},
+label=makefile
+}
+\lstinputlisting{code/Makefile}
+
+
+\subsection{tmva-common.conf}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/tmva-common.conf},
+label=tmvacommonconf
+}
+\lstinputlisting{code/tmva-common.conf}
+
+\subsection{tmva-example.conf}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/tmva-example.conf},
+label=tmvacommonconf
+}
+\lstinputlisting{code/tmva-example.conf}
+
+\subsection{ametisti.sh.job}
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption={\tt code/ametisti.sh.job},
+label=ametistishjob
+}
+\lstinputlisting{code/ametisti.sh.job}
+
+\subsection{chep09tmva\_aatos.C}
+\lstset{
+language=C++,
+numbers=left,
+stepnumber=2,
+caption={\tt code/chep09tmva\_aatos.C},
+label=chep09tmva_aatos
+}
+\lstinputlisting{code/chep09tmva_aatos.C}
+
+\subsection{chep09tmva.cc}
+\lstset{
+language=C++,
+numbers=left,
+stepnumber=2,
+caption={\tt code/chep09tmva.cc},
+label=chep09tmvacc
+}
+\lstinputlisting{code/chep09tmva.cc}
+
+\section{Data files}
+Minimalistic example datafile (recommendation: less than 1-2 MB) can
+be included in the repository for testing and demonstration
+purpooses. Although Git can easily deal with large files, it is
+recommended that the production data would not be
+included in the repository. It should be kept in mind that GitHub
+(and shell accounts) offer relatively limited disk space (GitHub: 100
+MB, CERN default: about 150 MB) and that ROOT files can probably not be
+compressed further.
+
+For production use it is recommended to store in the repository an URL
+to the data. Then we can use the {\tt ROOT} or {\tt HTTP} protocols to
+access it or use a {\tt make} directive/shell script to copy the data to the
+user's computer. One good example of this practice is the {\tt
+HipProofAnalysis} repository. Only the URL:s are stored, not the
+data. Additionally also the parameters, configuration options,
+software versions, etc. used for the production of the data should
+probably be stored in some way in the repository.
+
+\section{WORKING NOTES}
+{\bf Suggested  responsibility}: 
+\begin{itemize}
+\item[aatos]
+Aatos: editor, NN classifiers; 
+\item Pekka: release manager, git consulting, PROOF
+\begin{itemize}
+\item git consulting: OK (setting up workflow and repositories, user
+  training, documentation, software installation)
+\item PROOF: I didn't see PROOF mentioned anywhere in the TMVA
+  documentation. Is it supported? If not, then I don't have resources
+  to do it (lesson learned in the past: PROOF-enabling an analysis
+  code can be a major undertaking...)
+\end{itemize}
+\item Sami: MC data, 
+\item Lauri 1-prog physics
+\item Ritva: 
+\item Tomas: Ametisti
+\item Tapio: 
+\item Matti:a mechanism to work with variables 
+\item Veikko:
+\end{itemize}
+
+\subsection{Code repository}
+\begin{itemize}
+\item Source code for paper and TMVA script  is available at 
+{\tt git://github.com/aatos/chep09tmva.git} (\url{http://github.com/aatos/chep09tmva})
+%git commit -a -m 'comment'  (add all changes)
+%git push 
+%gitk 
+\begin{itemize}
+\item Pekka:
+\begin{verbatim}
+git remote add pekka git://github.com/kaitanie/chep09tmva.git
+
+git fetch pekka
+git merge pekka/master
+make release (inform Pekka where tar.gz is available)
+\end{verbatim}
+
+\item Lauri (don't do manually PK as an release manager does this):
+\begin{verbatim}
+git remote add lauri http://cmsdoc.cern.ch/~wendland/chep09tmva.git
+
+git fetch lauri
+git merge lauri/master
+
+\end{verbatim}
+
+\item Matti (don't do manually PK as an release manager does this)::
+\begin{verbatim}
+git remote add matti git://github.com/makortel/chep09tmva.git
+
+git fetch matti
+git merge matti/master
+\end{verbatim}
+\end{itemize}
+
+\item Alternatively LaTeX-files can be loaded form
+\url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.tar.gz}.
+
+After this you can make your modifications and submit them as a
+tarball. The tarball can be created by using command {\tt make
+contribution}. The resulting file {\tt chep09tmva-contribution.tar.gz}
+can be sent as and e-mail attachment to: {\tt pekka.kaitaniemi@gmail.com}.
+
+\item You can also mail you comments and updates directly to editor (Aatos)
+Based on pdf version
+\url{http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah09bProceedings.pdf}.
+\end{itemize}
+
+Guide \url{http://ktown.kde.org/~zrusin/git/git-cheat-sheet-medium.png}.
+
+Some git documentation:
+\begin{itemize}
+\item Git tutorial: \url{http://www.kernel.org/pub/software/scm/git/docs/gittutorial.html}
+\item Git with HipProofAnalysis (contains instructions on how to use
+  Git on lxplus:
+  \url{http://projects.hepforge.org/radical/trac/wiki/GitWithHipProofAnalysis}
+\end{itemize}
+
+\subsection{Building the document}
+
+Building the document requires {\tt make} and \LaTeX tools. The
+document can be built using the {\tt make} command. At the end of the
+compilation this will optionally launch a PDF viewer (by default Firefox browser
+and Acrobat Reader plugin). You can change the PDF viewer program by
+setting environment variable {\tt PDFVIEWER} to point to your
+favourite PDF viewer (e.g. lightweight alternative {\tt xpdf}). To
+enable the PDF viewer feature you can set the environment
+variable {\tt USEVIEWER} to 1.
+
+\subsection{Current status of TMVA}
+For introduction browse, six talks from year 2008 \url{http://tmva.sourceforge.net/talks.shtml}.
+
+\begin{itemize}
+\item Current version is TMVA-v3.9.6 (2008, December. 2nd).
+\item TMVA (\url{http://tmva.cvs.sourceforge.net}) is now included in ROOT releases:
+\begin{itemize}
+\item ROOT version 5.22 has been released on December 18, 2008
+  (release notes \url{http://root.cern.ch/root/v522/Version522.news.html}),
+  it has TMVA-v.3.9.5
+\item ROOT version from 5-19-02a to 5-21-01-alice contains TMVA 3.9.4.
+\end{itemize}
+
+\item In addition to many bug fixes:
+\begin{itemize}
+\item Improved prepossessing
+\item Pre-selection cuts on arrays. Previously used {\em TEventlists} 
+(only event  wise pass/fail) were replaced by {\em TreeFormulas} (sensitive to array position).
+\item Plugin capability: custom multivariate classifier can now be plugged into
+    the TMVA framework to benefit from TMVA's analysis and performance comparison
+    tools. 
+
+\item For details see release notes 
+\url{http://tmva.cvs.sourceforge.net/*checkout*/tmva/TMVA/development/RELNOTES}
+\end{itemize}
+
+\end{itemize}
+
+
+
+\subsection{TMVA run configuration files}
+
+The new example program ({\tt code/chep09tmva.cc}) uses a config file
+({\tt code/tmva.conf}) for classifier configuration. There is one
+possible problem in this setup. If everyone edits the same file time
+and time again, merging everyone's work will become very painful. This
+is a problem because we would like people to merge early and
+often. There are a few proposals that should be investigated as
+possible solutions to this problem:
+\begin{enumerate}
+\item Using config files is a good option. Hardcoding configs into
+the program would probably make merges quite difficult as well.
+\item Each user/classifier has a separate config file. The {\tt
+chep09tmva} program should have a command line option that allows the
+user to choose which configuration is used. An example invocation of
+the {\tt chep09tmva} program is shown in listing \ref{configExample}.
+\item Ability to have common config options in a separate file
+(e.g. {\tt tmva-common.conf}) which could be included into
+user/classifier specific configuration files with an {\tt include}
+statement. An example of this is shown in listings \ref{commonConfig}
+and \ref{userConfig}.
+\end{enumerate}
+
+The program has been modified as follows
+\begin{itemize}
+\item Support for \texttt{include} as shown in listing
+  \ref{commonConfig}
+\item There is now a common configuration file
+  \texttt{tmva-common.conf} (which is still more to demonstrate than
+  to really do anything useful), and an example of user configuration
+  \texttt{tmva-example.conf}
+\item By default it uses the \texttt{tmva-common.conf}, but the
+  configuration can be specified as shown in listing \ref{configExample}
+  \begin{itemize}
+  \item If the same directive (\texttt{Variables:}, \texttt{Cuts:},
+    \texttt{Trainer:}, \texttt{Classifiers:}) is given in both the
+    user configuration and common configuration, the user
+    configuration is used (i.e. e.g. variable lists are not merged).
+  \end{itemize}
+\end{itemize}
+
+
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Example invocation of {\tt chep09tmva} with config file name as a parameter.,
+label=configExample
+}
+\begin{lstlisting}
+./chep09tmva pekka.conf
+\end{lstlisting}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Contents of the file {\tt tmva-common.conf} that contains config options shared by all analysis runs.,
+label=commonConfig
+}
+\begin{lstlisting}
+// String to pass TMVA::Factory::PrepareTrainingAndTestTree
+Trainer:
+NSigTrain=1000:NBkgTrain=20000:SplitMode=Random:NormMode=NumEvents:!V
+\end{lstlisting}
+
+\lstset{
+language=bash,
+numbers=left,
+stepnumber=2,
+caption=Contents of the user specific config file {\tt pekka.conf}.,
+label=userConfig
+}
+\begin{lstlisting}
+include tmva-common.conf
+
+Cuts_D H:!V:FitMethod=MC:EffSel:SampleSize=20000:VarProp=FSmart:VarTransform=Decorrelate
+\end{lstlisting}
+
+\lstset{ %
+language=bash,                % choose the language of the code
+basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+numbers=left,                   % where to put the line-numbers
+numberstyle=\footnotesize,      % the size of the fonts that are used for the line-numbers
+stepnumber=2,                   % the step between two line-numbers. 
+                                %If it's 1 each line will be numbered
+numbersep=5pt,                  % how far the line-numbers are from the code
+showspaces=false,               % show spaces adding particular underscores
+showstringspaces=false,         % underline spaces within strings
+showtabs=false,                 % show tabs within strings adding particular underscores
+frame=single,                   % adds a frame around the code
+tabsize=2,                      % sets default tabsize to 2 spaces
+captionpos=t,                   % sets the caption-position to bottom
+breaklines=true,                % sets automatic line breaking
+breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+escapeinside={\%*}{*)},          % if you want to add a comment within your code
+%caption=Bash function to release a directory., 
+label=listing:relRef
+}
+
+\section{HISTORY}
+\begin{itemize}
+
+\item 090115 Added argets for example analysis make ah1 (recommended way) and make ah0 (minimal).
+\item 090113 Release management bug fix.
+\item 090112 Testing new release tools developed by our release manager Pekka.
+\item 081217 Fixed some lost files by Merging from Pekka.
+\item 081216 Merge from Matti and Pekka. 
+Files added for each author, corresponding a specific analysis subsection.
+First test runs for MLP done using {\tt chep09tmva.C}. Sample images added to {\tt ah09bProceedings.tex}.
+\item 081215 This abstract was accepted as CHEP'09 talk.
+\item 081202 Merging example data and related configuration file from Lauri.
+\item 081125 Merging from Lauri, Matti, and Pekka. 
+Added subsections for code listing and table of contents.
+\item 081111 Merging branch from Lauri and including comments from Sami. 
+Based on discussion at HIP group weekly meeting made some aditional changes to abtract.
+\item 081028 Project released in \url{http://github.com/aatos/chep09tmva}. Removed proceedings notes in the Appendix A to separate file {\tt notes.tex}.
+\item 091029 PK: Commented some points in the proposed
+  responsibilities. Added a couple of links to the Git documentation.
+\item 081021 Title and abstract focus improved after discussion in the group. 
+\item 081014 First draft done after the idea to have TMVA paper at next CHEP was accepted in the group.
+\end{itemize}
+
+
+To be done:
+\begin{itemize}
+\item Template code for  analysis using latest ROOT, and TMVA inside it.
+\item Revise title, abtract and paper structure including appendix.
+\end{itemize}
+
+\end{appendix}
