@@ -17,3 +17,5 @@ code/*.so
 code/plots
 code/weights
 .gitrevision
+code/scripts/*.so
+code/scripts/*.d
