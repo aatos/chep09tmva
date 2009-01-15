@@ -16,12 +16,15 @@
 
 #set -e
 
+# Usage:
+# qsub ametisti.sh.job results_dir [config-file]
+
 ulimit -s 524288 # limit to stack to 512M
 
 export LS_SUBCWD=$(pwd)
 TEMPDIR=chep09tmva-${JOB_ID}
 
-CONF=tmva.conf
+CONF=tmva-example.conf
 RESULTS=testing
 if [ "x$#" = "x1" ]; then
     RESULTS=$1
@@ -78,13 +81,22 @@ function copytoworkdir {
     fi
 }
 
+function replacedata {
+    sed -e 's#../data/#$LS_SUBCWD/../data/#' $1 > $1.tmp
+    mv $1.tmp $1
+}
+
 ##########################################################
 
 
 cd $WORKDIR
 
 copytoworkdir $CONF
+copytoworkdir tmva-common.conf
 copytoworkdir chep09tmva
+
+replacedata $CONF
+replacedata tmva-common.conf
 
 echo " "
 echo " "
