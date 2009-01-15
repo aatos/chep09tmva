@@ -25,7 +25,7 @@ export LS_SUBCWD=$(pwd)
 TEMPDIR=chep09tmva-${JOB_ID}
 
 CONF=tmva-example.conf
-RESULTS=testing
+RESULTS=""
 if [ "x$#" = "x1" ]; then
     RESULTS=$1
 elif [ "x$#" = "x2" ]; then
@@ -35,7 +35,7 @@ fi
 STR=$LS_SUBCWD/$RESULTS
 if [ ! -d $STR ];then
     mkdir $STR
-elif [ "x$RESULTS" != "xtesting" ]; then
+elif [ "x$RESULTS" != "x" ]; then
     echo "Result directory $STR already exists!"
     echo "Exiting in order to avoid overwriting our precious results!"
     exit 0
@@ -91,12 +91,12 @@ function replacedata {
 
 cd $WORKDIR
 
-copytoworkdir $CONF
-copytoworkdir tmva-common.conf
+for I in $LS_SUBCWD/tmva*conf; do
+    FILE=$(basename $I)
+    copytoworkdir $FILE
+    replacedata $FILE
+done
 copytoworkdir chep09tmva
-
-replacedata $CONF
-replacedata tmva-common.conf
 
 echo " "
 echo " "
