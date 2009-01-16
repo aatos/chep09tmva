@@ -1,5 +1,18 @@
 #!/bin/sh
 
+function dirty_tree
+{
+    echo "You have uncommitted changes in your tree."
+    echo "Please use git add and git commit to commit them before trying to create a tarball."
+    exit -1
+}
+
+# Do not create a tarball if the working directory contains
+# uncommitted changes (i.e. it is a "dirty tree"):
+git update-index --refresh -q
+test -z "$(git diff-index --name-only HEAD --)" ||
+dirty_tree
+
 # Get the directory name
 directory=$(pwd | awk 'BEGIN{FS="/"}{print $NF}')
 
