@@ -6,8 +6,14 @@
   \texttt{src/Config.cxx} under the TMVA source tree.
   \begin{itemize}
   \item It looks like when the ROC curve is constructed (in
-    \texttt{src/MethodBase.cxx}), the background efficiency is
-    interpolated with splines from a histogram with $10^4$ bins.
+    \texttt{src/MethodBase.cxx}; except for Cuts), the background
+    efficiency is interpolated with splines from a histogram with
+    $10^4$ bins. The histogram in question is the bacgkround
+    efficiency as a function of discriminator value
+  \item It could be possible to recompute the ROC curve in a plotting
+    script (except for Cuts)
+  \item The whole thing is probably not a problem, since the
+    background efficiency is floating point number
   \end{itemize}
 \item All variables (branches) in the tree are float, right?
 \item Signal and background event weights are now both 1. This should
