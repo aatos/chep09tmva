@@ -45,3 +45,8 @@ contribution:
 	@echo "Preparing contribution tarball..."
 	./tools/create-contribution.sh
 	@echo "Done."
+
+ahRelease:
+	scp -r $(d).tar.gz miheikki@rock.helsinki.fi:public_html/system/refs/heikkinen/. 
+	ssh -t -q -l miheikki rock.helsinki.fi 'chmod ugo+xr public_html/system/refs/heikkinen/ah09bProceedings.tar.gz'
+
