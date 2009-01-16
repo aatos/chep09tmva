@@ -27,7 +27,7 @@ ah0:
 ah1:
 	make
 	./chep09tmva tmva-aatos.conf
-	root TMVAGui.C
+	root -l TMVAGui.C
 
 clean:
 	rm -f $(OBJS) $(EXE)

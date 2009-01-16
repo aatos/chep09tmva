@@ -51,6 +51,31 @@ changes.
  --fetch-origin  Fetch also from origin
 ----------
 
+== Release and contribution management tools
+
+==== Release script
+
+The release script "tools/create-tarball.sh" uses "git archive"
+command to create a tarball of the files in the repository. After this
+it appends a special file called ".gitrevision" into the tarball. This
+special file identifies the SHA1 revision ID of the commit used to
+generate the tarball.
+
+=== Contribution script
+
+If the contributor is unable (or unwilling) to use Git, he/she can
+contribute by returning a tarball containing all the
+contribution. This contribution tarball is created by the
+"tools/create-contribution.sh" script which makes sure that the
+".gitrevision" file created by the release script is returned back to
+the maintainer. This allows the maintainer to easily find the "base
+revision" on top of which the contributor has made his/her
+modifications. After this the maintainer can simply create a new
+branch in the Git repository starting from the revision indicated by
+the .gitrevision file, unpack the contribution, commit and finally use
+"git merge" command to merge the contribution back into the mainline
+of development.
+
 == Requirements
 
 Dependencies:
