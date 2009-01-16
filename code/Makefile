@@ -37,3 +37,4 @@ clean_all:
 	rm -f TMVA.root
 	rm -fR plots
 	rm -fR weights
+	rm scripts/*.so
