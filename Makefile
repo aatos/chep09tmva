@@ -26,7 +26,7 @@ ifdef USEVIEWER
 endif
 
 ca:
-	rm -f $(d).pdf $(d).ps *.out $(d)_*.eps $(d).idx
+	rm -f $(d).pdf $(d).ps *.out $(d)_*.eps $(d).idx *.tar.gz
 
 pdf:
 	@echo :: prepare ps and pdf from dvi
