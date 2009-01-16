@@ -116,6 +116,10 @@ if test "$helpmode" -eq 1; then
     die 0 ""
 fi
 
+# Configure Git to not verify SSL certificates. This is needed to
+# access repositories hosted on http://cmsdoc.cern.ch.
+git config http.sslVerify false
+
 if [ -e "tools/repositories.conf" ]; then # Check if we are in the main directory
     add_repositories "tools/repositories.conf"
 else
