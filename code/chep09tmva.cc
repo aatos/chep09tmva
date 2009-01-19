@@ -2,6 +2,7 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<cstring>
 
 #include <TFile.h>
 #include <TChain.h>
@@ -30,8 +31,14 @@ int main(int argc, char **argv) {
 
   // parse configuration
   std::string confFile("tmva-common.conf");
+  bool color = true;
   if(argc > 1) {
     confFile = argv[1];
+    if(argc > 2) {
+      if(std::strcmp(argv[2], "color=false") == 0) {
+        color = false;
+      }
+    }
   }
   if(confFile == "-help" || confFile == "--help" || confFile == "-h" || confFile == "-?") {
     print_usage();
@@ -130,7 +137,12 @@ int main(int argc, char **argv) {
   TFile *outputFile = TFile::Open(outputfileName, "RECREATE");
 
   // Initialize factory
-  TMVA::Factory *factory = new TMVA::Factory("trainTMVA", outputFile, "!V:!Silent:Color");
+  TString foptions = "!V:!Silent";
+  if(color)
+    foptions += ":Color";
+  else
+    foptions += ":!Color";
+  TMVA::Factory *factory = new TMVA::Factory("trainTMVA", outputFile, foptions);
 
   // Assign variables
   for(std::vector<std::string>::const_iterator iter = variables.begin();

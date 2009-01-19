@@ -104,7 +104,7 @@ echo " START EXECUTION OF JOB ..."
 echo " "
 
 ##$LS_SUBCWD/../bin/trainTMVA | tee tmva.out
-./chep09tmva $CONF | tee tmva.out
+./chep09tmva $CONF color=false | tee tmva.out
 
 #cd $LS_SUBCWD
 #if [ -f $LS_SUBCWD/tmva.out ]; then
