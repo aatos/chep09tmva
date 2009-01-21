@@ -3,6 +3,7 @@
 #include<string>
 #include<vector>
 #include<cstring>
+#include<algorithm>
 
 #include <TFile.h>
 #include <TChain.h>
@@ -10,6 +11,8 @@
 #include <TSystem.h>
 
 #include <TMVA/Factory.h>
+#include <TMVA/MethodBase.h>
+#include <TMVA/MsgLogger.h>
 
 bool parseConf(std::string filename, std::vector<std::string>& variables,
                std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts,
@@ -20,11 +23,96 @@ std::vector<std::string> preprocessLine(std::string& line);
 TMVA::Types::EMVA getType(std::string desc);
 void print_usage(void);
 
+class MyFactory: public TMVA::Factory {
+private:
+  struct EffData {
+    std::string name;
+    double eff;
+    double err;
+  };
+
+  struct EffDataCompare: public std::binary_function<EffData, EffData, bool> {
+    bool operator()(const EffData& a, const EffData& b) const {
+      return a.eff > b.eff;
+    }
+  };
+
+public:
+  MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = ""):
+    TMVA::Factory(theJobName, theTargetFile, theOption)
+  {}
+
+  virtual void printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
+                               long signalEntries, long bkgEntries) {
+    using TMVA::MsgLogger;
+    using TMVA::kINFO;
+    std::vector<EffData> efficiencies;
+
+    TTree *testTree = Data().GetTestTree();
+
+    long signalEntriesSelected = Data().GetNEvtSigTrain() + Data().GetNEvtSigTest();
+    long bkgEntriesSelected = Data().GetNEvtBkgdTrain() + Data().GetNEvtBkgdTest();
+    
+    double signalJetSelEff = double(signalEntriesSelected)/double(signalEntries);
+    double bkgJetSelEff = double(bkgEntriesSelected)/double(bkgEntries);
+
+    double signalPreSelEff = signalEventSelEff*signalJetSelEff;
+    double bkgPreSelEff = bkgEventSelEff*bkgJetSelEff;
+
+    double refEff = 1e-5/bkgPreSelEff;
+
+    TString hLine = "-----------------------------------------------------------------------------";
+
+    fLogger << kINFO 
+            << Endl 
+            << Endl
+            << "Evaluating all classifiers for signal efficiency @ 1e-5 OVERALL bkg efficiency" << Endl
+            << Endl
+            <<      "                                  signal   background" << Endl
+            << Form("Event preselection efficiency   : %1.5f  %1.5f", signalEventSelEff, bkgEventSelEff) << Endl
+            << Form("Jet preselection efficiency     : %1.5f  %1.5f", signalJetSelEff, bkgJetSelEff) << Endl
+            <<      "-----------------------------------------------------" << Endl
+            << Form("Overall preselection efficiency : %1.5f  %1.5f", signalPreSelEff, bkgPreSelEff) << Endl
+            << Endl
+            << Form("Thus the 1e-5 overall bkg efficiency corresponds %5e bkg efficiency in TMVA", refEff) << Endl
+            << Endl
+            << "Evaluation results ranked by best signal efficiency" << Endl
+            << hLine << Endl
+      //<< "MVA              Signal efficiency at bkg eff. (error):" << Endl
+            << "MVA              Signal efficiency at 1e-5 overall bkg eff.:" << Endl
+            << "Methods:         TMVA       with preselection" << Endl
+            << hLine << Endl;
+
+    for(std::vector<std::string>::const_iterator method_name = methods.begin(); method_name != methods.end(); ++method_name) {
+      TMVA::IMethod *method_ = GetMethod(*method_name);
+      TMVA::MethodBase *method = dynamic_cast<TMVA::MethodBase *>(method_);
+      if(method) {
+        EffData data;
+        data.name = *method_name;
+        data.eff = method->GetEfficiency(Form("Efficiency:%e", refEff), testTree, data.err);
+        efficiencies.push_back(data);
+      }
+    }
+
+    std::sort(efficiencies.begin(), efficiencies.end(), EffDataCompare());
+
+    for(std::vector<EffData>::const_iterator data = efficiencies.begin(); data != efficiencies.end(); ++data) {
+      double eff = data->eff*signalPreSelEff;
+      //fLogger << kINFO << Form("%-15s: %1.3f(%02i)", data->name.c_str(), eff, int(data->err*1000)) << Endl;
+      fLogger << kINFO << Form("%-15s: %1.5f     %1.5f", data->name.c_str(), data->eff, eff) << Endl;
+    }
+  }
+
+};
+
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
   // Configuration
   //TString inputfileName("mva-input.root");
   TString outputfileName("TMVA.root");
+
+  double signalEventSelEff = 1;
+  double backgroundEventSelEff = 1;
 
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
@@ -51,6 +139,7 @@ int main(int argc, char **argv) {
   std::vector<std::string> signalFiles;
   std::vector<std::string> bkgFiles;
   std::vector<std::pair<std::string, std::string> > classifiers;
+  std::vector<std::string> classifier_names;
   std::string trainer;
 
   // Cuts
@@ -99,6 +188,7 @@ int main(int argc, char **argv) {
   for(std::vector<std::pair<std::string, std::string> >::const_iterator iter = classifiers.begin();
       iter != classifiers.end(); ++iter) {
     std::cout << iter->first << ": " << iter->second << std::endl;
+    classifier_names.push_back(iter->first);
   }
   std::cout << std::endl;
 
@@ -106,13 +196,17 @@ int main(int argc, char **argv) {
   TChain *signalChain = new TChain("TauID_Pythia8_generatorLevel_HCh300");
   TChain *bkgChain = new TChain("TauID_Pythia8_generatorLevel_QCD_120_170");
 
+  long signalEntries = 0;
+  long bkgEntries = 0;
+
   std::cout << "Files for signal TChain" << std::endl;
   for(std::vector<std::string>::const_iterator iter = signalFiles.begin();
       iter != signalFiles.end(); ++iter) {
     std::cout << *iter << std::endl;
     signalChain->AddFile(iter->c_str());
   }
-  std::cout << "Chain has " << signalChain->GetEntries() << " entries" << std::endl << std::endl;
+  signalEntries = signalChain->GetEntries();
+  std::cout << "Chain has " << signalEntries << " entries" << std::endl << std::endl;
   
   std::cout << "Files for background TChain" << std::endl;
   for(std::vector<std::string>::const_iterator iter = bkgFiles.begin();
@@ -120,7 +214,8 @@ int main(int argc, char **argv) {
     std::cout << *iter << std::endl;
     bkgChain->AddFile(iter->c_str());
   }
-  std::cout << "Chain has " << bkgChain->GetEntries() << " entries" << std::endl << std::endl;
+  bkgEntries = bkgChain->GetEntries();
+  std::cout << "Chain has " << bkgEntries << " entries" << std::endl << std::endl;
 
   // Check input file existence
   //TString pwd(getenv("LS_SUBCWD"));
@@ -142,7 +237,7 @@ int main(int argc, char **argv) {
     foptions += ":Color";
   else
     foptions += ":!Color";
-  TMVA::Factory *factory = new TMVA::Factory("trainTMVA", outputFile, foptions);
+  TMVA::Factory *factory = new MyFactory("trainTMVA", outputFile, foptions);
 
   // Assign variables
   for(std::vector<std::string>::const_iterator iter = variables.begin();
@@ -180,6 +275,13 @@ int main(int argc, char **argv) {
 
   // Compare classifier performance
   factory->EvaluateAllMethods();
+
+
+  // MyFactory stuff
+  MyFactory *fac = dynamic_cast<MyFactory* >(factory);
+  if(fac) {
+    fac->printEfficiency(classifier_names, signalEventSelEff, backgroundEventSelEff, signalEntries, bkgEntries);
+  }
 
   // Save output
   outputFile->Close();
