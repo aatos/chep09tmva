@@ -2,7 +2,7 @@
 
 #$ -N chep09tmva
 
-#$ -q small_serial.q
+#$ -q lhc
 #$ -S /bin/bash
 #$ -o $JOB_NAME.$JOB_ID.stdout
 #$ -V
@@ -17,12 +17,11 @@
 #set -e
 
 # Usage:
-# qsub ametisti.sh.job [results_dir] [config-file]
+# qsub sepeli.sh.job [results_dir] [config-file]
 
 ulimit -s 524288 # limit to stack to 512M
 
 export LS_SUBCWD=$(pwd)
-TEMPDIR=chep09tmva-${JOB_ID}
 
 CONF=tmva-example.conf
 RESULTS=""
@@ -46,18 +45,7 @@ echo "Will store results in $RESULTS"
 echo ""
 
 # Create the computation work directory.
-if [ ! -d /tmp/$USER ]; then
-   mkdir /tmp/$USER
-fi
-cd    /tmp/$USER
-
-if [ -d $TEMPDIR ]; then
-    rm -fR $TEMPDIR
-fi
-mkdir $TEMPDIR
-cd $TEMPDIR
-
-WORKDIR=$(pwd)
+WORKDIR=$TMPDIR
 
 function movetosubdir {
     if [ -e $WORKDIR/$1 ]; then
@@ -120,3 +108,4 @@ if [ "x$JOB_NAME" != "x" ]; then
 fi
 
 echo -e "\a"
+
