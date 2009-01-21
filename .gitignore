@@ -19,3 +19,4 @@ code/weights
 .gitrevision
 code/scripts/*.so
 code/scripts/*.d
+code/chep09tmva.*.stdout*
