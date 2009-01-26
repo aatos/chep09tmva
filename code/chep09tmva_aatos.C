@@ -219,17 +219,17 @@ factory->AddVariable("jeteta", 'F');
 // tracker isolation: pT threhold for tracks to be ignored in isolation annulus
 // (trigger uses cone of 0.50, signal cone=0.04, default: max pT < 0.9 GeV/c)
 // isolMaxPt50
-factory->AddVariable("isolMaxPt50", 'F');
+factory->AddVariable("log(isolMaxPt50)", 'F');
 
 // ECAL isolation: energy threshold for maximum energy in isolation annulus
 // (optimum isolation annulus 0.10-0.50, max ET < 1.9 GeV)
 // ecalIsolEt10_50
-factory->AddVariable("ecalIsolEt10_50", 'F');
+factory->AddVariable("log(ecalIsolEt10_50)", 'F');
 
 // Rejection of electrons and neutral hadrons (K0's):
 // variable: ET^(HCAL_0-0.40)/pT^(track)-1, default: -0.98 < hcalRatio < 0.10
 // hcalRatio
-factory->AddVariable("hcalRatio", 'F');
+factory->AddVariable("log(hcalRatio)", 'F');
 
 // tau helicity correlations (D.P.Roy, Phys.Lett.B459:607-614):
 // variable: Rtau = P(leading track) / E(jet), default: Rtau < 0.80
@@ -473,7 +473,7 @@ inputb = TFile::Open( "http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah
    if (Use_MLP)
 //      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:!Normalise:NeuronType=tanh:NCycles=200:HiddenLayers=N+1,N:TestRate=5" );
       factory->BookMethod( TMVA::Types::kMLP, "MLP", 
-               "H:!V:!Normalise:NeuronType=tanh:NCycles=1000:HiddenLayers=N+5:TestRate=5" );
+               "H:!V:!Normalise:NeuronType=tanh:NCycles=100:HiddenLayers=N+5:TestRate=5" );
 
    // CF(Clermont-Ferrand)ANN
    if (Use_CFMlpANN)
