@@ -341,8 +341,8 @@ inputb = TFile::Open( "http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah
    //    for background: factory->SetBackgroundWeightExpression("weight1*weight2");
 
    // Apply additional cuts on the signal and background samples (can be different)
-   TCut mycuts = ""; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
-   TCut mycutb = ""; // for example: TCut mycutb = "abs(var1)<0.5";
+   TCut mycuts = "signalTracks == 1 && jetEt > 80 && abs(jeteta) < 2.4 && ldgPt > 20"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+   TCut mycutb = "signalTracks == 1 && jetEt > 80 && abs(jeteta) < 2.4 && ldgPt > 20"; // for example: TCut mycutb = "abs(var1)<0.5";
 
    // tell the factory to use all remaining events in the trees after training for testing:
    factory->PrepareTrainingAndTestTree( mycuts, mycutb,
@@ -473,7 +473,7 @@ inputb = TFile::Open( "http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah
    if (Use_MLP)
 //      factory->BookMethod( TMVA::Types::kMLP, "MLP", "H:!V:!Normalise:NeuronType=tanh:NCycles=200:HiddenLayers=N+1,N:TestRate=5" );
       factory->BookMethod( TMVA::Types::kMLP, "MLP", 
-               "H:!V:!Normalise:NeuronType=tanh:NCycles=400:HiddenLayers=N+10:TestRate=5" );
+               "H:!V:!Normalise:NeuronType=tanh:NCycles=1000:HiddenLayers=N+5:TestRate=5" );
 
    // CF(Clermont-Ferrand)ANN
    if (Use_CFMlpANN)

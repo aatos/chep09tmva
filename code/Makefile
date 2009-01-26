@@ -23,7 +23,7 @@ $(EXE): $(OBJS)
 
 ah0:
 	root -l chep09tmva_aatos.C
-
+	root -l TMVAGui.C
 ah1:
 	make
 	./chep09tmva tmva-aatos.conf
