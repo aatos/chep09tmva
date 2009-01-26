@@ -24,7 +24,7 @@ using std::endl;
 namespace TMVAGlob {
 
    // --------- S t y l e ---------------------------
-   static Bool_t UsePaperStyle = 0;
+   static Bool_t UsePaperStyle = 1;
    // -----------------------------------------------
 
    enum TypeOfPlot { kNormal = 0,
