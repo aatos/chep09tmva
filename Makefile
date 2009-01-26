@@ -50,3 +50,9 @@ ahRelease:
 	scp -r $(d).tar.gz miheikki@rock.helsinki.fi:public_html/system/refs/heikkinen/. 
 	ssh -t -q -l miheikki rock.helsinki.fi 'chmod ugo+xr public_html/system/refs/heikkinen/ah09bProceedings.tar.gz'
 
+ahAddPekka:
+	git remote add pekka git://github.com/kaitanie/chep09tmva.git
+
+ahGetPekka:
+	git fetch pekka
+	git merge pekka/master
