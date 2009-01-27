@@ -10,6 +10,7 @@
 #include <TString.h>
 #include <TSystem.h>
 
+#include <TMVA/Config.h>
 #include <TMVA/Factory.h>
 #include <TMVA/MethodBase.h>
 #include <TMVA/MsgLogger.h>
@@ -64,7 +65,9 @@ public:
     TString hLine = "-----------------------------------------------------------------------------";
 
     fLogger << kINFO 
-            << Endl 
+            << Endl
+            << Endl
+            << " !!! WARNING:  The numbers below are pleriminary, and should not be used !!!" << Endl
             << Endl
             << "Evaluating all classifiers for signal efficiency @ 1e-5 OVERALL bkg efficiency" << Endl
             << Endl
@@ -116,6 +119,8 @@ int main(int argc, char **argv) {
 
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
+
+  TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = 200;
 
   // parse configuration
   std::string confFile("tmva-common.conf");
