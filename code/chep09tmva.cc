@@ -47,41 +47,34 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-  std::vector<std::string> variables;
-  std::vector<std::string> signalCuts;
-  std::vector<std::string> bkgCuts;
-  std::vector<std::string> signalFiles;
-  std::vector<std::string> bkgFiles;
-  std::vector<std::pair<std::string, std::string> > classifiers;
-  std::vector<std::string> classifier_names;
-  std::string trainer;
+  MyConfig config;
 
   // Cuts
   TCut signalCut_s = "";
   TCut bkgCut_s = "";
 
-  if(!parseConf(confFile, variables, signalCuts, bkgCuts, signalFiles, bkgFiles, trainer, classifiers))
+  if(!parseConf(confFile, config))
     return 1;
 
-  if(signalFiles.size() == 0) {
+  if(config.signalFiles.size() == 0) {
     std::cout << "SignalFiles is empty!" << std::endl;
     return 1;
   }
-  else if(bkgFiles.size() == 0) {
+  else if(config.bkgFiles.size() == 0) {
     std::cout << "BackgroundFiles is empty!" << std::endl;
     return 1;
   }
 
   std::cout << "Variables:" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = variables.begin();
-      iter != variables.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.variables.begin();
+      iter != config.variables.end(); ++iter) {
     std::cout << *iter << std::endl;
   }
   std::cout << std::endl;
 
   std::cout << "Cuts (applied to signal)" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = signalCuts.begin();
-      iter != signalCuts.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.signalCuts.begin();
+      iter != config.signalCuts.end(); ++iter) {
     std::cout << *iter << std::endl;
     signalCut_s = signalCut_s && TCut(iter->c_str());
   }
@@ -89,20 +82,19 @@ int main(int argc, char **argv) {
   std::cout << std::endl;
 
   std::cout << "Cuts (applied to background)" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = bkgCuts.begin();
-      iter != bkgCuts.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.bkgCuts.begin();
+      iter != config.bkgCuts.end(); ++iter) {
     std::cout << *iter << std::endl;
     bkgCut_s = bkgCut_s && TCut(iter->c_str());
   }
   //std::cout << cut_s << std::endl;
   std::cout << std::endl;
   
-  std::cout << "Trainer: " << trainer << std::endl << std::endl;
+  std::cout << "Trainer: " << config.trainer << std::endl << std::endl;
   std::cout << "Classifiers:" << std::endl;
-  for(std::vector<std::pair<std::string, std::string> >::const_iterator iter = classifiers.begin();
-      iter != classifiers.end(); ++iter) {
+  for(std::map<std::string, std::string>::const_iterator iter = config.classifiers.begin();
+      iter != config.classifiers.end(); ++iter) {
     std::cout << iter->first << ": " << iter->second << std::endl;
-    classifier_names.push_back(iter->first);
   }
   std::cout << std::endl;
 
@@ -114,8 +106,8 @@ int main(int argc, char **argv) {
   long bkgEntries = 0;
 
   std::cout << "Files for signal TChain" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = signalFiles.begin();
-      iter != signalFiles.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.signalFiles.begin();
+      iter != config.signalFiles.end(); ++iter) {
     std::cout << *iter << std::endl;
     signalChain->AddFile(iter->c_str());
   }
@@ -123,8 +115,8 @@ int main(int argc, char **argv) {
   std::cout << "Chain has " << signalEntries << " entries" << std::endl << std::endl;
   
   std::cout << "Files for background TChain" << std::endl;
-  for(std::vector<std::string>::const_iterator iter = bkgFiles.begin();
-      iter != bkgFiles.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.bkgFiles.begin();
+      iter != config.bkgFiles.end(); ++iter) {
     std::cout << *iter << std::endl;
     bkgChain->AddFile(iter->c_str());
   }
@@ -154,8 +146,8 @@ int main(int argc, char **argv) {
   TMVA::Factory *factory = new MyFactory("trainTMVA", outputFile, foptions);
 
   // Assign variables
-  for(std::vector<std::string>::const_iterator iter = variables.begin();
-      iter != variables.end(); ++iter) {
+  for(std::vector<std::string>::const_iterator iter = config.variables.begin();
+      iter != config.variables.end(); ++iter) {
     factory->AddVariable(*iter, 'F');
   }
 
@@ -172,11 +164,11 @@ int main(int argc, char **argv) {
 
   // Prepare training and testing
   //factory->PrepareTrainingAndTestTree(cut_s, cut_b, "NSigTrain=4000:NBkgTrain=230000:SplitMode=Random:NormMode=NumEvents:!V");
-  factory->PrepareTrainingAndTestTree(signalCut_s, bkgCut_s, trainer);
+  factory->PrepareTrainingAndTestTree(signalCut_s, bkgCut_s, config.trainer);
 
   // Book MVA methods
-  for(std::vector<std::pair<std::string, std::string> >::const_iterator iter = classifiers.begin();
-      iter != classifiers.end(); ++iter) {
+  for(std::map<std::string, std::string>::const_iterator iter = config.classifiers.begin();
+      iter != config.classifiers.end(); ++iter) {
     TMVA::Types::EMVA type = getType(iter->first);
     factory->BookMethod(type, iter->first, iter->second);
   }

@@ -67,14 +67,10 @@ std::vector<std::string> preprocessLine(std::string& line) {
   return ret;
 }
 
-bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
-               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
-               std::string& trainer,
-               std::vector<std::pair<std::string, std::string> >& classifiers) {
-  variables.clear();
-  classifiers.clear();
-  trainer = "";
+bool parseConf(std::string filename, MyConfig& config) {
+  config.variables.clear();
+  config.classifiers.clear();
+  config.trainer = "";
 
   std::ifstream file(filename.c_str());
   if(!file) {
@@ -105,37 +101,37 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Include should be used like 'include file.conf' instead of '" << line << "'" << std::endl;
         return false;
       }
-      if(!parseConf(parsed[1], variables, signalCuts, bkgCuts, signalFiles, bkgFiles, trainer, classifiers))
+      if(!parseConf(parsed[1], config))
         return false;
     }
 
     if(line == "Variables:") {
       mode = kVar;
-      variables.clear();
+      config.variables.clear();
     }
     else if(line == "SignalCuts:") {
       mode = kSignalCut;
-      signalCuts.clear();
+      config.signalCuts.clear();
     }
     else if(line == "BackgroundCuts:") {
       mode = kBkgCut;
-      bkgCuts.clear();
+      config.bkgCuts.clear();
     }
     else if(line == "SignalFiles:") {
       mode = kSignalFiles;
-      signalFiles.clear();
+      config.signalFiles.clear();
     }
     else if(line == "BackgroundFiles:") {
       mode = kBkgFiles;
-      bkgFiles.clear();
+      config.bkgFiles.clear();
     }
     else if(line == "Trainer:") {
       mode = kTrain;
-      trainer = "";
+      config.trainer = "";
     }
     else if(line == "Classifiers:") {
       mode = kClass;
-      classifiers.clear();
+      config.classifiers.clear();
     }
     else if(mode == kVar) {
       if(parsed.size() != 1) {
@@ -143,7 +139,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      variables.push_back(parsed[0]);
+      config.variables.push_back(parsed[0]);
     }
     else if(mode == kSignalCut) {
       if(parsed.size() > 0) {
@@ -152,7 +148,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
           s += " ";
           s += *iter;
         }
-        signalCuts.push_back(s);
+        config.signalCuts.push_back(s);
       }
     }
     else if(mode == kBkgCut) {
@@ -162,7 +158,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
           s += " ";
           s += *iter;
         }
-        bkgCuts.push_back(s);
+        config.bkgCuts.push_back(s);
       }
     }
     else if(mode == kSignalFiles) {
@@ -171,7 +167,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      signalFiles.push_back(parsed[0]);
+      config.signalFiles.push_back(parsed[0]);
     }
     else if(mode == kBkgFiles) {
       if(parsed.size() != 1) {
@@ -179,7 +175,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      bkgFiles.push_back(parsed[0]);
+      config.bkgFiles.push_back(parsed[0]);
     }
     else if(mode == kTrain) {
       if(parsed.size() != 1) {
@@ -187,7 +183,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      trainer = parsed[0];
+      config.trainer = parsed[0];
     }
     else if(mode == kClass) {
       if(parsed.size() != 2) {
@@ -195,7 +191,7 @@ bool parseConf(std::string filename, std::vector<std::string>& variables,
         std::cout << "Expected two strings at line" << std::endl;
         return false;
       }
-      classifiers.push_back(std::make_pair(parsed[0], parsed[1]));
+      config.classifiers.insert(std::make_pair(parsed[0], parsed[1]));
     }
   }
   file.close();

@@ -4,14 +4,21 @@
 
 #include<string>
 #include<vector>
+#include<map>
 
 #include <TMVA/Types.h>
 
-bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts,
-               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
-               std::string& trainer,
-               std::vector<std::pair<std::string, std::string> >& classifiers);
+struct MyConfig {
+  std::string trainer;
+  std::vector<std::string> variables;
+  std::vector<std::string> signalCuts;
+  std::vector<std::string> bkgCuts;
+  std::vector<std::string> signalFiles;
+  std::vector<std::string> bkgFiles;
+  std::map<std::string, std::string> classifiers;
+};
+
+bool parseConf(std::string filename, MyConfig& config);
 TMVA::Types::EMVA getType(std::string desc);
 
 #endif
