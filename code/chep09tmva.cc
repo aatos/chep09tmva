@@ -1,9 +1,8 @@
 #include<iostream>
-#include<fstream>
 #include<string>
 #include<vector>
+#include<map>
 #include<cstring>
-#include<algorithm>
 
 #include <TFile.h>
 #include <TChain.h>
@@ -11,102 +10,12 @@
 #include <TSystem.h>
 
 #include <TMVA/Config.h>
-#include <TMVA/Factory.h>
-#include <TMVA/MethodBase.h>
-#include <TMVA/MsgLogger.h>
 
-bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts,
-               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
-               std::string& trainer,
-               std::vector<std::pair<std::string, std::string> >& classifiers);
-std::vector<std::string> preprocessLine(std::string& line);
-TMVA::Types::EMVA getType(std::string desc);
+#include "config.h"
+#include "factory.h"
+
 void print_usage(void);
 
-class MyFactory: public TMVA::Factory {
-private:
-  struct EffData {
-    std::string name;
-    double eff;
-    double err;
-  };
-
-  struct EffDataCompare: public std::binary_function<EffData, EffData, bool> {
-    bool operator()(const EffData& a, const EffData& b) const {
-      return a.eff > b.eff;
-    }
-  };
-
-public:
-  MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = ""):
-    TMVA::Factory(theJobName, theTargetFile, theOption)
-  {}
-
-  virtual void printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
-                               long signalEntries, long bkgEntries) {
-    using TMVA::MsgLogger;
-    using TMVA::kINFO;
-    std::vector<EffData> efficiencies;
-
-    TTree *testTree = Data().GetTestTree();
-
-    long signalEntriesSelected = Data().GetNEvtSigTrain() + Data().GetNEvtSigTest();
-    long bkgEntriesSelected = Data().GetNEvtBkgdTrain() + Data().GetNEvtBkgdTest();
-    
-    double signalJetSelEff = double(signalEntriesSelected)/double(signalEntries);
-    double bkgJetSelEff = double(bkgEntriesSelected)/double(bkgEntries);
-
-    double signalPreSelEff = signalEventSelEff*signalJetSelEff;
-    double bkgPreSelEff = bkgEventSelEff*bkgJetSelEff;
-
-    double refEff = 1e-5/bkgPreSelEff;
-
-    TString hLine = "-----------------------------------------------------------------------------";
-
-    fLogger << kINFO 
-            << Endl
-            << Endl
-            << " !!! WARNING:  The numbers below are pleriminary, and should not be used !!!" << Endl
-            << Endl
-            << "Evaluating all classifiers for signal efficiency @ 1e-5 OVERALL bkg efficiency" << Endl
-            << Endl
-            <<      "                                  signal   background" << Endl
-            << Form("Event preselection efficiency   : %1.5f  %1.5f", signalEventSelEff, bkgEventSelEff) << Endl
-            << Form("Jet preselection efficiency     : %1.5f  %1.5f", signalJetSelEff, bkgJetSelEff) << Endl
-            <<      "-----------------------------------------------------" << Endl
-            << Form("Overall preselection efficiency : %1.5f  %1.5f", signalPreSelEff, bkgPreSelEff) << Endl
-            << Endl
-            << Form("Thus the 1e-5 overall bkg efficiency corresponds %5e bkg efficiency in TMVA", refEff) << Endl
-            << Endl
-            << "Evaluation results ranked by best signal efficiency" << Endl
-            << hLine << Endl
-      //<< "MVA              Signal efficiency at bkg eff. (error):" << Endl
-            << "MVA              Signal efficiency at 1e-5 overall bkg eff.:" << Endl
-            << "Methods:         TMVA       with preselection" << Endl
-            << hLine << Endl;
-
-    for(std::vector<std::string>::const_iterator method_name = methods.begin(); method_name != methods.end(); ++method_name) {
-      TMVA::IMethod *method_ = GetMethod(*method_name);
-      TMVA::MethodBase *method = dynamic_cast<TMVA::MethodBase *>(method_);
-      if(method) {
-        EffData data;
-        data.name = *method_name;
-        data.eff = method->GetEfficiency(Form("Efficiency:%e", refEff), testTree, data.err);
-        efficiencies.push_back(data);
-      }
-    }
-
-    std::sort(efficiencies.begin(), efficiencies.end(), EffDataCompare());
-
-    for(std::vector<EffData>::const_iterator data = efficiencies.begin(); data != efficiencies.end(); ++data) {
-      double eff = data->eff*signalPreSelEff;
-      //fLogger << kINFO << Form("%-15s: %1.3f(%02i)", data->name.c_str(), eff, int(data->err*1000)) << Endl;
-      fLogger << kINFO << Form("%-15s: %1.5f     %1.5f", data->name.c_str(), data->eff, eff) << Endl;
-    }
-  }
-
-};
 
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
@@ -285,7 +194,8 @@ int main(int argc, char **argv) {
   // MyFactory stuff
   MyFactory *fac = dynamic_cast<MyFactory* >(factory);
   if(fac) {
-    fac->printEfficiency(classifier_names, signalEventSelEff, backgroundEventSelEff, signalEntries, bkgEntries);
+    //fac->calculateEventEfficiency(classifier_names);
+    //fac->printEfficiency(classifier_names, signalEventSelEff, backgroundEventSelEff, signalEntries, bkgEntries);
   }
 
   // Save output
@@ -305,205 +215,4 @@ void print_usage(void) {
             << "  config_file       path to configuration file (optional)" << std::endl
             << std::endl
             << "  The default value for config_file is tmva-common.conf" << std::endl;
-}
-
-TMVA::Types::EMVA getType(std::string desc) {
-  std::string type("");
-  size_t t = desc.find("_");
-  if(t < desc.length())
-    type = desc.substr(0, t);
-  else
-    type = desc;
-
-  if(type == "Cuts")
-    return TMVA::Types::kCuts;
-  else if(type == "Likelihood")
-    return TMVA::Types::kLikelihood;
-  else if(type == "PDERS")
-    return TMVA::Types::kPDERS;
-  else if(type == "HMatrix")
-    return TMVA::Types::kHMatrix;
-  else if(type == "Fisher")
-    return TMVA::Types::kFisher;
-  else if(type == "KNN")
-    return TMVA::Types::kKNN;
-  else if(type == "CFMlpANN")
-    return TMVA::Types::kCFMlpANN;
-  else if(type == "TMlpANN")
-    return TMVA::Types::kTMlpANN;
-  else if(type == "MLP")
-    return TMVA::Types::kMLP;
-  else if(type == "BDT")
-    return TMVA::Types::kBDT;
-  else if(type == "RuleFit")
-    return TMVA::Types::kRuleFit;
-  else if(type == "SVM")
-    return TMVA::Types::kSVM;
-  else if(type == "FDA")
-    return TMVA::Types::kFDA;
-  else {
-    std::cout << "Unkown classifer type " << type << std::endl;
-    exit(1);
-  }
-}
-
-bool parseConf(std::string filename, std::vector<std::string>& variables,
-               std::vector<std::string>& signalCuts, std::vector<std::string>& bkgCuts, 
-               std::vector<std::string>& signalFiles, std::vector<std::string>& bkgFiles,
-               std::string& trainer,
-               std::vector<std::pair<std::string, std::string> >& classifiers) {
-  variables.clear();
-  classifiers.clear();
-  trainer = "";
-
-  std::ifstream file(filename.c_str());
-  if(!file) {
-    std::cout << "File " << filename << " does not exist" << std::endl;
-    return false;
-  }
-
-  std::string line;
-
-  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalFiles, kBkgFiles, kTrain, kClass};
-  mode_t mode = kNone;
-  int lineno = 0;
-
-  while(! file.eof()) {
-    std::getline(file, line);
-    ++lineno;
-
-    std::vector<std::string> parsed = preprocessLine(line);
-    if(parsed.size() == 0) continue;
-
-    if(parsed[0] == "include") {
-      if(mode != kNone) {
-        std::cout << "Include should be the first directive in the config file" << std::endl;
-        return false;
-      }
-
-      if(parsed.size() != 2) {
-        std::cout << "Include should be used like 'include file.conf' instead of '" << line << "'" << std::endl;
-        return false;
-      }
-      if(!parseConf(parsed[1], variables, signalCuts, bkgCuts, signalFiles, bkgFiles, trainer, classifiers))
-        return false;
-    }
-
-    if(line == "Variables:") {
-      mode = kVar;
-      variables.clear();
-    }
-    else if(line == "SignalCuts:") {
-      mode = kSignalCut;
-      signalCuts.clear();
-    }
-    else if(line == "BackgroundCuts:") {
-      mode = kBkgCut;
-      bkgCuts.clear();
-    }
-    else if(line == "SignalFiles:") {
-      mode = kSignalFiles;
-      signalFiles.clear();
-    }
-    else if(line == "BackgroundFiles:") {
-      mode = kBkgFiles;
-      bkgFiles.clear();
-    }
-    else if(line == "Trainer:") {
-      mode = kTrain;
-      trainer = "";
-    }
-    else if(line == "Classifiers:") {
-      mode = kClass;
-      classifiers.clear();
-    }
-    else if(mode == kVar) {
-      if(parsed.size() != 1) {
-        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
-        std::cout << "Expected only one string at line" << std::endl;
-        return false;
-      }
-      variables.push_back(parsed[0]);
-    }
-    else if(mode == kSignalCut) {
-      if(parsed.size() > 0) {
-        std::string s(parsed[0]);
-        for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
-          s += " ";
-          s += *iter;
-        }
-        signalCuts.push_back(s);
-      }
-    }
-    else if(mode == kBkgCut) {
-      if(parsed.size() > 0) {
-        std::string s(parsed[0]);
-        for(std::vector<std::string>::const_iterator iter = parsed.begin()+1; iter != parsed.end(); ++iter) {
-          s += " ";
-          s += *iter;
-        }
-        bkgCuts.push_back(s);
-      }
-    }
-    else if(mode == kSignalFiles) {
-      if(parsed.size() != 1) {
-        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
-        std::cout << "Expected only one string at line" << std::endl;
-        return false;
-      }
-      signalFiles.push_back(parsed[0]);
-    }
-    else if(mode == kBkgFiles) {
-      if(parsed.size() != 1) {
-        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
-        std::cout << "Expected only one string at line" << std::endl;
-        return false;
-      }
-      bkgFiles.push_back(parsed[0]);
-    }
-    else if(mode == kTrain) {
-      if(parsed.size() != 1) {
-        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
-        std::cout << "Expected only one string at line" << std::endl;
-        return false;
-      }
-      trainer = parsed[0];
-    }
-    else if(mode == kClass) {
-      if(parsed.size() != 2) {
-        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
-        std::cout << "Expected two strings at line" << std::endl;
-        return false;
-      }
-      classifiers.push_back(std::make_pair(parsed[0], parsed[1]));
-    }
-  }
-  file.close();
-  
-  return true;
-}
-
-std::vector<std::string> preprocessLine(std::string& line) {
-  std::vector<std::string> ret;
-
-  std::string temp("");
-
-  // preprocess comments
-  size_t comment = line.find("//");
-  if(comment < line.length())
-    line = line.substr(0, comment);
-
-  // split by whitespaces
-  for(unsigned int i=0; i<line.length(); ++i) {
-    if(std::isspace(line[i]) && temp.length() > 0) {
-      ret.push_back(temp);
-      temp = "";
-    }
-    else if(!std::isspace(line[i]))
-      temp += line[i];
-  }
-  if(temp.length() > 0)
-    ret.push_back(temp);
-
-  return ret;
 }
