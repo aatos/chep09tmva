@@ -9,7 +9,8 @@ MyFactory::MyFactory(TString theJobName, TFile* theTargetFile, TString theOption
   TMVA::Factory(theJobName, theTargetFile, theOption)
 {}
 
-void MyFactory::calculateEventEfficiency(std::vector<std::string> methods) {
+void MyFactory::calculateEventEfficiency(MyConfig& config) {
+  /*
   TTree *testTree = Data().GetTestTree();
 
   Int_t theType = 0;
@@ -48,6 +49,7 @@ void MyFactory::calculateEventEfficiency(std::vector<std::string> methods) {
     delete iter->second;
     iter->second = 0;
   }
+  */
 }
 
 void MyFactory::printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,

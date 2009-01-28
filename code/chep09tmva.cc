@@ -13,6 +13,7 @@
 
 #include "config.h"
 #include "factory.h"
+#include "evaluate.h"
 
 void print_usage(void);
 
@@ -143,7 +144,7 @@ int main(int argc, char **argv) {
     foptions += ":Color";
   else
     foptions += ":!Color";
-  TMVA::Factory *factory = new MyFactory("trainTMVA", outputFile, foptions);
+  TMVA::Factory *factory = new MyFactory("chep09tmva", outputFile, foptions);
 
   // Assign variables
   for(std::vector<std::string>::const_iterator iter = config.variables.begin();
@@ -182,11 +183,10 @@ int main(int argc, char **argv) {
   // Compare classifier performance
   factory->EvaluateAllMethods();
 
-
   // MyFactory stuff
   MyFactory *fac = dynamic_cast<MyFactory* >(factory);
   if(fac) {
-    //fac->calculateEventEfficiency(classifier_names);
+    //fac->calculateEventEfficiency(config);
     //fac->printEfficiency(classifier_names, signalEventSelEff, backgroundEventSelEff, signalEntries, bkgEntries);
   }
 
@@ -199,6 +199,11 @@ int main(int argc, char **argv) {
   // Clean up
   delete factory;
   //inputFile->Close();
+
+  MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"));
+  evaluate.setSignalTree(signalChain, signalWeight, signalCut_s);
+  evaluate.setBackgroundTree(bkgChain, backgroundWeight, bkgCut_s);
+  evaluate.calculateEventEfficiency(config);
 }
 
 void print_usage(void) {

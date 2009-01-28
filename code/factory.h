@@ -10,6 +10,8 @@
 
 #include <TMVA/Factory.h>
 
+#include "config.h"
+
 class MyFactory: public TMVA::Factory {
 private:
   struct EffData {
@@ -27,7 +29,7 @@ private:
 public:
   MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = "");
 
-  virtual void calculateEventEfficiency(std::vector<std::string> methods);
+  virtual void calculateEventEfficiency(MyConfig& config);
   virtual void printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
                                long signalEntries, long bkgEntries);
 
