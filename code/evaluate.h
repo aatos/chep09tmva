@@ -34,6 +34,7 @@ private:
   TDirectory *top;
 
   int histoBins;
+  int rocBins;
 };
 
 #endif
