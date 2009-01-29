@@ -9,6 +9,8 @@
 #include <TCut.h>
 #include <TString.h>
 
+#include <TMVA/TSpline1.h>
+
 #include "config.h"
 
 class MyEvaluate {
@@ -20,7 +22,16 @@ public:
   void setBackgroundTree(TTree *tree, double weight, const TCut& cut);
 
   void calculateEventEfficiency(MyConfig& config);
+
+  // This is for RootFinder
+  static MyEvaluate *getThisBase() { return thisBase; }
 private:
+  // These are for RootFinder
+  void resetThisBase() { thisBase = this; }
+  static double iGetEffForRoot(double cut);
+  double getEffForRoot(double cut);
+  int getCutOrientation() { return fCutOrientation; }
+
   struct Data {
     TTree *tree;
     double weight;
@@ -35,6 +46,13 @@ private:
 
   int histoBins;
   int rocBins;
+
+  // These are for RootFinder
+  static MyEvaluate *thisBase;
+  TMVA::TSpline1 *sigEffSpline;
+  double fXmin;
+  double fXmax;
+  int fCutOrientation;
 };
 
 #endif

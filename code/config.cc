@@ -2,13 +2,19 @@
 
 #include<fstream>
 
-TMVA::Types::EMVA getType(std::string desc) {
+std::string stripType(const std::string& desc) {
   std::string type("");
   size_t t = desc.find("_");
   if(t < desc.length())
     type = desc.substr(0, t);
   else
     type = desc;
+
+  return type;
+}
+
+TMVA::Types::EMVA getType(std::string desc) {
+  std::string type = stripType(desc);
 
   if(type == "Cuts")
     return TMVA::Types::kCuts;

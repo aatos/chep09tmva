@@ -19,6 +19,7 @@ struct MyConfig {
 };
 
 bool parseConf(std::string filename, MyConfig& config);
+std::string stripType(const std::string& desc);
 TMVA::Types::EMVA getType(std::string desc);
 
 #endif
