@@ -73,16 +73,6 @@ void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut) 
 }
 
 void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
-
-  /*
-  std::map<std::string, Float_t *> values;
-  for(std::vector<std::string>::const_iterator var = config.variables.begin(); var != config.variables.end(); ++var) {
-    Float_t *val = new Float_t(0);
-    testTree->SetBranchAddress(Form("MVA_%s", meth->c_str()), val);
-    values.insert(std::make_pair(*meth, val));
-  }
-  */
-
   fLogger << kINFO << Endl
           << Endl
           << "Testing classifiers in order to obtain signal/background efficiencies for EVENTS" << Endl
@@ -90,9 +80,16 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
   std::map<std::string, int> cutOrientation;
 
+  std::vector<std::string> classifiersNoCuts;
   // Look for the cut orientation for each classifier
   for(std::map<std::string, std::string>::const_iterator method = config.classifiers.begin(); method != config.classifiers.end(); ++method) {
     std::string mvaType = stripType(method->first);
+    if(mvaType == "Cuts") {
+      fLogger << kINFO << "Skipping " << method->first << ", evaluation of Cuts method is not supported at the moment." << Endl;
+      continue;
+    }
+    classifiersNoCuts.push_back(method->first);
+
     TString format("");
     format.Form("Method_%s/%s/MVA_%s_S", mvaType.c_str(), method->first.c_str(), method->first.c_str());
     TH1 *histoS = dynamic_cast<TH1 *>(outputFile->Get(format));
@@ -110,6 +107,11 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     cutOrientation[method->first] = (histoS->GetMean() > histoB->GetMean()) ? +1 : -1;
   }  
 
+
+  if(classifiersNoCuts.size() == 0) {
+    fLogger << kWARNING << "No supported classifiers left, not evaluating." << Endl;
+    return;
+  }
 
   // Create TTreeFormula objects corresponding to the preselection cuts
   TTreeFormula *sigCut = 0;
@@ -155,12 +157,12 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   mvaOutput->Branch("type", &type, "type/I");
 
   std::map<std::string, float *> mvaValues;
-  for(std::map<std::string, std::string>::const_iterator method = config.classifiers.begin(); method != config.classifiers.end(); ++method) {
-    const char *mvaName = method->first.c_str();
+  for(std::vector<std::string>::const_iterator method = classifiersNoCuts.begin(); method != classifiersNoCuts.end(); ++method) {
+    const char *mvaName = method->c_str();
     reader->BookMVA(mvaName, Form("weights/chep09tmva_%s.weights.txt", mvaName));
 
     float *mva = new float(0);
-    mvaValues.insert(std::make_pair(method->first, mva));
+    mvaValues.insert(std::make_pair(*method, mva));
     mvaOutput->Branch(mvaName, mva, Form("%s/F", mvaName));
   }
 
