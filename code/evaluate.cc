@@ -23,25 +23,13 @@ struct MvaData {
   TH1 *effB;
 };
 
-struct EffResult {
-  std::string name;
-  double eff1;
-  double eff2;
-  double eff3;
-  double eff4;
-  double eff5;
-  double eff1err;
-  double eff2err;
-  double eff3err;
-  double eff4err;
-  double eff5err;
-};
-
 struct EffResultCompare: public std::binary_function<EffResult, EffResult, bool> {
   bool operator()(const EffResult& a, const EffResult& b) const {
-    return a.eff1 > b.eff1;
+    return a.eff5 > b.eff5;
   }
 };
+
+TString hLine = "-----------------------------------------------------------------------------";
 
 MyEvaluate *MyEvaluate::thisBase = 0;
 
@@ -168,9 +156,9 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
   // Compute MVA outputs for all entries (=jets) in the input TTrees
   // (for both signal and background)
-  Long64_t njets[2] = {0, 0};
-  Long64_t njets_passed[2] = {0, 0};
-  Long64_t nevents_passed[2] = {0, 0};
+  long njets[2] = {0, 0};
+  long njets_passed[2] = {0, 0};
+  long nevents_passed[2] = {0, 0};
   for(type=0; type<2; ++type) {
     TTree *tree = type ? signal.tree : background.tree;
 
@@ -249,20 +237,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
           else
             *(iter->second) = std::min(float(reader->EvaluateMVA(iter->first.c_str())), *(iter->second)); 
         }
-        /*
-        std::cout << "Entry " << ientry << " has same event and run numbers as the previous entry: event "
-                  << currentEvent << "/" << prevEvent
-                  << " run " << currentRun << "/" << prevRun << std::endl;
-        */
       }
-
-      /*
-        std::cout << "cutVal " << cutVal << "; ";
-        for(std::map<std::string, TTreeFormula *>::iterator iter = vars.begin(); iter != vars.end(); ++iter) {
-        std::cout << iter->first << " " << iter->second->EvalInstance(0) << "; ";
-        }
-        std::cout << std::endl;
-      */
 
       prevEvent = currentEvent;
       prevRun = currentRun;
@@ -277,12 +252,50 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   }
 
   TMVA::gConfig().SetSilent(kFALSE);
+  /*
+  fLogger << kINFO << Endl
+          << hLine << Endl
+          <<      "                   |        Events       |          Jets    " << Endl
+          <<      "                   |   Signal       Bkg  |   Signal      Bkg" << Endl
+          << hLine << Endl
+          << Form("Generated          : %8ld  %8ld  |      N/A      N/A", signalEventsAll, bkgEventsAll) << Endl
+          << Form("Event preselection : %8ld  %8ld  | %8ld %8ld", signalEventsPreSelected, bkgEventsPreSelected, njets[1], njets[0]) << Endl
+          << Form("TMVA preselection  : %8ld  %8ld  | %8ld %8ld", nevents_passed[1], nevents_passed[0], njets_passed[1], njets_passed[0]) << Endl
+          << hLine << Endl
+          << Endl;
+  */
+  double signalEventPreSeleEff = double(signalEventsPreSelected)/double(signalEventsAll);
+  double bkgEventPreSeleEff = double(bkgEventsPreSelected)/double(bkgEventsAll);
 
-  fLogger << kINFO << Endl;
-  for(type=0; type < 2; ++type) {
-    fLogger << kINFO << (type?"Signal":"Background") << " preselection: passed " << njets_passed[type] << "/" << njets[type]
-            << "=" << double(njets_passed[type])/njets[type] << " jets; " << nevents_passed[type] << " events" << Endl;
-  }
+  double signalEventTmvaSeleEff = double(nevents_passed[1])/double(signalEventsPreSelected);
+  double bkgEventTmvaSeleEff = double(nevents_passed[0])/double(bkgEventsPreSelected);
+
+  double signalEventOverallEff = double(nevents_passed[1])/double(signalEventsAll);
+  double bkgEventOverallEff = double(nevents_passed[0])/double(bkgEventsAll);
+
+  double signalJetTmvaSeleEff = double(njets_passed[1])/double(njets[1]);
+  double bkgJetTmvaSeleEff = double(njets_passed[0])/double(njets[0]);
+
+  fLogger << kINFO << Endl
+          << hLine << Endl
+          <<      "             |             Events             |               Jets    " << Endl
+          <<      "             |   Signal   eff       Bkg   eff |   Signal  eff       Bkg  eff" << Endl
+          << hLine << Endl
+          << Form("Generated    : %8ld        %8ld       |      N/A            N/A", signalEventsAll, bkgEventsAll) << Endl
+          << Form("Event presel : %8ld %5.3f  %8ld %5.3f | %8ld       %8ld",
+                  signalEventsPreSelected, signalEventPreSeleEff,
+                  bkgEventsPreSelected, bkgEventPreSeleEff,
+                  njets[1], njets[0]) << Endl
+          << Form("TMVA  presel : %8ld %5.3f  %8ld %5.3f | %8ld %4.2f  %8ld %4.2f",
+                  nevents_passed[1], signalEventTmvaSeleEff,
+                  nevents_passed[0], bkgEventTmvaSeleEff,
+                  njets_passed[1], signalJetTmvaSeleEff,
+                  njets_passed[0], bkgJetTmvaSeleEff) << Endl
+          << Form("Total presel :          %5.3f           %5.3f |", signalEventOverallEff, bkgEventOverallEff) << Endl
+          << hLine << Endl;
+
+  fLogger << kINFO << Endl
+          << Form("Thus 1e-5 overall bkg event efficiency corresponds to %1.1e bkg event efficiency by TMVA",  1e-5/bkgEventOverallEff) << Endl;
 
   // Create efficiency histograms
   top->cd();
@@ -342,6 +355,8 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   // Renormalize efficiency histograms, compute ROC and signal
   // efficiencies at various background efficiency levels
   std::vector<EffResult> efficiencies;
+  std::vector<EffResult> efficienciesBkgScaled;
+  std::vector<EffResult> efficienciesAllScaled;
   for(std::map<std::string, MvaData>::iterator iter = dataMap.begin(); iter != dataMap.end(); ++iter) {
     const char *mvaName = iter->first.c_str();
     MvaData& data = iter->second;
@@ -388,19 +403,41 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
     EffResult res;
     res.name = iter->first;
-    res.eff1 = getSignalEfficiency(0.1, splEff);
+    res.eff1 = getSignalEfficiency(0.1 , splEff);
     res.eff2 = getSignalEfficiency(0.01, splEff);
     res.eff3 = getSignalEfficiency(1e-3, splEff);
     res.eff4 = getSignalEfficiency(1e-4, splEff);
     res.eff5 = getSignalEfficiency(1e-5, splEff);
-
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
-
     efficiencies.push_back(res);
+
+    res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff);
+    res.eff2 = getSignalEfficiency(0.01/bkgEventOverallEff, splEff);
+    res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff);
+    res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff);
+    res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff);
+    res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
+    res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
+    res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
+    res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
+    res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    efficienciesBkgScaled.push_back(res);
+
+    res.eff1 *= signalEventOverallEff;
+    res.eff2 *= signalEventOverallEff;
+    res.eff3 *= signalEventOverallEff;
+    res.eff4 *= signalEventOverallEff;
+    res.eff5 *= signalEventOverallEff;
+    res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
+    res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
+    res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
+    res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
+    res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    efficienciesAllScaled.push_back(res);
 
     sigEffSpline=0;
     delete splEff;
@@ -412,33 +449,15 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   }
 
   std::sort(efficiencies.begin(), efficiencies.end(), EffResultCompare());
-  TString hLine = "-----------------------------------------------------------------------------";
-  fLogger << kINFO << Endl
-    //      << "Evaluating all classifiers for signal efficiency @ 1e-5 OVERALL bkg efficiency" << Endl
-    //      << Endl
-    //      <<      "                                  signal   background" << Endl
-    //      << Form("Event preselection efficiency   : %1.5f  %1.5f", signalEventSelEff, bkgEventSelEff) << Endl
-    //      << Form("Jet preselection efficiency     : %1.5f  %1.5f", signalJetSelEff, bkgJetSelEff) << Endl
-    //      <<      "-----------------------------------------------------" << Endl
-    //      << Form("Overall preselection efficiency : %1.5f  %1.5f", signalPreSelEff, bkgPreSelEff) << Endl
-    //      << Endl
-    //      << Form("Thus the 1e-5 overall bkg efficiency corresponds %5e bkg efficiency in TMVA", refEff) << Endl
-    //      << Endl
-          << "Evaluation results ranked by best signal efficiency" << Endl
-          << hLine << Endl
-    //<< "MVA              Signal efficiency at bkg eff. (error):" << Endl
-          << "MVA              Signal event efficiency at bkg event efficiency (error):" << Endl
-          << "Methods:         @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01      @B=0.1" << Endl
-          << hLine << Endl;
-  for(std::vector<EffResult>::const_iterator iter = efficiencies.begin(); iter != efficiencies.end(); ++iter) {
-    fLogger << kINFO << Form("%-15s: %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)",
-                             iter->name.c_str(),
-                             iter->eff5, int(iter->eff5err*1e4), iter->eff4, int(iter->eff4err*1e4),
-                             iter->eff3, int(iter->eff3err*1e4), iter->eff2, int(iter->eff2err*1e4), 
-                             iter->eff1, int(iter->eff1err*1e4)) << Endl;
-  }
+  std::sort(efficienciesBkgScaled.begin(), efficienciesBkgScaled.end(), EffResultCompare());
+  std::sort(efficienciesAllScaled.begin(), efficienciesAllScaled.end(), EffResultCompare());
 
-  fLogger << kINFO << hLine << Endl;
+  fLogger << kINFO << Endl << "For comparison with the jet efficiency numbers reported by TMVA" << Endl;
+  printEffResults(efficiencies);
+  fLogger << kINFO << Endl << "Corrected background efficiency (signal efficiency is still uncorrected)" << Endl;
+  printEffResults(efficienciesBkgScaled, true);
+  fLogger << kINFO << Endl << "Corrected signal and background efficiencies" << Endl;
+  printEffResults(efficienciesAllScaled, true);
 
   fLogger << kWARNING << Endl
           << " !!!  This module is still experimental  !!!" << Endl
@@ -510,4 +529,24 @@ double MyEvaluate::getSignalEfficiencyError(double nevents_s, double eff_s) {
   if(nevents_s > 0)
     err = TMath::Sqrt(eff_s*(1.0-eff_s)/nevents_s);
   return err;
+}
+
+void MyEvaluate::printEffResults(std::vector<EffResult>& results, bool scaleBkg) {
+  fLogger << kINFO 
+          << "Evaluation results ranked by best signal efficiency at 1e-5" << Endl
+          << hLine << Endl
+          << "MVA              Signal event efficiency at bkg event efficiency (error):" << Endl
+          << "Methods:         @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01      " << (scaleBkg?"":"@B=0.1") <<  Endl
+          << hLine << Endl;
+
+  for(std::vector<EffResult>::const_iterator iter = results.begin(); iter != results.end(); ++iter) {
+    fLogger << kINFO << Form("%-15s: %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)",
+                             iter->name.c_str(),
+                             iter->eff5, int(iter->eff5err*1e4), iter->eff4, int(iter->eff4err*1e4),
+                             iter->eff3, int(iter->eff3err*1e4), iter->eff2, int(iter->eff2err*1e4))
+            << (scaleBkg?"":Form("  %1.4f(%03d)", iter->eff1, int(iter->eff1err*1e4)))
+            << Endl;
+  }
+
+  fLogger << kINFO << hLine << Endl;
 }

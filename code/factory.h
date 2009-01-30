@@ -2,9 +2,6 @@
 #ifndef CHEP09TMVA_FACTORY_H
 #define CHEP09TMVA_FACTORY_H
 
-#include<string>
-#include<vector>
-
 #include <TString.h>
 #include <TFile.h>
 
@@ -29,7 +26,8 @@ private:
 public:
   MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = "");
 
-  virtual void printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
+  virtual void printEfficiency(MyConfig& config, long signalEventsAll, long signalEventsSelected,
+                               long bkgEventsAll, long bkgEventsSelected,
                                long signalEntries, long bkgEntries);
 
 };
