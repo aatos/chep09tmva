@@ -10,6 +10,7 @@
 #include <TString.h>
 
 #include <TMVA/TSpline1.h>
+#include <TMVA/MsgLogger.h>
 
 #include "config.h"
 
@@ -32,6 +33,9 @@ private:
   double getEffForRoot(double cut);
   int getCutOrientation() { return fCutOrientation; }
 
+  double getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl);
+  double getSignalEfficiencyError(double nevents_s, double eff_s);
+
   struct Data {
     TTree *tree;
     double weight;
@@ -53,6 +57,7 @@ private:
   double fXmin;
   double fXmax;
   int fCutOrientation;
+  TMVA::MsgLogger fLogger;
 };
 
 #endif

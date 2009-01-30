@@ -9,49 +9,6 @@ MyFactory::MyFactory(TString theJobName, TFile* theTargetFile, TString theOption
   TMVA::Factory(theJobName, theTargetFile, theOption)
 {}
 
-void MyFactory::calculateEventEfficiency(MyConfig& config) {
-  /*
-  TTree *testTree = Data().GetTestTree();
-
-  Int_t theType = 0;
-  Float_t theWeight = 0;
-
-  std::map<std::string, Float_t *> values;
-  for(std::vector<std::string>::const_iterator meth = methods.begin(); meth != methods.end(); ++meth) {
-    Float_t *val = new Float_t(0);
-    testTree->SetBranchAddress(Form("MVA_%s", meth->c_str()), val);
-    values.insert(std::make_pair(*meth, val));
-  }
-
-  testTree->SetBranchAddress("type", &theType);
-  testTree->SetBranchAddress("weight", &theWeight);
-
-  Long64_t prevSignalEvent = -1;
-  Long64_t prevBkgEvent = -1;
-  Long64_t entries = testTree->GetEntries();
-  for(int ievt = 0; ievt<entries; ++ievt) {
-    testTree->GetEntry(ievt);
-
-    if(theType == 0) {
-    }
-    else {
-    }
-
-    std::cout << theType << " " << theWeight;
-    for(std::map<std::string, Float_t *>::const_iterator iter = values.begin(); iter != values.end(); ++iter) {
-      std::cout << "; " << iter->first << ": " << *(iter->second);
-    }
-
-    std::cout << std::endl;
-  }
-    
-  for(std::map<std::string, Float_t *>::iterator iter = values.begin(); iter != values.end(); ++iter) {
-    delete iter->second;
-    iter->second = 0;
-  }
-  */
-}
-
 void MyFactory::printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
                                 long signalEntries, long bkgEntries) {
   using TMVA::MsgLogger;

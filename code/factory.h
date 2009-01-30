@@ -29,7 +29,6 @@ private:
 public:
   MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = "");
 
-  virtual void calculateEventEfficiency(MyConfig& config);
   virtual void printEfficiency(std::vector<std::string> methods, double signalEventSelEff, double bkgEventSelEff,
                                long signalEntries, long bkgEntries);
 

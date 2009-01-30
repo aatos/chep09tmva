@@ -193,9 +193,6 @@ int main(int argc, char **argv) {
   // Save output
   outputFile->Close();
 
-  std::cout << "Created output file " << outputfileName << std::endl;
-  //std::cout << "Launch TMVA GUI by 'root -l TMVAGui.C'" << std::endl;
-
   // Clean up
   delete factory;
   //inputFile->Close();
@@ -204,6 +201,9 @@ int main(int argc, char **argv) {
   evaluate.setSignalTree(signalChain, signalWeight, signalCut_s);
   evaluate.setBackgroundTree(bkgChain, backgroundWeight, bkgCut_s);
   evaluate.calculateEventEfficiency(config);
+
+  std::cout << "Created output file " << outputfileName << std::endl;
+  //std::cout << "Launch TMVA GUI by 'root -l TMVAGui.C'" << std::endl;
 }
 
 void print_usage(void) {
