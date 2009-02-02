@@ -68,6 +68,19 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
           << "Testing classifiers in order to obtain signal/background efficiencies for EVENTS" << Endl
           << "(not jets, which are the input to TMVA)" << Endl;
 
+  if(!signal.isTestTree) {
+    fLogger << kWARNING << Endl
+            << "Signal tree has been (partially) used for training" << Endl
+            << "  => signal event efficiencies below are biased" << Endl
+            << Endl;
+  }
+  if(!signal.isTestTree) {
+    fLogger << kWARNING << Endl
+            << "Background tree has been (partially) used for training" << Endl
+            << "  => background efficiencies below are biased" << Endl
+            << Endl;
+  }
+
   std::map<std::string, int> cutOrientation;
 
   std::vector<std::string> classifiersNoCuts;
@@ -126,7 +139,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
 
   // Initialize TMVA Reader
-  TMVA::Reader *reader = new TMVA::Reader("!Color:Silent");
+  TMVA::Reader *reader = new TMVA::Reader("Silent");
   fLogger << kINFO << "2-0" << Endl;
   std::vector<float *> readerVariables;
   int nvariables = config.variables.size();
