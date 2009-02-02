@@ -57,7 +57,7 @@ private:
   double getEffForRoot(double cut);
   int getCutOrientation() { return fCutOrientation; }
 
-  double getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl);
+  double getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TGraph *gr);
   double getSignalEfficiencyError(double nevents_s, double eff_s);
   void printEffResults(std::vector<EffResult>& results, bool scaleBkg=false);
 

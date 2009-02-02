@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
 
-  TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = 200;
+  //TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = 200;
 
   // Parse command line arguments
   std::string confFile("tmva-common.conf");

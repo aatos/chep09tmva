@@ -14,6 +14,7 @@ void MyFactory::printEfficiency(MyConfig& config, long signalEventsAll, long sig
                                 long signalEntries, long bkgEntries) {
   using TMVA::MsgLogger;
   using TMVA::kINFO;
+  using TMVA::kWARNING;
   std::vector<EffData> efficiencies;
 
   TTree *testTree = Data().GetTestTree();
@@ -34,11 +35,9 @@ void MyFactory::printEfficiency(MyConfig& config, long signalEventsAll, long sig
 
   TString hLine = "-----------------------------------------------------------------------------";
 
-  fLogger << kINFO 
-          << Endl
-          << Endl
-          << " !!! WARNING:  The numbers below are pleriminary, and should not be used !!!" << Endl
-          << Endl
+  fLogger << kINFO << Endl;
+  fLogger << kWARNING << Endl << " !!! WARNING:  The numbers below are pleriminary, and should not be used !!!" << Endl;
+  fLogger << kINFO << Endl
           << "Evaluating all classifiers for signal jet efficiency @ 1e-5 OVERALL bkg jet efficiency" << Endl
           << Endl
           <<      "                                             signal   background" << Endl

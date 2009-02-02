@@ -23,9 +23,23 @@ struct MvaData {
   TH1 *effB;
 };
 
+struct CutData {
+  std::string name;
+  TH1 *signalEff;
+  TH1 *bkgEff;
+  int rocBins;
+  char *hasBeenFilled;
+};
+
 struct EffResultCompare: public std::binary_function<EffResult, EffResult, bool> {
   bool operator()(const EffResult& a, const EffResult& b) const {
     return a.eff5 > b.eff5;
+  }
+};
+
+struct EffPairCompare: public std::binary_function<std::pair<double, double>, std::pair<double, double>, bool> {
+  bool operator()(const std::pair<double, double>& a, const std::pair<double, double>& b) const {
+    return a.first < b.first;
   }
 };
 
@@ -83,36 +97,56 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
   std::map<std::string, int> cutOrientation;
 
-  std::vector<std::string> classifiersNoCuts;
   // Look for the cut orientation for each classifier
+  // Separate classifiers to cuts and non-cuts classes
+  top->cd();
+  std::vector<std::string> classifiersNoCuts;
+  //std::vector<std::string> classifiersCuts;
+  std::vector<CutData> cutData;
   for(std::map<std::string, std::string>::const_iterator method = config.classifiers.begin(); method != config.classifiers.end(); ++method) {
     std::string mvaType = stripType(method->first);
-    if(mvaType == "Cuts") {
-      fLogger << kINFO << "Skipping " << method->first << ", evaluation of Cuts method is not supported at the moment." << Endl;
-      continue;
-    }
-    classifiersNoCuts.push_back(method->first);
-
+    const char *mvaName = method->first.c_str();
     TString format("");
-    format.Form("Method_%s/%s/MVA_%s_S", mvaType.c_str(), method->first.c_str(), method->first.c_str());
-    TH1 *histoS = dynamic_cast<TH1 *>(outputFile->Get(format));
-    if(!histoS) {
-      fLogger << kERROR << "Unable to find histogram " << format << Endl;
-      return;
-    }
-    format.Form("Method_%s/%s/MVA_%s_B", mvaType.c_str(), method->first.c_str(), method->first.c_str());
-    TH1 *histoB = dynamic_cast<TH1 *>(outputFile->Get(format));
-    if(!histoB) {
-      fLogger << kERROR << "Unable to find histogram " << format << Endl;
-      return;
-    }
+    if(mvaType == "Cuts") {
+      //classifiersCuts.push_back(method->first);
+      format.Form("Method_Cuts/%s/MVA_%s_effBvsS", mvaName, mvaName);
+      TH1 *histo = dynamic_cast<TH1 *>(outputFile->Get(format));
+      if(!histo) {
+        fLogger << kERROR << "Unable to find histogram " << format << Endl;
+        return;
+      }
 
-    cutOrientation[method->first] = (histoS->GetMean() > histoB->GetMean()) ? +1 : -1;
+      CutData data;
+      data.name = method->first;
+      data.rocBins = histo->GetNbinsX();
+      data.signalEff = new TH1F(Form("MyMVA_%s_Seff", mvaName), "Signal event eff at signal jet eff", data.rocBins, 0, 1);
+      data.bkgEff = new TH1F(Form("MyMVA_%s_Beff", mvaName), "Bkg event eff at signal jet eff", data.rocBins, 0, 1);
+      data.hasBeenFilled = new char[data.rocBins];
+      std::memset(data.hasBeenFilled, 0, data.rocBins);
+      cutData.push_back(data);
+    }
+    else {
+      classifiersNoCuts.push_back(method->first);
+
+      format.Form("Method_%s/%s/MVA_%s_S", mvaType.c_str(), method->first.c_str(), method->first.c_str());
+      TH1 *histoS = dynamic_cast<TH1 *>(outputFile->Get(format));
+      if(!histoS) {
+        fLogger << kERROR << "Unable to find histogram " << format << Endl;
+        return;
+      }
+      format.Form("Method_%s/%s/MVA_%s_B", mvaType.c_str(), method->first.c_str(), method->first.c_str());
+      TH1 *histoB = dynamic_cast<TH1 *>(outputFile->Get(format));
+      if(!histoB) {
+        fLogger << kERROR << "Unable to find histogram " << format << Endl;
+        return;
+      }
+
+      cutOrientation[method->first] = (histoS->GetMean() > histoB->GetMean()) ? +1 : -1;
+    }
   }  
 
-
-  if(classifiersNoCuts.size() == 0) {
-    fLogger << kWARNING << "No supported classifiers left, not evaluating." << Endl;
+  if(classifiersNoCuts.size() == 0 && cutData.size() == 0) {
+    fLogger << kWARNING << "No classifiers left, not evaluating." << Endl;
     return;
   }
 
@@ -159,6 +193,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   mvaOutput->SetDirectory(0);
   mvaOutput->Branch("type", &type, "type/I");
 
+  // Book MVA methods on reader and set branches for MVA values
   std::map<std::string, float *> mvaValues;
   for(std::vector<std::string>::const_iterator method = classifiersNoCuts.begin(); method != classifiersNoCuts.end(); ++method) {
     const char *mvaName = method->c_str();
@@ -167,6 +202,10 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     float *mva = new float(0);
     mvaValues.insert(std::make_pair(*method, mva));
     mvaOutput->Branch(mvaName, mva, Form("%s/F", mvaName));
+  }
+  for(std::vector<CutData>::iterator iter = cutData.begin(); iter != cutData.end(); ++iter) {
+    const char *mvaName = iter->name.c_str();
+    reader->BookMVA(mvaName, Form("weights/chep09tmva_%s.weights.txt", mvaName));
   }
 
   // Compute MVA outputs for all entries (=jets) in the input TTrees
@@ -247,10 +286,31 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
       }
       else {
         for(std::map<std::string, float *>::const_iterator iter = mvaValues.begin(); iter != mvaValues.end(); ++iter) {
+          float mvaVal = reader->EvaluateMVA(iter->first.c_str());
           if(cutOrientation[iter->first] > 0) 
-            *(iter->second) = std::max(float(reader->EvaluateMVA(iter->first.c_str())), *(iter->second)); 
+            *(iter->second) = std::max(mvaVal, *(iter->second)); 
           else
-            *(iter->second) = std::min(float(reader->EvaluateMVA(iter->first.c_str())), *(iter->second)); 
+            *(iter->second) = std::min(mvaVal, *(iter->second)); 
+        }
+      }
+
+      /**
+       * Compute Cuts efficiencies for *both* signal and background 
+       */
+      if(currentEvent != prevEvent || currentRun != prevRun) {
+        for(std::vector<CutData>::iterator iter = cutData.begin(); iter != cutData.end(); ++iter) {
+          memset(iter->hasBeenFilled, 0, iter->rocBins);
+        }
+      }
+      for(std::vector<CutData>::iterator iter = cutData.begin(); iter != cutData.end(); ++iter) {
+        const char *cutName = iter->name.c_str();
+        TH1 *histo = type ? iter->signalEff : iter->bkgEff;
+        for(int bin=0; bin < iter->rocBins; ++bin) {
+          float pass = reader->EvaluateMVA(cutName, float(bin)/iter->rocBins);
+          if(pass > 0.5 && iter->hasBeenFilled[bin] == 0) {
+            histo->AddBinContent(bin+1, 1);
+            iter->hasBeenFilled[bin] = 1;
+          }
         }
       }
 
@@ -267,18 +327,6 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   }
 
   TMVA::gConfig().SetSilent(kFALSE);
-  /*
-  fLogger << kINFO << Endl
-          << hLine << Endl
-          <<      "                   |        Events       |          Jets    " << Endl
-          <<      "                   |   Signal       Bkg  |   Signal      Bkg" << Endl
-          << hLine << Endl
-          << Form("Generated          : %8ld  %8ld  |      N/A      N/A", signalEventsAll, bkgEventsAll) << Endl
-          << Form("Event preselection : %8ld  %8ld  | %8ld %8ld", signalEventsPreSelected, bkgEventsPreSelected, njets[1], njets[0]) << Endl
-          << Form("TMVA preselection  : %8ld  %8ld  | %8ld %8ld", nevents_passed[1], nevents_passed[0], njets_passed[1], njets_passed[0]) << Endl
-          << hLine << Endl
-          << Endl;
-  */
   double signalEventPreSeleEff = double(signalEventsPreSelected)/double(signalEventsAll);
   double bkgEventPreSeleEff = double(bkgEventsPreSelected)/double(bkgEventsAll);
 
@@ -370,7 +418,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     }
   }
 
-  // Renormalize efficiency histograms, compute ROC and signal
+  // Normalize efficiency histograms, compute ROC and signal
   // efficiencies at various background efficiency levels
   std::vector<EffResult> efficiencies;
   std::vector<EffResult> efficienciesBkgScaled;
@@ -379,7 +427,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     const char *mvaName = iter->first.c_str();
     MvaData& data = iter->second;
 
-    // Renormalize efficiency histograms to maximum
+    // Normalize efficiency histograms to maximum
     float maximum = data.effS->GetMaximum();
     data.effS->Scale(1.0 / (maximum > 0 ? maximum : 1));
     maximum = data.effB->GetMaximum();
@@ -421,11 +469,11 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
     EffResult res;
     res.name = iter->first;
-    res.eff1 = getSignalEfficiency(0.1 , splEff);
-    res.eff2 = getSignalEfficiency(0.01, splEff);
-    res.eff3 = getSignalEfficiency(1e-3, splEff);
-    res.eff4 = getSignalEfficiency(1e-4, splEff);
-    res.eff5 = getSignalEfficiency(1e-5, splEff);
+    res.eff1 = getSignalEfficiency(0.1 , splEff, effBvsSgr);
+    res.eff2 = getSignalEfficiency(0.01, splEff, effBvsSgr);
+    res.eff3 = getSignalEfficiency(1e-3, splEff, effBvsSgr);
+    res.eff4 = getSignalEfficiency(1e-4, splEff, effBvsSgr);
+    res.eff5 = getSignalEfficiency(1e-5, splEff, effBvsSgr);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
@@ -433,11 +481,11 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
     efficiencies.push_back(res);
 
-    res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff);
-    res.eff2 = getSignalEfficiency(0.01/bkgEventOverallEff, splEff);
-    res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff);
-    res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff);
-    res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff);
+    res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff, effBvsSgr);
+    res.eff2 = getSignalEfficiency(0.01/bkgEventOverallEff, splEff, effBvsSgr);
+    res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff, effBvsSgr);
+    res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff, effBvsSgr);
+    res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff, effBvsSgr);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
@@ -465,6 +513,86 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     delete grS;
     delete grB;
   }
+
+  // Cuts
+  for(std::vector<CutData>::iterator iter = cutData.begin(); iter != cutData.end(); ++iter) {
+    // Normalize histograms
+    iter->signalEff->Scale(nevents_passed[1] > 0 ? (1.0/nevents_passed[1]) : 1.0);
+    iter->bkgEff->Scale(   nevents_passed[0] > 0 ? (1.0/nevents_passed[0]) : 1.0);
+
+    const char *cutName = iter->name.c_str();
+    std::vector<std::pair<double, double> > effBvsS;
+    for(int bin=1; bin <= iter->rocBins; ++bin) {
+      double effS = iter->signalEff->GetBinContent(bin);
+      double effB = iter->bkgEff->GetBinContent(bin);
+      if(effS > 1e-6)
+        effBvsS.push_back(std::make_pair(effS, effB));
+    }
+    std::sort(effBvsS.begin(), effBvsS.end(), EffPairCompare());
+    double *effS = new double[effBvsS.size()];
+    double *effB = new double[effBvsS.size()];
+    double *rejB = new double[effBvsS.size()];
+    for(unsigned int i=0; i<effBvsS.size(); ++i) {
+      effS[i] = effBvsS[i].first;
+      effB[i] = effBvsS[i].second;
+      rejB[i] = 1.0-effB[i];
+    }
+    TGraph *grEffBvsS = new TGraph(effBvsS.size(), effS, effB);
+    grEffBvsS->SetName(Form("MyMVA_%s_effBvsS", cutName));
+    grEffBvsS->SetTitle("B efficiency vs. S");
+    grEffBvsS->Write();
+
+    TGraph *grRejBvsS = new TGraph(effBvsS.size(), effS, rejB);
+    grRejBvsS->SetName(Form("MyMVA_%s_rejBvsS", cutName));
+    grRejBvsS->SetTitle("B rejection vs. S");
+    grRejBvsS->Write();
+
+    TMVA::TSpline1 *splEff = new TMVA::TSpline1("effBvsSspl", grEffBvsS);
+    EffResult res;
+    res.name = iter->name;
+    res.eff1 = getSignalEfficiency(0.1 , splEff, grEffBvsS);
+    res.eff2 = getSignalEfficiency(0.01, splEff, grEffBvsS);
+    res.eff3 = getSignalEfficiency(1e-3, splEff, grEffBvsS);
+    res.eff4 = getSignalEfficiency(1e-4, splEff, grEffBvsS);
+    res.eff5 = getSignalEfficiency(1e-5, splEff, grEffBvsS);
+    res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
+    res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
+    res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
+    res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
+    res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    efficiencies.push_back(res);
+
+    res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff2 = getSignalEfficiency(0.01/bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
+    res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
+    res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
+    res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
+    res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    efficienciesBkgScaled.push_back(res);
+
+    res.eff1 *= signalEventOverallEff;
+    res.eff2 *= signalEventOverallEff;
+    res.eff3 *= signalEventOverallEff;
+    res.eff4 *= signalEventOverallEff;
+    res.eff5 *= signalEventOverallEff;
+    res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
+    res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
+    res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
+    res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
+    res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    efficienciesAllScaled.push_back(res);
+
+    sigEffSpline=0;
+    delete splEff;
+    delete effS;
+    delete effB;
+    delete rejB;
+  }
+
 
   std::sort(efficiencies.begin(), efficiencies.end(), EffResultCompare());
   std::sort(efficienciesBkgScaled.begin(), efficienciesBkgScaled.end(), EffResultCompare());
@@ -527,16 +655,25 @@ double MyEvaluate::getEffForRoot(double cut) {
   return retval;
 }
 
-double MyEvaluate::getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl) {
+double MyEvaluate::getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TGraph *gr) {
   double effS = 0;
   double effS_ = 0;
-  double effB_ = 0;
-  for(int bin=1; bin <= histoBins; ++bin) {
+  double effB_ = 1;
+  double xmin=0, xmax=0, temp=0;
+
+  gr->GetPoint(0, xmin, temp);
+  gr->GetPoint(gr->GetN()-1, xmax, temp);
+  //std::cout << xmin << " " << xmax << std::endl;
+
+  for(int bin=histoBins; bin >= 1; --bin) {
+  //for(int bin=1; bin <=histoBins; ++bin) {
     // get corresponding signal and background efficiencies
     effS = (bin-0.5)/double(histoBins);
+    if(effS < xmin || effS > xmax) // skip effS which are not in the range of the spline
+      continue;
     double effB = effSpl->Eval(effS);
-
-    //std::cout << effS << " " << effB << std::endl;
+    
+    //std::cout << effS << " " << effB << "   " << (effB-bkgEff)*(effB_-bkgEff) << std::endl;
 
     // find signal efficiency that corresponds to required background efficiency
     if((effB-bkgEff)*(effB_-bkgEff) <= 0)
