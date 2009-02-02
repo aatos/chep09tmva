@@ -17,6 +17,7 @@ struct MyConfig {
   std::vector<std::string> signalTestFiles;
   std::vector<std::string> bkgTrainFiles;
   std::vector<std::string> bkgTestFiles;
+  std::vector<std::string> reports;
   std::map<std::string, std::string> classifiers;
 };
 

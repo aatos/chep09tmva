@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
 
   // MyFactory stuff
   MyFactory *fac = dynamic_cast<MyFactory* >(factory);
-  if(fac) {
+  if(fac && std::find(config.reports.begin(), config.reports.end(), "JetEfficiencies") != config.reports.end()) {
     fac->printEfficiency(config, signalEventsAll, signalEventsSelected,
                          bkgEventsAll, bkgEventsSelected,
                          signalEntries, bkgEntries);
@@ -231,18 +231,28 @@ int main(int argc, char **argv) {
   delete factory;
   //inputFile->Close();
 
-  MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"));
-  if(signalTestChain) 
-    evaluate.setSignalTree(signalTestChain, signalWeight, signalCut_s, true);
-  else
-    evaluate.setSignalTree(signalTrainChain, signalWeight, signalCut_s, false);
-  evaluate.setSignalEventNum(signalEventsAll, signalEventsSelected);
-  if(bkgTestChain)
-    evaluate.setBackgroundTree(bkgTestChain, backgroundWeight, bkgCut_s, true);
-  else
-    evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false);
-  evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
-  evaluate.calculateEventEfficiency(config);
+  bool doEvaluate = false;
+  for(std::vector<std::string>::const_iterator iter = config.reports.begin(); iter != config.reports.end(); ++iter) {
+    if(iter->find("Event") != std::string::npos) {
+      doEvaluate = true;
+      break;
+    }
+  }
+  if(doEvaluate) {
+    MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"));
+    if(signalTestChain) 
+      evaluate.setSignalTree(signalTestChain, signalWeight, signalCut_s, true);
+    else
+      evaluate.setSignalTree(signalTrainChain, signalWeight, signalCut_s, false);
+    evaluate.setSignalEventNum(signalEventsAll, signalEventsSelected);
+    if(bkgTestChain)
+      evaluate.setBackgroundTree(bkgTestChain, backgroundWeight, bkgCut_s, true);
+    else
+      evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false);
+    evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
+
+    evaluate.calculateEventEfficiency(config);
+  }
 
   std::cout << "Created output file " << outputfileName << std::endl;
   //std::cout << "Launch TMVA GUI by 'root -l TMVAGui.C'" << std::endl;

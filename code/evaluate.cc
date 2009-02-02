@@ -291,26 +291,29 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   double signalJetTmvaSeleEff = double(njets_passed[1])/double(njets[1]);
   double bkgJetTmvaSeleEff = double(njets_passed[0])/double(njets[0]);
 
-  fLogger << kINFO << Endl
-          << hLine << Endl
-          <<      "             |             Events             |               Jets    " << Endl
-          <<      "             |   Signal   eff       Bkg   eff |   Signal  eff       Bkg  eff" << Endl
-          << hLine << Endl
-          << Form("Generated    : %8ld        %8ld       |      N/A            N/A", signalEventsAll, bkgEventsAll) << Endl
-          << Form("Event presel : %8ld %5.3f  %8ld %5.3f | %8ld       %8ld",
-                  signalEventsPreSelected, signalEventPreSeleEff,
-                  bkgEventsPreSelected, bkgEventPreSeleEff,
-                  njets[1], njets[0]) << Endl
-          << Form("TMVA  presel : %8ld %5.3f  %8ld %5.3f | %8ld %4.2f  %8ld %4.2f",
-                  nevents_passed[1], signalEventTmvaSeleEff,
-                  nevents_passed[0], bkgEventTmvaSeleEff,
-                  njets_passed[1], signalJetTmvaSeleEff,
-                  njets_passed[0], bkgJetTmvaSeleEff) << Endl
-          << Form("Total presel :          %5.3f           %5.3f |", signalEventOverallEff, bkgEventOverallEff) << Endl
-          << hLine << Endl;
-
-  fLogger << kINFO << Endl
-          << Form("Thus 1e-5 overall bkg event efficiency corresponds to %1.1e bkg event efficiency by TMVA",  1e-5/bkgEventOverallEff) << Endl;
+  if(std::find(config.reports.begin(), config.reports.end(), "EventPreSelections") != config.reports.end()) {
+    fLogger << kINFO << Endl
+            << hLine << Endl
+            <<      "             |             Events             |               Jets    " << Endl
+            <<      "             |   Signal   eff       Bkg   eff |   Signal  eff       Bkg  eff" << Endl
+            << hLine << Endl
+            << Form("Generated    : %8ld        %8ld       |      N/A            N/A", signalEventsAll, bkgEventsAll) << Endl
+            << Form("Event presel : %8ld %5.3f  %8ld %5.3f | %8ld       %8ld",
+                    signalEventsPreSelected, signalEventPreSeleEff,
+                    bkgEventsPreSelected, bkgEventPreSeleEff,
+                    njets[1], njets[0]) << Endl
+            << Form("TMVA  presel : %8ld %5.3f  %8ld %5.3f | %8ld %4.2f  %8ld %4.2f",
+                    nevents_passed[1], signalEventTmvaSeleEff,
+                    nevents_passed[0], bkgEventTmvaSeleEff,
+                    njets_passed[1], signalJetTmvaSeleEff,
+                    njets_passed[0], bkgJetTmvaSeleEff) << Endl
+            << Form("Total presel :          %5.3f           %5.3f |", signalEventOverallEff, bkgEventOverallEff) << Endl
+            << hLine << Endl;
+    
+    fLogger << kINFO << Endl
+            << Form("Thus 1e-5 overall bkg event efficiency corresponds to %1.1e bkg event",  1e-5/bkgEventOverallEff) << Endl
+            << "efficiency by TMVA." << Endl;
+  }
 
   // Create efficiency histograms
   top->cd();
@@ -467,16 +470,26 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
   std::sort(efficienciesBkgScaled.begin(), efficienciesBkgScaled.end(), EffResultCompare());
   std::sort(efficienciesAllScaled.begin(), efficienciesAllScaled.end(), EffResultCompare());
 
-  fLogger << kINFO << Endl << "For comparison with the jet efficiency numbers reported by TMVA" << Endl;
-  printEffResults(efficiencies);
-  fLogger << kINFO << Endl << "Corrected background efficiency (signal efficiency is still uncorrected)" << Endl;
-  printEffResults(efficienciesBkgScaled, true);
-  fLogger << kINFO << Endl << "Corrected signal and background efficiencies" << Endl;
-  printEffResults(efficienciesAllScaled, true);
+  if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesTMVA") != config.reports.end()) {
+    fLogger << kINFO << Endl
+            << "For comparison with the jet efficiency numbers reported by TMVA" << Endl
+            << "Signal and background event efficiencies have NOT been scaled with preselections" << Endl;
+    printEffResults(efficiencies);
+  }
+  if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesBkgScaled") != config.reports.end()) {
+    fLogger << kINFO << Endl
+            << "Background event efficiency has been scaled with the preselection bkg event" << Endl
+            << "efficiency (signal event efficiency is as given by TMVA)" << Endl;
+    printEffResults(efficienciesBkgScaled, true);
+  }
+  if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesAllScaled") != config.reports.end()) {
+    fLogger << kINFO << Endl 
+            << "Signal and background event efficiencies have been scaled with the preselection" << Endl
+            << "event efficiencies" << Endl;
+    printEffResults(efficienciesAllScaled, true);
+  }
 
-  fLogger << kWARNING << Endl
-          << " !!!  This module is still experimental  !!!" << Endl
-          << Endl;
+  fLogger << kWARNING << " !!!  This module is still experimental  !!!" << Endl;
 
   for(std::map<std::string, float *>::iterator iter = mvaValues.begin(); iter != mvaValues.end(); ++iter) {
     delete iter->second;

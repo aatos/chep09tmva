@@ -86,7 +86,7 @@ bool parseConf(std::string filename, MyConfig& config) {
 
   std::string line;
 
-  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalTrainFiles, kSignalTestFiles, kBkgTrainFiles, kBkgTestFiles, kTrain, kClass};
+  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalTrainFiles, kSignalTestFiles, kBkgTrainFiles, kBkgTestFiles, kTrain, kClass, kReport};
   mode_t mode = kNone;
   int lineno = 0;
 
@@ -146,6 +146,10 @@ bool parseConf(std::string filename, MyConfig& config) {
     else if(line == "Classifiers:") {
       mode = kClass;
       config.classifiers.clear();
+    }
+    else if(line == "AdditionalReports:") {
+      mode = kReport;
+      config.reports.clear();
     }
     else if(mode == kVar) {
       if(parsed.size() != 1) {
@@ -222,6 +226,14 @@ bool parseConf(std::string filename, MyConfig& config) {
         return false;
       }
       config.classifiers.insert(std::make_pair(parsed[0], parsed[1]));
+    }
+    else if(mode == kReport) {
+      if(parsed.size() != 1) {
+        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
+        std::cout << "Expected only one string at line" << std::endl;
+        return false;
+      }
+      config.reports.push_back(parsed[0]);
     }
   }
   file.close();
