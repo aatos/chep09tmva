@@ -122,7 +122,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
       data.signalEff = new TH1F(Form("MyMVA_%s_Seff", mvaName), "Signal event eff at signal jet eff", data.rocBins, 0, 1);
       data.bkgEff = new TH1F(Form("MyMVA_%s_Beff", mvaName), "Bkg event eff at signal jet eff", data.rocBins, 0, 1);
       data.hasBeenFilled = new char[data.rocBins];
-      std::memset(data.hasBeenFilled, 0, data.rocBins);
+      memset(data.hasBeenFilled, 0, data.rocBins);
       cutData.push_back(data);
     }
     else {
