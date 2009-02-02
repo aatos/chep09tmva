@@ -1,5 +1,6 @@
 #include "config.h"
 
+#include<iostream>
 #include<fstream>
 
 std::string stripType(const std::string& desc) {
