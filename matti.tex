@@ -36,51 +36,84 @@
   \begin{itemize}
   \item Signal efficiency at $10^5$ background rejection?
   \end{itemize}
-\item Jets vs. events
-  \begin{itemize}
-  \item The input \texttt{TTree} for TMVA has jets as entries (i.e.
-    TMVA ``event'' corresponds to a jet in the event generated in
-    Pythia), so the efficiencies (and other quantities) reported by
-    TMVA are for jets. The tree has branches for event and run
-    numbers, so it is possible to separate the jets belonging to
-    different events.
-  \item In the end, in order to have a physically reasonable result
-    and to compare with other results, we would like to have the
-    signal/background efficiencies of events, not jets (e.g. event is
-    passed if there is at least one jet passing the classifier,
-    otherwise the event is rejected)
-  \item In order to ``convert'' the jet efficiencies to event
-    efficiencies, some kind of counting must be done
-    \begin{enumerate}
-    \item[a)] Optimisation is done only with jets, and for the final
-      results the classifiers are used in event basis. Our abstract
-      doesn't clearly specify, what we mean by $10^5$ background
-      rejection (event vs. jet rejection). 
+\end{itemize}
 
-    \item[b)] Use TMVA training tree for re-counting. However, the
-      training tree contains only the variables used for training, and
-      classifier outputs for the corresponding jets. In the current
-      TMVA (v3.9.x) it seems to be impossible to add variables, which
-      are not used for training/testing, to the training tree.
+\subsubsection{Jet vs. event efficiencies}
 
-      It is of course possible to take the standalone TMVA as a part
-      of our package and include this functionality. Actually, this
-      has been requested in the TMVA users mailing list in 2007
-      (\url{http://sourceforge.net/mailarchive/forum.php?thread_name=471C8D74.6040209\%40mpi-hd.mpg.de\&forum_name=tmva-users}),
-      and it is in the TODO list
-      (\url{http://tmva.cvs.sourceforge.net/tmva/TMVA/development/todo.txt?view=markup})
-      with \emph{high priority}. Thus, my motivation of implementing
-      this feature is not so high.
+\begin{itemize}
+\item The input \texttt{TTree} for TMVA has jets as entries (i.e. TMVA
+  ``event'' corresponds to a jet in the event generated in Pythia), so
+  the efficiencies (and other quantities) reported by TMVA are for
+  jets. The tree has branches for event and run numbers, so it is
+  possible to separate the jets belonging to different events.
+\item In the end, in order to have a physically reasonable result and
+  to compare with other results, we would like to have the
+  signal/background efficiencies of events, not jets (e.g. event is
+  passed if there is at least one jet passing the classifier,
+  otherwise the event is rejected)
+\item In order to ``convert'' the jet efficiencies to event
+  efficiencies, some kind of counting must be done
+  \begin{enumerate}
+  \item[a)] Optimisation is done only with jets, and for the final
+    results the classifiers are used in event basis. Our abstract
+    doesn't clearly specify, what we mean by $10^5$ background
+    rejection (event vs. jet rejection).
 
-    \item[c)] Use the TMVA input tree for performing our own
-      event-based counting. The TMVA preselection cuts and variable
-      transformations will cause some headache, but it could be
-      manageable. It might be easiest to take relevant pieces of code
-      from TMVA and add glue, tape and gum to make it work. In order
-      to not to use training data for testing, the training and
-      testing trees should be in different files.
-    \end{enumerate}
-  \end{itemize}
+  \item[b)] Use TMVA training tree for re-counting. However, the
+    training tree contains only the variables used for training, and
+    classifier outputs for the corresponding jets. In the current TMVA
+    (v3.9.x) it seems to be impossible to add variables, which are not
+    used for training/testing, to the training tree.
+
+    It is of course possible to take the standalone TMVA as a part of
+    our package and include this functionality. Actually, this has
+    been requested in the TMVA users mailing list in 2007
+    (\url{http://sourceforge.net/mailarchive/forum.php?thread_name=471C8D74.6040209\%40mpi-hd.mpg.de\&forum_name=tmva-users}),
+    and it is in the TODO list
+    (\url{http://tmva.cvs.sourceforge.net/tmva/TMVA/development/todo.txt?view=markup})
+    with \emph{high priority}. Thus, my motivation of implementing
+    this feature is not so high.
+
+  \item[c)] Use the TMVA input tree for performing our own event-based
+    counting. The TMVA preselection cuts and variable transformations
+    will cause some headache, but it could be manageable. It might be
+    easiest to take relevant pieces of code from TMVA and add glue,
+    tape and gum to make it work. In order to not to use training data
+    for testing, the training and testing trees should be in different
+    files.
+  \end{enumerate}
+\item Currently (after commit
+  82e7bc3d9575e853df7b65ebbbcdf5d91232802d) the event efficiencies are
+  evaluated with the approach c). There are few things which should be
+  noted in the current implementation
+  \begin{description}
+  \item[Training/test tree] The information about which jets are used
+    for training by TMVA is not available (at least easily). Therefore
+    the whole input tree is processed. This means, that if the one
+    tree (or chain) is used for both training and testing in TMVA, the
+    results produced by our evaluation code are biased. Fortunately, I
+    think Lauri agrees about having the training and testing data in
+    separate files (i.e. chains).
+
+    The current code already supports separate chains for training and
+    testing. If only training chain is defined (i.e. testing chain is
+    empty), the training chain is used for both training and testing,
+    as the situation was before.
+
+  \item[Cuts vs. others] The signal/background efficiencies for other
+    classifiers than cuts are produced with a code similar to the
+    related code in TMVA, with the exception that only one jet per
+    event is counted. However, Cuts classifier is a different story.
+
+    The Cuts classifier is trained such that for each signal
+    efficiency bin of ROC curve, TMVA maximizes the the background
+    rejection. As some of the optimization algorithms have stochastic
+    nature, the resulting ROC curve can (and usually will) have peaks.
+
+  \item[Reporting in output] Can be configured.
+
+  \item[Integration with TMVAGui.C?] Is possible.
+  \end{description}
 \end{itemize}
 
 \subsubsection{SVM Notes}
