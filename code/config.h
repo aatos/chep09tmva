@@ -13,8 +13,10 @@ struct MyConfig {
   std::vector<std::string> variables;
   std::vector<std::string> signalCuts;
   std::vector<std::string> bkgCuts;
-  std::vector<std::string> signalFiles;
-  std::vector<std::string> bkgFiles;
+  std::vector<std::string> signalTrainFiles;
+  std::vector<std::string> signalTestFiles;
+  std::vector<std::string> bkgTrainFiles;
+  std::vector<std::string> bkgTestFiles;
   std::map<std::string, std::string> classifiers;
 };
 

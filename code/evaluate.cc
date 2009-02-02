@@ -40,7 +40,7 @@ MyEvaluate::MyEvaluate(TFile *file):
   rocBins(100),
   fLogger(std::string("MyEvaluate")) {
 
-  top = file->mkdir("MyEvaluate");  
+  top = file->mkdir("MyEvaluate");
 }
 
 MyEvaluate::~MyEvaluate() {
@@ -48,16 +48,18 @@ MyEvaluate::~MyEvaluate() {
   outputFile->Close();
 }
 
-void MyEvaluate::setSignalTree(TTree *tree, double weight, const TCut& cut) {
+void MyEvaluate::setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTest) {
   signal.tree = tree;
   signal.weight = weight;
   signal.preCut = cut.GetTitle();
+  signal.isTestTree = isTest;
 }
 
-void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut) {
+void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut, bool isTest) {
   background.tree = tree;
   background.weight = weight;
   background.preCut = cut.GetTitle();
+  background.isTestTree = isTest;
 }
 
 void MyEvaluate::calculateEventEfficiency(MyConfig& config) {

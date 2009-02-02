@@ -86,7 +86,7 @@ bool parseConf(std::string filename, MyConfig& config) {
 
   std::string line;
 
-  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalFiles, kBkgFiles, kTrain, kClass};
+  enum mode_t {kNone, kVar, kSignalCut, kBkgCut, kSignalTrainFiles, kSignalTestFiles, kBkgTrainFiles, kBkgTestFiles, kTrain, kClass};
   mode_t mode = kNone;
   int lineno = 0;
 
@@ -123,13 +123,21 @@ bool parseConf(std::string filename, MyConfig& config) {
       mode = kBkgCut;
       config.bkgCuts.clear();
     }
-    else if(line == "SignalFiles:") {
-      mode = kSignalFiles;
-      config.signalFiles.clear();
+    else if(line == "SignalTrainFiles:") {
+      mode = kSignalTrainFiles;
+      config.signalTrainFiles.clear();
     }
-    else if(line == "BackgroundFiles:") {
-      mode = kBkgFiles;
-      config.bkgFiles.clear();
+    else if(line == "SignalTestFiles:") {
+      mode = kSignalTestFiles;
+      config.signalTestFiles.clear();
+    }
+    else if(line == "BackgroundTrainFiles:") {
+      mode = kBkgTrainFiles;
+      config.bkgTrainFiles.clear();
+    }
+    else if(line == "BackgroundTestFiles:") {
+      mode = kBkgTestFiles;
+      config.bkgTestFiles.clear();
     }
     else if(line == "Trainer:") {
       mode = kTrain;
@@ -167,21 +175,37 @@ bool parseConf(std::string filename, MyConfig& config) {
         config.bkgCuts.push_back(s);
       }
     }
-    else if(mode == kSignalFiles) {
+    else if(mode == kSignalTrainFiles) {
       if(parsed.size() != 1) {
         std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      config.signalFiles.push_back(parsed[0]);
+      config.signalTrainFiles.push_back(parsed[0]);
     }
-    else if(mode == kBkgFiles) {
+    else if(mode == kSignalTestFiles) {
       if(parsed.size() != 1) {
         std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
         std::cout << "Expected only one string at line" << std::endl;
         return false;
       }
-      config.bkgFiles.push_back(parsed[0]);
+      config.signalTestFiles.push_back(parsed[0]);
+    }
+    else if(mode == kBkgTrainFiles) {
+      if(parsed.size() != 1) {
+        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
+        std::cout << "Expected only one string at line" << std::endl;
+        return false;
+      }
+      config.bkgTrainFiles.push_back(parsed[0]);
+    }
+    else if(mode == kBkgTestFiles) {
+      if(parsed.size() != 1) {
+        std::cout << "Parse error at line " << lineno << ": \"" << line << "\"" << std::endl;
+        std::cout << "Expected only one string at line" << std::endl;
+        return false;
+      }
+      config.bkgTestFiles.push_back(parsed[0]);
     }
     else if(mode == kTrain) {
       if(parsed.size() != 1) {
