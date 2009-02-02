@@ -3,6 +3,7 @@
 #include<vector>
 #include<map>
 #include<cstring>
+#include<algorithm>
 
 #include <TFile.h>
 #include <TChain.h>
