@@ -36,6 +36,21 @@
   \begin{itemize}
   \item Signal efficiency at $10^5$ background rejection?
   \end{itemize}
+\item What to do with the random number seed problem we had last time?
+  \begin{itemize}
+  \item The training of some classifiers depends highly on the random
+    number generator(s). There is really no global random number seed,
+    so the training might be in general indeterministic with respect
+    to the parameters of the classifier.
+  \item Few options comes to my mind:
+    \begin{itemize}
+    \item[a)] Try to look the average training behaviour by training
+      several classifiers with same parameters by (somehow) varying
+      the random number seed.
+    \item[b)] Choose the parameters with which the classifier
+      performance is best
+    \end{itemize}
+  \end{itemize}
 \end{itemize}
 
 \subsubsection{Jet vs. event efficiencies}
@@ -92,7 +107,7 @@
     the whole input tree is processed. This means, that if the one
     tree (or chain) is used for both training and testing in TMVA, the
     results produced by our evaluation code are biased. Fortunately, I
-    think Lauri agrees about having the training and testing data in
+    think Lauri agreed about having the training and testing data in
     separate files (i.e. chains).
 
     The current code already supports separate chains for training and
@@ -108,11 +123,54 @@
     The Cuts classifier is trained such that for each signal
     efficiency bin of ROC curve, TMVA maximizes the the background
     rejection. As some of the optimization algorithms have stochastic
-    nature, the resulting ROC curve can (and usually will) have peaks.
+    nature, the resulting ROC curve can have peaks. This means that
+    for a given background efficiency level there might be multiple
+    signal efficiencies (with different set of cuts, of course). TMVA
+    chooses the smallest signal efficiency for their output, I've
+    chosen the greatest (this also applies to other classifiers than
+    Cuts, but for them I'd expect that ROC is smooth).
 
-  \item[Reporting in output] Can be configured.
+    Another difference comes from the fact that when other classifiers
+    return a number which correlates with the probabability of the jet
+    being $\tau$ jet, Cuts classifier returns boolean true/false
+    (corresponding to a given signal efficiency). In order to test all
+    trained cuts, all training signal efficiencies are looped over,
+    and the TMVA reader is asked if the jet in question passes the
+    cut. The number of passed events for each training signal
+    efficiency is recorded, and with these \emph{true} signal and
+    background efficiencies the ROC curve is constructed. The points
+    with zero signal efficiency are not used, as they're probably just
+    cases where the training has failed.
 
-  \item[Integration with TMVAGui.C?] Is possible.
+  \item[Reporting in output] The output of \texttt{chep09tmva} program
+    became large, and it was also requested that it would be possible
+    to switch \texttt{MyEvaluate} off. I added
+    \texttt{AdditionalReports} section to the configuration file,
+    where the possible reports can be switched on/off by
+    (un)commenting the corresponding line. In the default
+    configuration of \texttt{tmva-common.conf} and
+    \texttt{tmva-example.conf} all reports are enabled.
+
+  \item[Integration with TMVAGui.C?] Signal/background event
+    efficiency histograms as well as the resulting ROC curves are
+    stored to the output ROOT file. This enables the possibility to
+    add these plots to the \texttt{TMVAGui.C} script.
+
+    It should be noted that all other plots are histograms
+    (\texttt{TH1}) except the ROC for Cuts, which is \texttt{TGraph}.
+
+  \item[Maximum number of testing entries] \texttt{MyEvaluate} uses
+    the same configuration as TMVA Factory (i.e. \texttt{NSigTest} and
+    \texttt{NBkgTest} under \texttt{Trainer}) for specifying the
+    maximum number of entries used for testing. If these are zero, all
+    entries are used. It should be noted that unless both TMVA and
+    \texttt{MyEvaluate} process the test trees entirely, they might
+    process different entries.
+
+  \item[Error estimation] Currently the reported errors come from the
+    formula $\sigma=\sqrt{\varepsilon(1-\varepsilon)/N}$ as in TMVA.
+    Should we also try to take the effect of binning into account?
+
   \end{description}
 \end{itemize}
 
