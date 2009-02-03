@@ -56,7 +56,7 @@ std::vector<std::string> preprocessLine(std::string& line) {
   std::string temp("");
 
   // preprocess comments
-  size_t comment = line.find("//");
+  size_t comment = line.find("#");
   if(comment < line.length())
     line = line.substr(0, comment);
 
