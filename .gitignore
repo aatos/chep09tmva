@@ -20,3 +20,4 @@ code/weights
 code/scripts/*.so
 code/scripts/*.d
 code/chep09tmva.*.stdout*
+*.tar.gz
