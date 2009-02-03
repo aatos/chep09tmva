@@ -20,13 +20,19 @@ $(EXE): $(OBJS)
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
+test:
+	make; ./$(EXE)
 ah0:
 	root -l chep09tmva_aatos.C
 	root -l TMVAGui.C
 ah1:
 	make
 	./chep09tmva tmva-aatos.conf
+	root -l TMVAGui.C
+
+vk:
+	make
+	./chep09tmva tmva-veikko.conf
 	root -l TMVAGui.C
 
 clean:
