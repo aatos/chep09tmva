@@ -29,6 +29,11 @@ ah1:
 	./chep09tmva tmva-aatos.conf
 	root -l TMVAGui.C
 
+vk:
+	make
+	./chep09tmva tmva-veikko.conf
+	root -l TMVAGui.C
+
 clean:
 	rm -f $(OBJS) $(EXE)
 
