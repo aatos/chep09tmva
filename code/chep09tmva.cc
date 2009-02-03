@@ -3,6 +3,7 @@
 #include<vector>
 #include<map>
 #include<cstring>
+#include<cstdlib>
 #include<algorithm>
 
 #include <TFile.h>
@@ -240,16 +241,33 @@ int main(int argc, char **argv) {
     }
   }
   if(doEvaluate) {
+    long signalTestEntries = 0;
+    long bkgTestEntries = 0;
+
+    size_t start = 0;
+    size_t stop = 0;
+    while(stop != std::string::npos) {
+      stop = config.trainer.find_first_of(':', start+1);
+      std::string conf = config.trainer.substr(start, stop-start);
+      if(conf.compare(0, 9, "NSigTest=") == 0) {
+        signalTestEntries = std::strtol(conf.substr(9, std::string::npos).c_str(), 0, 10);
+      }
+      else if(conf.compare(0, 9, "NBkgTest=") == 0) {
+        bkgTestEntries = std::strtol(conf.substr(9, std::string::npos).c_str(), 0, 10);
+      }
+      start = stop+1;
+    }
+
     MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"));
     if(signalTestChain) 
-      evaluate.setSignalTree(signalTestChain, signalWeight, signalCut_s, true);
+      evaluate.setSignalTree(signalTestChain, signalWeight, signalCut_s, true, signalTestEntries);
     else
-      evaluate.setSignalTree(signalTrainChain, signalWeight, signalCut_s, false);
+      evaluate.setSignalTree(signalTrainChain, signalWeight, signalCut_s, false, signalTestEntries);
     evaluate.setSignalEventNum(signalEventsAll, signalEventsSelected);
     if(bkgTestChain)
-      evaluate.setBackgroundTree(bkgTestChain, backgroundWeight, bkgCut_s, true);
+      evaluate.setBackgroundTree(bkgTestChain, backgroundWeight, bkgCut_s, true, bkgTestEntries);
     else
-      evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false);
+      evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false, bkgTestEntries);
     evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
 
     evaluate.calculateEventEfficiency(config);

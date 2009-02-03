@@ -62,18 +62,20 @@ MyEvaluate::~MyEvaluate() {
   outputFile->Close();
 }
 
-void MyEvaluate::setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTest) {
+void MyEvaluate::setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTest, long testEntries) {
   signal.tree = tree;
   signal.weight = weight;
   signal.preCut = cut.GetTitle();
   signal.isTestTree = isTest;
+  signal.testEntries = testEntries;
 }
 
-void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut, bool isTest) {
+void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut, bool isTest, long testEntries) {
   background.tree = tree;
   background.weight = weight;
   background.preCut = cut.GetTitle();
   background.isTestTree = isTest;
+  background.testEntries = testEntries;
 }
 
 void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
@@ -238,6 +240,9 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
     // Iterate over background/signal TTree
     njets[type] = tree->GetEntries();
+    long confMaxEntries = type ? signal.testEntries : background.testEntries;
+    if(confMaxEntries <= 0)
+      confMaxEntries = njets[type];
     for(Long64_t ientry = 0; ientry < njets[type]; ++ientry) {
       tree->GetEntry(ientry);
 
@@ -316,6 +321,8 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
       prevEvent = currentEvent;
       prevRun = currentRun;
+      if(njets_passed[type] >= confMaxEntries)
+        break;
     }
     // Filling of the results of the last entry/event
     mvaOutput->Fill();

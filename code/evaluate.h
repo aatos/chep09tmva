@@ -34,8 +34,8 @@ public:
   MyEvaluate(TFile *outputFile);
   virtual ~MyEvaluate();
 
-  void setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTestTree);
-  void setBackgroundTree(TTree *tree, double weight, const TCut& cut, bool isTestTree);
+  void setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTestTree, long testEntries);
+  void setBackgroundTree(TTree *tree, double weight, const TCut& cut, bool isTestTree, long testEntries);
 
   void setSignalEventNum(long all, long selected) {
     signalEventsAll = all;
@@ -66,6 +66,7 @@ private:
     double weight;
     TString preCut;
     bool isTestTree;
+    long testEntries;
   };
   Data signal;
   Data background;
