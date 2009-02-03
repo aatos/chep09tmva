@@ -17,19 +17,19 @@
 #set -e
 
 # Usage:
-# qsub sepeli.sh.job [results_dir] [config-file]
+# qsub sepeli.sh.job [results_dir] [config_file]
 
 ulimit -s 524288 # limit to stack to 512M
 
 export LS_SUBCWD=$(pwd)
 
-CONF=tmva-example.conf
+CONF=tmva-common.conf
 RESULTS=""
 if [ "x$#" = "x1" ]; then
-    RESULTS=$1
+    CONF=$1
 elif [ "x$#" = "x2" ]; then
-    RESULTS=$1
-    CONF=$2
+    CONF=$1
+    RESULTS=$2
 fi
 STR=$LS_SUBCWD/$RESULTS
 if [ ! -d $STR ];then
