@@ -20,7 +20,8 @@ $(EXE): $(OBJS)
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
+test:
+	make; ./$(EXE)
 ah0:
 	root -l chep09tmva_aatos.C
 	root -l TMVAGui.C
