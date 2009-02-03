@@ -295,10 +295,10 @@ void createChain(std::vector<std::string>& files, TChain *chain, const char *dat
     TFile *file = TFile::Open(iter->c_str());
     TH1 *counter = dynamic_cast<TH1 *>(file->Get(Form("counter_main_%s", datasetName)));
     if(counter) {
-      eventsAll += counter->GetBinContent(1);
+      eventsAll += long(counter->GetBinContent(1));
       for(int bin=2; bin <= counter->GetNbinsX(); ++bin) {
         if(std::strncmp(counter->GetXaxis()->GetBinLabel(bin), "Passed E correction", 20) == 0) {
-          eventsSelected += counter->GetBinContent(bin);
+          eventsSelected += long(counter->GetBinContent(bin));
           break;
         }
       }
