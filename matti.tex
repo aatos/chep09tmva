@@ -51,7 +51,57 @@
       performance is best
     \end{itemize}
   \end{itemize}
+\item It seems that the Cuts classifier evaluation time scales
+  quadratically w.r.t the size of the test tree. (Our event evalution
+  with \texttt{MyEvaluate} has linear scaling.) This behaviour is
+  demonstrated in table~\ref{table:mkCutsScaling} and in
+  figure~\ref{fig:mkCutsScaling}. Other classifiers might not be
+  incluenced by this, as is demonstrated in the table with SVM.
 \end{itemize}
+
+\begin{table}
+  \caption{Comparison of TMVA evaluation to our event
+    testing+evaluation with Cuts and SVM classifiers. The numbers are
+    real time in seconds, and they are \textbf{suggestive only}.}
+  \label{table:mkCutsScaling}
+  \begin{center}
+    \begin{tabular}{c|cc|cc}
+      Training & \multicolumn{2}{|c|}{Cuts} & \multicolumn{2}{|c}{SVM} \\
+      jets     & TMVA test+eval. & Event eval.   & TMVA test+eval. & Event eval. \\
+      \hline
+      10000    & 0.43            & 1.13          & 0.67            & 0.73 \\
+      20000    & 1.53            & 1.75          & 1.21            & 1.53 \\
+      50000    & 12.1            & 4.04          & 2.15            & 2.03 \\
+      80000    & 32.6            & 6.19          & 2.70            & 2.81 \\
+      100000   & 51.1            & 7.55          & 3.84            & 3.26 \\
+      150000   & 114             & 11.3          & 5.70            & 6.36 \\
+      200000   & 202             & 15.4          & 7.42            & 6.00 \\
+      250000   & 315             & 18.6          & 7.99            & 8.36 \\
+      300000   & 440             & 22.4          & 11.1            & 10.2 \\
+      400000   & 893             & 29.9          & 12.4            & 11.5 \\
+      500000   & 1560            & 38.8          & 18.3            & 16.2
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{figure}
+  \begin{center}
+    \begin{minipage}{.35\textwidth}
+      \includegraphics[width=\textwidth]{images/mkTmvaEval}
+    \end{minipage}
+    \hspace{.1\textwidth}
+    \begin{minipage}{.35\textwidth}
+      \includegraphics[width=\textwidth]{images/mkEventEval}
+    \end{minipage}
+  \end{center}
+  \caption{Real time spent in TMVA testing and evaluation together
+    (left) and in our event evaluation (right) as a function of
+    testing jets in input for Cuts classifier. The plots are
+    \textbf{suggestive only}, because they were produced from a single
+    run per data point and the reported time is real time.}
+  \label{fig:mkCutsScaling}
+\end{figure}
+
 
 \subsubsection{Jet vs. event efficiencies}
 
