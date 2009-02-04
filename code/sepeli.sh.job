@@ -19,7 +19,7 @@
 # Usage:
 # qsub sepeli.sh.job [results_dir] [config_file]
 
-ulimit -s 524288 # limit to stack to 512M
+ulimit -s 10240 # limit to stack to 512M
 
 export LS_SUBCWD=$(pwd)
 
@@ -42,10 +42,13 @@ fi
 RESULTS=$STR
 echo "Using configuration file $LS_SUBCWD/$CONF"
 echo "Will store results in $RESULTS"
-echo ""
 
 # Create the computation work directory.
 WORKDIR=$TMPDIR
+
+echo "Working in $WORKDIR"
+echo ""
+
 
 function movetosubdir {
     if [ -e $WORKDIR/$1 ]; then
@@ -92,6 +95,7 @@ echo " START EXECUTION OF JOB ..."
 echo " "
 
 ./chep09tmva $CONF color=false | tee tmva.out
+#echo "Return value $?"
 
 movetoresults tmva.out
 movetoresults TMVA.root

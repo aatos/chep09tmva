@@ -19,7 +19,7 @@
 # Usage:
 # qsub ametisti.sh.job [results_dir] [config_file]
 
-ulimit -s 524288 # limit to stack to 512M
+ulimit -s 10240 # limit to stack to 512M
 
 export LS_SUBCWD=$(pwd)
 TEMPDIR=chep09tmva-${JOB_ID}
