@@ -19,7 +19,10 @@
 # Usage:
 # qsub ametisti.sh.job [results_dir] [config_file]
 
-ulimit -s 10240 # limit to stack to 512M
+#ulimit -s 5120  # limit stack to 5M
+#ulimit -s 10240 # limit stack to 10M
+#ulimit -s 20480 # limit stack to 20M
+ulimit -s 30720 # limit stack to 30M
 
 export LS_SUBCWD=$(pwd)
 TEMPDIR=chep09tmva-${JOB_ID}
@@ -43,7 +46,6 @@ fi
 RESULTS=$STR
 echo "Using configuration file $LS_SUBCWD/$CONF"
 echo "Will store results in $RESULTS"
-echo ""
 
 # Create the computation work directory.
 if [ ! -d /tmp/$USER ]; then
@@ -58,6 +60,9 @@ mkdir $TEMPDIR
 cd $TEMPDIR
 
 WORKDIR=$(pwd)
+
+echo "Working in $WORKDIR"
+echo ""
 
 function movetosubdir {
     if [ -e $WORKDIR/$1 ]; then
