@@ -1,4 +1,5 @@
 #include<iostream>
+#include<iomanip>
 #include<string>
 #include<vector>
 #include<map>
@@ -11,6 +12,7 @@
 #include <TString.h>
 #include <TSystem.h>
 #include <TH1.h>
+#include <TStopwatch.h>
 
 #include <TMVA/Config.h>
 
@@ -24,6 +26,12 @@ void createChain(std::vector<std::string>& files, TChain *chain, const char *dat
 
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
+  TStopwatch timer_total;
+  timer_total.Start();
+  TStopwatch timer;
+  std::vector<std::pair<std::string, double> > timer_data;
+  timer.Start();
+
   // Configuration
   TString outputfileName("TMVA.root");
   TString signalDataset("Pythia8_generatorLevel_HCh300");
@@ -168,7 +176,13 @@ int main(int argc, char **argv) {
   // Create output file
   TFile *outputFile = TFile::Open(outputfileName, "RECREATE");
 
+  timer.Stop();
+  timer_data.push_back(std::make_pair("Initialization (ours)", timer.RealTime()));
+  timer.Reset();
+
+
   // Initialize factory
+  timer.Start();
   TString foptions = "!V:!Silent";
   if(color)
     foptions += ":Color";
@@ -209,21 +223,41 @@ int main(int argc, char **argv) {
     factory->BookMethod(type, iter->first, iter->second);
   }
 
+  timer.Stop();
+  timer_data.push_back(std::make_pair("Initialization (TMVA)", timer.RealTime()));
+  timer.Reset();
+
   // Train classifiers
+  timer.Start();
   factory->TrainAllMethods();
+  timer.Stop();
+  timer_data.push_back(std::make_pair("Training", timer.RealTime()));
+  timer.Reset();
 
   // Evaluate all classifiers
+  timer.Start();
   factory->TestAllMethods();
+  timer.Stop();
+  timer_data.push_back(std::make_pair("Testing", timer.RealTime()));
+  timer.Reset();
 
   // Compare classifier performance
+  timer.Start();
   factory->EvaluateAllMethods();
+  timer.Stop();
+  timer_data.push_back(std::make_pair("Evaluation", timer.RealTime()));
+  timer.Reset();
 
   // MyFactory stuff
   MyFactory *fac = dynamic_cast<MyFactory* >(factory);
   if(fac && std::find(config.reports.begin(), config.reports.end(), "JetEfficiencies") != config.reports.end()) {
+    timer.Start();
     fac->printEfficiency(config, signalEventsAll, signalEventsSelected,
                          bkgEventsAll, bkgEventsSelected,
                          signalEntries, bkgEntries);
+    timer.Stop();
+    timer_data.push_back(std::make_pair("Jet efficiencies", timer.RealTime()));
+    timer.Reset();
   }
 
   // Save output
@@ -241,6 +275,7 @@ int main(int argc, char **argv) {
     }
   }
   if(doEvaluate) {
+    timer.Start();
     long signalTestEntries = 0;
     long bkgTestEntries = 0;
 
@@ -271,6 +306,19 @@ int main(int argc, char **argv) {
     evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
 
     evaluate.calculateEventEfficiency(config);
+    timer.Stop();
+    timer_data.push_back(std::make_pair("Event efficiencies", timer.RealTime()));
+    timer.Reset();
+  }
+
+  if(std::find(config.reports.begin(), config.reports.end(), "Timer") != config.reports.end()) {
+    std::cout << "Elapsed real time" << std::endl;
+    for(std::vector<std::pair<std::string, double> >::const_iterator iter = timer_data.begin(); iter != timer_data.end(); ++iter) {
+      std::cout << "  " << std::setw(22) << std::left << iter->first << ": " << iter->second << " seconds" << std::endl;
+    }
+    timer_total.Stop();
+    std::cout << "  " << "-------------------------------------" << std::endl
+              << "  " << std::setw(22) << std::left << "Total" << ": " << timer_total.RealTime() << " seconds" << std::endl;
   }
 
   std::cout << "Created output file " << outputfileName << std::endl;
