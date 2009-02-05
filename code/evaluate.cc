@@ -1,6 +1,7 @@
 #include "evaluate.h"
 
 #include<algorithm>
+//#include<iomanip>
 
 #include <TTreeFormula.h>
 #include <TMath.h>
@@ -469,6 +470,8 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     }
 
     TGraph *effBvsSgr = new TGraph(effBvsS);
+    effBvsSgr->SetMaximum(effBvsS->GetMaximum());
+    effBvsSgr->SetMinimum(effBvsS->GetMinimum());
     TMVA::TSpline1 *splEff = new TMVA::TSpline1("effBvsSspl", effBvsSgr);
 
     EffResult res;
@@ -536,12 +539,18 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     double *effS = new double[effBvsS.size()];
     double *effB = new double[effBvsS.size()];
     double *rejB = new double[effBvsS.size()];
+    double maxEffB = -9999;
+    double minEffB = 9999;
     for(unsigned int i=0; i<effBvsS.size(); ++i) {
       effS[i] = effBvsS[i].first;
       effB[i] = effBvsS[i].second;
       rejB[i] = 1.0-effB[i];
+      maxEffB = std::max(maxEffB, effB[i]);
+      minEffB = std::min(minEffB, effB[i]);
     }
     TGraph *grEffBvsS = new TGraph(effBvsS.size(), effS, effB);
+    grEffBvsS->SetMaximum(maxEffB);
+    grEffBvsS->SetMinimum(minEffB);
     grEffBvsS->SetName(Form("MyMVA_%s_effBvsS", cutName));
     grEffBvsS->SetTitle("B efficiency vs. S");
     grEffBvsS->Write();
@@ -670,6 +679,19 @@ double MyEvaluate::getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TG
   gr->GetPoint(0, Smin, temp);
   gr->GetPoint(gr->GetN()-1, Smax, effB_);
   //std::cout << xmin << " " << xmax << std::endl;
+  //std::cout << "gr max " << std::setprecision(10) << gr->GetMaximum() << " gr min " << std::setprecision(10) << gr->GetMinimum() << std::endl;
+
+  // If requested bkg efficiency is greater than exists in the effBvsS
+  // curve, all signal events are accepted for that bkg eff and thus
+  // the signal efficiency is 1
+  if(bkgEff > gr->GetMaximum())
+    return 1.0;
+
+  // If requested bkg efficiency is less than exists in the effBvsS
+  // curve, all signal events are rejected for that bkg eff and thus
+  // the signal efficiency is 0
+  if(bkgEff < gr->GetMinimum())
+    return 0.0;
 
   for(int bin=histoBins; bin >= 1; --bin) {
   //for(int bin=1; bin <=histoBins; ++bin) {
