@@ -661,34 +661,46 @@ double MyEvaluate::getEffForRoot(double cut) {
 
 double MyEvaluate::getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TGraph *gr) {
   double effS = 0;
+  double effB = 0;
   double effS_ = 0;
-  double effB_ = 1;
-  double xmin=0, xmax=0, temp=0;
+  double effB_ = 0;
+  double Smin=0, Smax=0, temp=0;
+  bool found = false;
 
-  gr->GetPoint(0, xmin, temp);
-  gr->GetPoint(gr->GetN()-1, xmax, temp);
+  gr->GetPoint(0, Smin, temp);
+  gr->GetPoint(gr->GetN()-1, Smax, effB_);
   //std::cout << xmin << " " << xmax << std::endl;
 
   for(int bin=histoBins; bin >= 1; --bin) {
   //for(int bin=1; bin <=histoBins; ++bin) {
     // get corresponding signal and background efficiencies
     effS = (bin-0.5)/double(histoBins);
-    if(effS < xmin || effS > xmax) // skip effS which are not in the range of the spline
+    if(effS < Smin || effS > Smax) // skip effS which are not in the range of the spline
       continue;
-    double effB = effSpl->Eval(effS);
+    effB = effSpl->Eval(effS);
     
     //std::cout << effS << " " << effB << "   " << (effB-bkgEff)*(effB_-bkgEff) << std::endl;
 
-    // find signal efficiency that corresponds to required background efficiency
-    if((effB-bkgEff)*(effB_-bkgEff) <= 0)
+    // found signal efficiency that corresponds to required background efficiency
+    if((effB-bkgEff)*(effB_-bkgEff) <= 0) {
+      found = true;
       break;
+    }
 
     effS_ = effS;
     effB_ = effB;
   }
 
-  // take mean between bin above and bin below
-  effS = 0.5*(effS + effS_);
+  //std::cout << "bkgEff " << bkgEff << " effB " << effB << " effB_ " << effB_ << " effS " << effS << " effS_ " << effS_ << " found " << found << std::endl;
+
+  // Take mean between bin above and bin below
+  if(found)
+    effS = 0.5*(effS + effS_);
+  // If the intersection point is not found, the background efficiency
+  // is always less than the given level (bkgEff argument) => the
+  // signal efficiency at given background efficiency is 1
+  else
+    effS = 1.0;
 
   return effS;
 }
