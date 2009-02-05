@@ -15,31 +15,32 @@ ROOTLIBS += $(shell test -e $(ROOTLIBDIR)/libTMVA.so && echo -lTMVA)
 CXXFLAGS := -O2 -Wall -fPIC -D_REENTRANT $(ROOTINC) $(INC)
 LDFLAGS := $(ROOTLIBS)
 
+# Targets which do not produce a file with the same name
+.PHONY: all test ah0 ah1 vk clean clean_all
+
+all: $(EXE)
 $(EXE): $(OBJS)
 	$(CXX) $(LDFLAGS) -O $^ -o $@
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-test:
-	make; ./$(EXE)
+test: all
+	./$(EXE)
 ah0:
 	root -l chep09tmva_aatos.C
 	root -l TMVAGui.C
-ah1:
-	make
-	./chep09tmva tmva-aatos.conf
+ah1: all
+	./$(EXE) tmva-aatos.conf
 	root -l TMVAGui.C
 
-vk:
-	make
-	./chep09tmva tmva-veikko.conf
+vk: all
+	./$(EXE) tmva-veikko.conf
 	root -l TMVAGui.C
 
 clean:
 	rm -f $(OBJS) $(EXE)
 
-clean_all:
-	@make clean
+clean_all: clean
 	rm -f TMVA.root
 	rm -fR plots
 	rm -fR weights
