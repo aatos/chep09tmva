@@ -176,11 +176,8 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
 
   // Initialize TMVA Reader
   TMVA::Reader *reader = new TMVA::Reader("Silent");
-  fLogger << kINFO << "2-0" << Endl;
   std::vector<float *> readerVariables;
   int nvariables = config.variables.size();
-
-  fLogger << kINFO << "2-1" << Endl;
 
   for(std::vector<std::string>::const_iterator var = config.variables.begin(); var != config.variables.end(); ++var) {
     float *rvar = new float(0);
