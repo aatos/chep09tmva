@@ -1,7 +1,8 @@
 #!/bin/sh
 
 dirname=$(pwd | awk 'BEGIN{FS="/"}{print $NF}')
-tarball=$dirname-contribution.tar.gz
+tarball=$dirname-contribution.tar
+excludefile=$dirname/.gitignore
 
 cd ..
 if [ -e $dirname ]; then
@@ -14,6 +15,8 @@ fi
 
 echo "Tarball name : $tarball"
 echo "Contribution directory : $dirname"
-tar -czf $tarball $dirname
+tar -cf $tarball $dirname -X $excludefile
+tar -rf $tarball $dirname/.gitrevision
+gzip $tarball
 echo "Created tarball: ../$tarball. (see the parent directory)"
 echo "Please submit this file to pekka.kaitaniemi@gmail.com"
