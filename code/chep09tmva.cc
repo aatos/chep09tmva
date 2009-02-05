@@ -24,12 +24,20 @@ void print_usage(void);
 void createChain(std::vector<std::string>& files, TChain *chain, const char *datasetName,
                  long& eventsAll, long& eventsSelected);
 
+struct TimerData {
+  double realtime;
+  double cputime;
+};
+
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
   TStopwatch timer_total;
   timer_total.Start();
   TStopwatch timer;
-  std::vector<std::pair<std::string, double> > timer_data;
+  TimerData timer_data;
+  timer_data.realtime = 0;
+  timer_data.cputime = 0;
+  std::vector<std::pair<std::string, TimerData> > timer_vector;
   timer.Start();
 
   // Configuration
@@ -177,7 +185,9 @@ int main(int argc, char **argv) {
   TFile *outputFile = TFile::Open(outputfileName, "RECREATE");
 
   timer.Stop();
-  timer_data.push_back(std::make_pair("Initialization (ours)", timer.RealTime()));
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Initialization (ours)", timer_data));
   timer.Reset();
 
 
@@ -224,28 +234,36 @@ int main(int argc, char **argv) {
   }
 
   timer.Stop();
-  timer_data.push_back(std::make_pair("Initialization (TMVA)", timer.RealTime()));
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Initialization (TMVA)", timer_data));
   timer.Reset();
 
   // Train classifiers
   timer.Start();
   factory->TrainAllMethods();
   timer.Stop();
-  timer_data.push_back(std::make_pair("Training", timer.RealTime()));
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Training", timer_data));
   timer.Reset();
 
   // Evaluate all classifiers
   timer.Start();
   factory->TestAllMethods();
   timer.Stop();
-  timer_data.push_back(std::make_pair("Testing", timer.RealTime()));
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Testing", timer_data));
   timer.Reset();
 
   // Compare classifier performance
   timer.Start();
   factory->EvaluateAllMethods();
   timer.Stop();
-  timer_data.push_back(std::make_pair("Evaluation", timer.RealTime()));
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Evaluation", timer_data));
   timer.Reset();
 
   // MyFactory stuff
@@ -256,7 +274,9 @@ int main(int argc, char **argv) {
                          bkgEventsAll, bkgEventsSelected,
                          signalEntries, bkgEntries);
     timer.Stop();
-    timer_data.push_back(std::make_pair("Jet efficiencies", timer.RealTime()));
+    timer_data.realtime = timer.RealTime();
+    timer_data.cputime = timer.CpuTime();
+    timer_vector.push_back(std::make_pair("Jet efficiencies", timer_data));
     timer.Reset();
   }
 
@@ -307,18 +327,26 @@ int main(int argc, char **argv) {
 
     evaluate.calculateEventEfficiency(config);
     timer.Stop();
-    timer_data.push_back(std::make_pair("Event efficiencies", timer.RealTime()));
+    timer_data.realtime = timer.RealTime();
+    timer_data.cputime = timer.CpuTime();
+    timer_vector.push_back(std::make_pair("Event efficiencies", timer_data));
     timer.Reset();
   }
 
   if(std::find(config.reports.begin(), config.reports.end(), "Timer") != config.reports.end()) {
-    std::cout << "Elapsed real time" << std::endl;
-    for(std::vector<std::pair<std::string, double> >::const_iterator iter = timer_data.begin(); iter != timer_data.end(); ++iter) {
-      std::cout << "  " << std::setw(22) << std::left << iter->first << ": " << iter->second << " seconds" << std::endl;
+    std::cout << "Elapsed                   CPU time  real time" << std::endl;
+    for(std::vector<std::pair<std::string, TimerData> >::const_iterator iter = timer_vector.begin(); iter != timer_vector.end(); ++iter) {
+      std::cout << "  " << std::setw(22) << std::left << iter->first << ": " 
+                << std::setw(9) << std::setprecision(4) << iter->second.cputime << " " 
+                << std::setw(9) << std::setprecision(4) << iter->second.realtime << " "
+                << "seconds" << std::endl;
     }
     timer_total.Stop();
     std::cout << "  " << "-------------------------------------" << std::endl
-              << "  " << std::setw(22) << std::left << "Total" << ": " << timer_total.RealTime() << " seconds" << std::endl;
+              << "  " << std::setw(22) << std::left << "Total" << ": " 
+              << std::setw(9) << std::setprecision(4) << timer_total.CpuTime() << " " 
+              << std::setw(9) << std::setprecision(4) << timer_total.RealTime() << " "
+              << "seconds" << std::endl;
   }
 
   std::cout << "Created output file " << outputfileName << std::endl;
