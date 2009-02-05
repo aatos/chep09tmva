@@ -6,15 +6,12 @@ excludefile=$dirname/.gitignore
 
 cd ..
 if [ -e $dirname ]; then
-# The default directory name is OK.    
-    echo "Creating contribution archive from directory $dirname"
+    echo "Contribution directory : $dirname"
 else
     echo "Error: Directory $dirname does not exist."
     exit 1
 fi
 
-echo "Tarball name : $tarball"
-echo "Contribution directory : $dirname"
 tar -cf $tarball $dirname -X $excludefile
 tar -rf $tarball $dirname/.gitrevision
 gzip $tarball
