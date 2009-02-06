@@ -37,7 +37,7 @@ void MyOutput::addMethod(std::string name) {
     start = stop+1;
   }
 
-  maxMethodParams = std::max(maxMethodParams, params.size());
+  maxMethodParams = std::max(maxMethodParams, unsigned(params.size()));
 
   methods.insert(std::make_pair(name, params));
 }
