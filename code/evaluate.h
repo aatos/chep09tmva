@@ -13,6 +13,7 @@
 #include <TMVA/MsgLogger.h>
 
 #include "config.h"
+#include "output.h"
 
 struct EffResult {
   std::string name;
@@ -46,7 +47,7 @@ public:
     bkgEventsPreSelected = selected;
   }
 
-  void calculateEventEfficiency(MyConfig& config);
+  void calculateEventEfficiency(MyConfig& config, MyOutput& output);
 
   // This is for RootFinder
   static MyEvaluate *getThisBase() { return thisBase; }
@@ -59,7 +60,7 @@ private:
 
   double getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TGraph *gr);
   double getSignalEfficiencyError(double nevents_s, double eff_s);
-  void printEffResults(std::vector<EffResult>& results, bool scaleBkg=false);
+  void printEffResults(std::vector<EffResult>& results, MyOutput& output, std::string column, bool scaleBkg=false);
 
   struct Data {
     TTree *tree;

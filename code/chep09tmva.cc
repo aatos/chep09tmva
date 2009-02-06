@@ -19,6 +19,7 @@
 #include "config.h"
 #include "factory.h"
 #include "evaluate.h"
+#include "output.h"
 
 void print_usage(void);
 void createChain(std::vector<std::string>& files, TChain *chain, const char *datasetName,
@@ -42,6 +43,7 @@ int main(int argc, char **argv) {
 
   // Configuration
   TString outputfileName("TMVA.root");
+  MyOutput csvOutput("tmva.csvoutput.txt");
   TString signalDataset("Pythia8_generatorLevel_HCh300");
   TString bkgDataset("Pythia8_generatorLevel_QCD_120_170");
   TString signalTreeName("TauID_");
@@ -119,6 +121,7 @@ int main(int argc, char **argv) {
   for(std::map<std::string, std::string>::const_iterator iter = config.classifiers.begin();
       iter != config.classifiers.end(); ++iter) {
     std::cout << iter->first << ": " << iter->second << std::endl;
+    csvOutput.addMethod(iter->first);
   }
   std::cout << std::endl;
 
@@ -266,11 +269,11 @@ int main(int argc, char **argv) {
   timer_vector.push_back(std::make_pair("Evaluation", timer_data));
   timer.Reset();
 
-  // MyFactory stuff
+  // MyFactory stuff 
   MyFactory *fac = dynamic_cast<MyFactory* >(factory);
   if(fac && std::find(config.reports.begin(), config.reports.end(), "JetEfficiencies") != config.reports.end()) {
     timer.Start();
-    fac->printEfficiency(config, signalEventsAll, signalEventsSelected,
+    fac->printEfficiency(config, csvOutput, signalEventsAll, signalEventsSelected,
                          bkgEventsAll, bkgEventsSelected,
                          signalEntries, bkgEntries);
     timer.Stop();
@@ -279,7 +282,7 @@ int main(int argc, char **argv) {
     timer_vector.push_back(std::make_pair("Jet efficiencies", timer_data));
     timer.Reset();
   }
-
+  
   // Save output
   outputFile->Close();
 
@@ -325,12 +328,16 @@ int main(int argc, char **argv) {
       evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false, bkgTestEntries);
     evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
 
-    evaluate.calculateEventEfficiency(config);
+    evaluate.calculateEventEfficiency(config, csvOutput);
     timer.Stop();
     timer_data.realtime = timer.RealTime();
     timer_data.cputime = timer.CpuTime();
     timer_vector.push_back(std::make_pair("Event efficiencies", timer_data));
     timer.Reset();
+  }
+
+  if(std::find(config.reports.begin(), config.reports.end(), "CsvOutput") != config.reports.end()) {
+    csvOutput.writeFile();
   }
 
   if(std::find(config.reports.begin(), config.reports.end(), "Timer") != config.reports.end()) {

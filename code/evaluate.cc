@@ -79,7 +79,7 @@ void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut, 
   background.testEntries = testEntries;
 }
 
-void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
+void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput) {
   fLogger << kINFO << Endl
           << Endl
           << "Testing classifiers in order to obtain signal/background efficiencies for EVENTS" << Endl
@@ -615,19 +615,19 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config) {
     fLogger << kINFO << Endl
             << "For comparison with the jet efficiency numbers reported by TMVA" << Endl
             << "Signal and background event efficiencies have NOT been scaled with preselections" << Endl;
-    printEffResults(efficiencies);
+    printEffResults(efficiencies, csvOutput, "eventEffTmva");
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesBkgScaled") != config.reports.end()) {
     fLogger << kINFO << Endl
             << "Background event efficiency has been scaled with the preselection bkg event" << Endl
             << "efficiency (signal event efficiency is as given by TMVA)" << Endl;
-    printEffResults(efficienciesBkgScaled, true);
+    printEffResults(efficienciesBkgScaled, csvOutput, "eventEffBkgScaled", true);
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesAllScaled") != config.reports.end()) {
     fLogger << kINFO << Endl 
             << "Signal and background event efficiencies have been scaled with the preselection" << Endl
             << "event efficiencies" << Endl;
-    printEffResults(efficienciesAllScaled, true);
+    printEffResults(efficienciesAllScaled, csvOutput, "eventEffScaled", true);
   }
 
   fLogger << kWARNING << " !!!  This module is still experimental  !!!" << Endl;
@@ -734,7 +734,7 @@ double MyEvaluate::getSignalEfficiencyError(double nevents_s, double eff_s) {
   return err;
 }
 
-void MyEvaluate::printEffResults(std::vector<EffResult>& results, bool scaleBkg) {
+void MyEvaluate::printEffResults(std::vector<EffResult>& results, MyOutput& csvOutput, std::string column, bool scaleBkg) {
   fLogger << kINFO 
           << "Evaluation results ranked by best signal efficiency at 1e-5" << Endl
           << hLine << Endl
@@ -749,6 +749,7 @@ void MyEvaluate::printEffResults(std::vector<EffResult>& results, bool scaleBkg)
                              iter->eff3, int(iter->eff3err*1e4), iter->eff2, int(iter->eff2err*1e4))
             << (scaleBkg?"":Form("  %1.4f(%03d)", iter->eff1, int(iter->eff1err*1e4)))
             << Endl;
+    csvOutput.addResult(iter->name, column, iter->eff5);
   }
 
   fLogger << kINFO << hLine << Endl;

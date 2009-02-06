@@ -8,6 +8,7 @@
 #include <TMVA/Factory.h>
 
 #include "config.h"
+#include "output.h"
 
 class MyFactory: public TMVA::Factory {
 private:
@@ -26,7 +27,7 @@ private:
 public:
   MyFactory(TString theJobName, TFile* theTargetFile, TString theOption = "");
 
-  virtual void printEfficiency(MyConfig& config, long signalEventsAll, long signalEventsSelected,
+  virtual void printEfficiency(MyConfig& config, MyOutput& output, long signalEventsAll, long signalEventsSelected,
                                long bkgEventsAll, long bkgEventsSelected,
                                long signalEntries, long bkgEntries);
 

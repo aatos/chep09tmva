@@ -9,7 +9,8 @@ MyFactory::MyFactory(TString theJobName, TFile* theTargetFile, TString theOption
   TMVA::Factory(theJobName, theTargetFile, theOption)
 {}
 
-void MyFactory::printEfficiency(MyConfig& config, long signalEventsAll, long signalEventsSelected,
+void MyFactory::printEfficiency(MyConfig& config, MyOutput& csvOutput,
+                                long signalEventsAll, long signalEventsSelected,
                                 long bkgEventsAll, long bkgEventsSelected,
                                 long signalEntries, long bkgEntries) {
   using TMVA::MsgLogger;
@@ -72,6 +73,8 @@ void MyFactory::printEfficiency(MyConfig& config, long signalEventsAll, long sig
     double eff = data->eff*signalPreSelEff;
     //fLogger << kINFO << Form("%-15s: %1.3f(%02i)", data->name.c_str(), eff, int(data->err*1000)) << Endl;
     fLogger << kINFO << Form("%-15s: %1.5f     %1.5f", data->name.c_str(), data->eff, eff) << Endl;
+    csvOutput.addResult(data->name, "jetEffTmva", data->eff);
+    csvOutput.addResult(data->name, "jetEffScaled", eff);
   }
   fLogger << kINFO << hLine << Endl;
 }
