@@ -43,7 +43,7 @@ release:
 
 contribution:
 	@echo "Preparing contribution tarball..."
-	./tools/create-contribution.sh
+	@./tools/create-contribution.sh
 	@echo "Done."
 
 ahRelease:
