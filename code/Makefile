@@ -25,7 +25,7 @@ $(EXE): $(OBJS)
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 test: all
-	./$(EXE)
+	root -l menu.C
 ah0:
 	root -l chep09tmva_aatos.C
 	root -l TMVAGui.C
