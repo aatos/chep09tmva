@@ -111,6 +111,7 @@ echo " "
 ./chep09tmva $CONF color=false | tee tmva.out
 
 movetoresults tmva.out
+movetoresults tmva.csvoutput.txt
 movetoresults TMVA.root
 movetoresults weights
 

@@ -102,6 +102,7 @@ echo " "
 #echo "Return value $?"
 
 movetoresults tmva.out
+movetoresults tmva.csvoutput.txt
 movetoresults TMVA.root
 movetoresults weights
 
