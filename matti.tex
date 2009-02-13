@@ -246,3 +246,25 @@
   \end{itemize}
 \end{itemize}
 
+\subsubsection{TMVA Comments}
+\begin{itemize}
+\item The ROC curve for Cuts classifier is probably wrong. I guess
+  that the signal efficiency comes from \textbf{training} and not from
+  testing. For other classifiers the signal efficiency comes from
+  testing.
+
+  In the case of Cuts, also the background rejection could be wrong.
+  E.g. it might happen that the cuts optimisation fails for some
+  (training) signal efficiency or otherwise the cut values are
+  non-valid. If this kind of cut is then applied to both signal and
+  background data, nothing would be accepted, but in the ROC curve
+  there is a rejection of 1 in the corresponding (training) signal
+  efficiency bin.
+
+\item There are a few special cases where the \emph{signal efficiency
+    at bkg eff} numbers in the stdout could be wrong
+  \begin{itemize}
+  \item The achieved bacgkround efficiency is greater/smaller
+    \emph{for all} signal efficiencies than the requested bkg eff
+  \end{itemize}
+\end{itemize}
