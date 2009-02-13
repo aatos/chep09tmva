@@ -6,6 +6,7 @@
 
 # unset AHSYSTEM
 d = ah09bProceedings
+e = ah09aTalk
 
 #tex       = latex
 tex       = pdflatex
@@ -26,7 +27,7 @@ ifdef USEVIEWER
 endif
 
 ca:
-	rm -f $(d).pdf $(d).ps *.out $(d)_*.eps $(d).idx *.tar.gz
+	rm -f $(d).pdf $(e).pdf $(d).ps *.out $(d)_*.eps $(d).idx *.tar.gz
 
 pdf:
 	@echo :: prepare ps and pdf from dvi
@@ -56,3 +57,12 @@ ahAddPekka:
 ahGetPekka:
 	git fetch pekka
 	git merge pekka/master
+
+talk: 
+	@echo :::document = $(e)
+	@echo :::preparing latex ...
+	@rm -f *.aux
+	@$(tex) $(e); bibtex $(e); $(tex) $(e); $(tex) $(e); $(tex) $(e)
+ifdef USEVIEWER
+	$(PDFVIEWER) $(e).pdf
+endif

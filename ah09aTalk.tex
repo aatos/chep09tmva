@@ -1,0 +1,111 @@
+\newif\ifPAPER  
+%\PAPERtrue % select either slide or note
+\PAPERfalse  
+
+\def\t{\title{Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}}
+
+\def\a{
+\author{A.~Heikkinen} 
+\affiliation{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki (Finland)}
+}
+
+\newcommand{\codeAlgorithm}[1]{
+\addcontentsline{toc}{section}{Résumé}
+\begin{center}\fbox{\parbox{12cm}{\bf #1}}\end{center}}
+
+\newcommand{\cppintro}[1]{
+\lstset{language=C,
+caption= #1 ,
+label=listing:boundary}}
+
+\def\cppstart{\begin{lstlisting}}
+\def\cppend{\end{lstlisting}}
+
+\newif\ifCITENOTE 
+\CITENOTEtrue
+
+\ifPAPER
+
+\else   % Slides ---------------------------------------------------------------
+
+\documentclass[slidestop,compress,xdvips,10pt]{beamer} 
+\usetheme{Antibes}
+\usecolortheme{lily}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{verbatim} % for comment
+\transglitter[direction=315]
+\xdefinecolor{ahcol}{rgb}{0.2, 0.4, 0.1}
+\xdefinecolor{olive}{cmyk}{0.64,0,0.95,0.4}
+\colorlet{structure}{green!60!black} % for color substitution
+\usepackage{color} % for definecolor
+\definecolor{light-gray}{gray}{0.95}
+\definecolor{dark-gray}{gray}{0.30}
+\definecolor{orange}{rgb}{1,0.5,0}
+\definecolor{dark-blue}{cmyk}{1,0.5,0.5,0}
+
+\hypersetup{
+    a4paper, % page format
+    pdftitle={My Title},                  % Title
+    pdfsubject={Subject of the document}, % Subject 
+    pdfauthor={Author name},              % Author
+    pdfkeywords={list of keywords},       % Keywords
+    plainpages=true, %
+    colorlinks,       % links are colored
+    urlcolor=dark-blue,    % color of external links
+    linkcolor=dark-blue,    % color of internal links
+    citecolor=black,  % color of links to bibliography
+    bookmarksnumbered
+}
+
+\usecolortheme[named=ahcol]{structure}
+\useoutertheme{myinfolines}
+\useinnertheme{rounded}
+\setbeamercolor{alerted_text}{fg=blue}
+\makeatother
+\beamertemplatetransparentcoveredhigh
+\t
+\author{\underline{A.~Heikkinen}, P.~Kaitaniemi, V. Karim\"{a}ki,
+ R.~Kinnunen,  M.~J.~Kortelainen, T.~Lamp\'{e}n, S.~Lehti, T.~Lind\'{e}n, and L.~Wendland 
+\footnote{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.
+Contact: aatos.heikkinen@cern.ch}}
+
+%\author{Aatos Heikkinen 
+%\footnote{Helsinki Institute of Physics, Helsinki, Finland.
+%{\tt aatos.heikkinen@cern.ch}} and Ivica Puljak 
+%\footnote{University of Split - FESB, Split, Croatia}
+%}
+\graphicspath{{.}{figures/}}
+\begin{document}
+\frame{\titlepage}
+\begin{comment}
+\end{comment}
+
+\section{Outline}
+
+\subsection{}
+\frame{
+\frametitle{Outline}
+
+\vspace{0.5cm}
+
+
+%Introduction to concept of \href{http://en.wikipedia.org/wiki/Probability}{probability}
+
+\vspace{0.5cm}
+
+}
+
+
+\bibliographystyle{alpha}  % Options plain, unsrt, alpha, abbrv
+\bibliography{refs} %10 p
+
+
+
+\end{document}
+
+\fi %slides
+
+
+
