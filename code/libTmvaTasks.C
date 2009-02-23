@@ -23,7 +23,7 @@ HIPTMVARun::HIPTMVARun(const char *name, const char *title)
 
 void HIPTMVARun::Exec(Option_t *option)
 {
-  TString command = Form("gSystem->Exec(\"./chep09tmva %s\")", GetName());
+  TString command = Form("gSystem->Exec(\"./chep09tmva %s & \")", GetName());
   cout << "Running command: " << command <<endl;
   gROOT->ProcessLine(command);
 }
