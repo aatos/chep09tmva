@@ -24,6 +24,10 @@ $(EXE): $(OBJS)
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+gui: all
+	root -l hiptmvagui.C
+
 test: all
 	root -l menu.C
 ah0:
