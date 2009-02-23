@@ -3,6 +3,11 @@
 #include "TFolder.h"
 #include "TGFileBrowser.h"
 #include "Riostream.h"
+#include "TFile.h"
+
+TFile *gTMVAOutputFile;
+TFolder *results;
+TGFileBrowser *tmvaBrowser;
 
 class HIPTMVARun : public TTask {
 public:
@@ -53,6 +58,21 @@ HIPTMVARunList::HIPTMVARunList(const char *name, const char *title)
   Add(new HIPTMVARun("tmva-pekka.conf", "tmva-pekka.conf"));
 }
 
+void openOutputFile()
+{
+  gTMVAOutputFile = new TFile("TMVA.root");
+  results->Add(gTMVAOutputFile);
+  // new HIPTMVAOutputTree
+}
+
+void closeOutputFile()
+{
+  // delete HIPTMVAOutputTree
+  results->Remove((TObject *) gTMVAOutputFile);
+  gTMVAOutputFile->Close();
+  tmvaBrowser->Refresh();
+}
+
 void setupGui(TGFileBrowser *b)
 {
   TFolder *hipTMVA = new TFolder("HIPTMVA", "HIP TMVA GUI");
@@ -60,7 +80,7 @@ void setupGui(TGFileBrowser *b)
   b->Add(hipTMVA);
   //  TFolder *runMacros = hipTMVA->AddFolder("runConfigurations", "HIPTMVARun configurations"); 
   hipTMVA->Add(new HIPTMVARunList("Configurations", "Run configurations"));
-  TFolder *results = hipTMVA->AddFolder("results", "Results (TMVA.root)"); 
+  results = hipTMVA->AddFolder("Results", "Results (TMVA.root)"); 
   //  runMacros->Add(new HIPTMVARun("Menu", "HIP TMVA Menu system"));
 }
 //}
