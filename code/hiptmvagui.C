@@ -3,7 +3,7 @@
 gROOT->LoadMacro("libTmvaTasks.C++"); // Compile and load the HIP TMVA GUI classes
 gSystem->Load("libEve.so");
 
-TEveManager::Create();
+TEveManager::Create(kTRUE, "FI");
 
 gEve->GetBrowser()->StartEmbedding(0);
 TGFileBrowser *tmvaBrowser = gEve->GetBrowser()->MakeFileBrowser();
