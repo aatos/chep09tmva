@@ -28,7 +28,7 @@ function get_remotes ()
     if test "$fetchorigin" -eq 1; then
 	echo $(git remote | xargs)
     else
-	echo $(git remote | sed '/origin/ d' | xargs)
+	echo $(git remote | sed '/origin/ d' | sed '/private/ d' | xargs)
     fi
 }
 
