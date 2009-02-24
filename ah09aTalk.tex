@@ -84,10 +84,42 @@ Contact: aatos.heikkinen@cern.ch}}
 
 \section{Outline}
 
+\begin{comment}
+We report our experience on using ROOT package TMVA for
+multivariate data analysis, for a problem of $\tau$ tagging in the
+framework of heavy charged MSSM Higgs boson searches at the LHC.
+
+With a generator level analysis, 
+we investigate how in the ideal case $\tau$ tagging could be performed and 
+hadronic $\tau$ decays separated from the
+hadronic jets of QCD multi-jet background present in LHC experiments. 
+
+A successful separation of the Higgs signal from the background 
+requires a rejection factor of $10^5$ or better against the QCD background. 
+
+The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
+\end{comment}
+
 \subsection{}
 \frame{
 \frametitle{Outline}
 
+\begin{itemize}
+\item {\bf Motivation}: our experience on using ROOT package TMVA for multivariate data analysis.
+\item {\bf Use case:} $\tau$ tagging in the
+framework of heavy charged MSSM Higgs boson searches at the LHC.
+\item {\bf Data:} a generator level Pythia8 data for LHC 14 TeV and 10 TeV p-p collisions 
+\begin{itemize}
+\item Hadronic $\tau$ decay signal
+\item Hadronic jets of QCD multi-jet background
+\end{itemize}
+\item {\bf Goal:} 
+to investigate how in the ideal case (no detector effects ) $\tau$ tagging could be performed and 
+hadronic $\tau$ decays separated from the
+hadronic jets of QCD multi-jet background present in LHC experiments. 
+
+\item {\bf Method/Results:} The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
+\end{itemize}
 \vspace{0.5cm}
 
 
@@ -96,7 +128,6 @@ Contact: aatos.heikkinen@cern.ch}}
 \vspace{0.5cm}
 
 }
-
 
 \bibliographystyle{alpha}  % Options plain, unsrt, alpha, abbrv
 \bibliography{refs} %10 p

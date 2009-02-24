@@ -5,18 +5,19 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{fancyhdr}
+\usepackage{verbatim} % needed by 'comment'
 %\usepackage{asymptote}
 %\usepackage{amsmath}
 \usepackage{color}
 \definecolor{mydarkred}{rgb}{0.7,0,0}
 \newcommand{\checkme}[1] {\textcolor{mydarkred}{{\bf CHECK ME:}  \{#1\}}}
-\newcommand{\comment}[1] {\textcolor{mydarkred}{\em  \{#1\}}} 
+%\newcommand{\comment}[1] {\textcolor{mydarkred}{\em  \{#1\}}} % commented to avoid clash with verbatim-package
 
 %\numberwithin{equation}{section} % Eguation numbering with section id. Reguires amsmath -package.
 \pagestyle{fancy}
 \fancyhead{} % clear all fields
 
-\fancyhead[L]{\bf {Febuary 17, 2008}} % Left Odd, Right Even
+\fancyhead[L]{\bf {Febuary 24, 2008}} % Left Odd, Right Even
 \fancyfoot[L]{A.~Heikkinen {\em et al.}: 
 {\em Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}}
 
