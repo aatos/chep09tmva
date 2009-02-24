@@ -13,6 +13,8 @@
 #include <TSystem.h>
 #include <TH1.h>
 #include <TStopwatch.h>
+#include <TList.h>
+#include <TKey.h>
 
 #include <TMVA/Config.h>
 
@@ -24,6 +26,10 @@
 void print_usage(void);
 void createChain(std::vector<std::string>& files, TChain *chain, const char *datasetName,
                  long& eventsAll, long& eventsSelected);
+
+bool sniffChainName(std::vector<std::string>& files, const std::string& treeName,
+                    std::string& chainName, std::string& dataset);
+
 
 struct TimerData {
   double realtime;
@@ -44,12 +50,7 @@ int main(int argc, char **argv) {
   // Configuration
   TString outputfileName("TMVA.root");
   MyOutput csvOutput("tmva.csvoutput.txt");
-  TString signalDataset("Pythia8_generatorLevel_HCh300");
-  TString bkgDataset("Pythia8_generatorLevel_QCD_120_170");
-  TString signalTreeName("TauID_");
-  TString bkgTreeName("TauID_");
-  signalTreeName += signalDataset;
-  bkgTreeName += bkgDataset;
+  std::string treeName("TauID_");
 
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
@@ -126,14 +127,36 @@ int main(int argc, char **argv) {
   std::cout << std::endl;
 
   // Input TChains
-  TChain *signalTrainChain = new TChain(signalTreeName);
-  TChain *bkgTrainChain = new TChain(bkgTreeName);
+  std::string signalTrainTreeName, signalTrainDataset, signalTestTreeName, signalTestDataset,
+    bkgTrainTreeName, bkgTrainDataset, bkgTestTreeName, bkgTestDataset;
+
+  if(!sniffChainName(config.signalTrainFiles, treeName, signalTrainTreeName, signalTrainDataset)) {
+    std::cout << "Unable to sniff the chain name for signal training tree" << std::endl;
+    return 1;
+  }
+  if(!sniffChainName(config.bkgTrainFiles, treeName, bkgTrainTreeName, bkgTrainDataset)) {
+    std::cout << "Unable to sniff the chain name for background training tree" << std::endl;
+    return 1;
+  }
+
+  TChain *signalTrainChain = new TChain(signalTrainTreeName.c_str());
+  TChain *bkgTrainChain = new TChain(bkgTrainTreeName.c_str());
   TChain *signalTestChain = 0;
   TChain *bkgTestChain = 0;
-  if(config.signalTestFiles.size() > 0)
-    signalTestChain = new TChain(signalTreeName);
-  if(config.bkgTestFiles.size() > 0)
-    bkgTestChain = new TChain(bkgTreeName);
+  if(config.signalTestFiles.size() > 0) {
+    if(!sniffChainName(config.signalTrainFiles, treeName, signalTestTreeName, signalTestDataset)) {
+      std::cout << "Unable to sniff the chain name for signal test tree" << std::endl;
+      return 1;
+    }
+    signalTestChain = new TChain(signalTestTreeName.c_str());
+  }
+  if(config.bkgTestFiles.size() > 0) {
+    if(!sniffChainName(config.bkgTrainFiles, treeName, bkgTestTreeName, bkgTestDataset)) {
+      std::cout << "Unable to sniff the chain name for background test tree" << std::endl;
+      return 1;
+    }
+    bkgTestChain = new TChain(bkgTestTreeName.c_str());
+  }
 
   long signalEntries = 0;
   long signalEventsAll = 0;
@@ -142,8 +165,8 @@ int main(int argc, char **argv) {
   long bkgEventsAll = 0;
   long bkgEventsSelected = 0;
 
-  std::cout << "Files for signal training TChain" << std::endl;
-  createChain(config.signalTrainFiles, signalTrainChain, signalDataset, signalEventsAll, signalEventsSelected);
+  std::cout << "Files for signal training TChain (name: " << signalTrainTreeName << ")" << std::endl;
+  createChain(config.signalTrainFiles, signalTrainChain, signalTrainDataset.c_str(), signalEventsAll, signalEventsSelected);
   signalEntries = signalTrainChain->GetEntries();
   std::cout << "Training chain has " << signalEntries << " entries (jets)" << std::endl
             << signalEventsAll << " events were generated, of which " << signalEventsSelected << " events were selected as input" << std::endl
@@ -152,8 +175,8 @@ int main(int argc, char **argv) {
   if(signalTestChain) {
     signalEventsAll = 0;
     signalEventsSelected = 0;
-    std::cout << "Files for signal testing TChain" << std::endl;
-    createChain(config.signalTestFiles, signalTestChain, signalDataset, signalEventsAll, signalEventsSelected);
+    std::cout << "Files for signal testing TChain (name: " << signalTestTreeName << ")" << std::endl;
+    createChain(config.signalTestFiles, signalTestChain, signalTestDataset.c_str(), signalEventsAll, signalEventsSelected);
     signalEntries = signalTestChain->GetEntries();
     std::cout << "Testing chain has " << signalEntries << " entries (jets)" << std::endl
               << signalEventsAll << " events were generated, of which " << signalEventsSelected << " events were selected as input" << std::endl
@@ -163,8 +186,8 @@ int main(int argc, char **argv) {
     std::cout << "!!! No files given for signal testing chain, training chain is split for training and testing !!!" << std::endl << std::endl;
   }
   
-  std::cout << "Files for background training TChain" << std::endl;
-  createChain(config.bkgTrainFiles, bkgTrainChain, bkgDataset, bkgEventsAll, bkgEventsSelected);
+  std::cout << "Files for background training TChain (name: " << bkgTrainTreeName << ")" << std::endl;
+  createChain(config.bkgTrainFiles, bkgTrainChain, bkgTrainDataset.c_str(), bkgEventsAll, bkgEventsSelected);
   bkgEntries = bkgTrainChain->GetEntries();
   std::cout << "Training Chain has " << bkgEntries << " entries (jets)" << std::endl
             << bkgEventsAll << " events were generated, of which " << bkgEventsSelected << " events were selected as input" << std::endl
@@ -173,8 +196,8 @@ int main(int argc, char **argv) {
   if(bkgTestChain) {
     bkgEventsAll = 0;
     bkgEventsSelected = 0;
-    std::cout << "Files for background testing TChain" << std::endl;
-    createChain(config.bkgTrainFiles, bkgTrainChain, bkgDataset, bkgEventsAll, bkgEventsSelected);
+    std::cout << "Files for background testing TChain (name: " << bkgTestTreeName << ")" << std::endl;
+    createChain(config.bkgTrainFiles, bkgTrainChain, bkgTestDataset.c_str(), bkgEventsAll, bkgEventsSelected);
     bkgEntries = bkgTrainChain->GetEntries();
     std::cout << "Testing Chain has " << bkgEntries << " entries (jets)" << std::endl
               << bkgEventsAll << " events were generated, of which " << bkgEventsSelected << " events were selected as input" << std::endl
@@ -388,4 +411,30 @@ void createChain(std::vector<std::string>& files, TChain *chain, const char *dat
     }
     file->Close();
   }
+}
+
+bool sniffChainName(std::vector<std::string>& files, const std::string& treeName,
+                    std::string& chainName, std::string& dataset) {
+  std::string ret("");
+  if(files.size() < 1)
+    return false;
+
+  TFile *file = TFile::Open(files[0].c_str());
+  TList *keyList = file->GetListOfKeys();
+  TIter next(keyList);
+  TKey *key = 0;
+  while(key = dynamic_cast<TKey *>(next())) {
+    if(std::strncmp(key->GetClassName(), "TTree", 5) == 0) {
+      std::string name(key->GetName());
+      if(name.find(treeName) == 0) {
+        ret = name;
+        break;
+      }
+    }
+  }
+  file->Close();
+  chainName = ret;
+  dataset = ret.substr(treeName.length(), std::string::npos);
+
+  return true;
 }
