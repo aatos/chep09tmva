@@ -20,4 +20,6 @@ tmvaBrowser->Add(m);
 TMacro *closeOutputFile = new TMacro();
 closeOutputFile->SetName("closeOutputFile");
 tmvaBrowser->Add(closeOutputFile);
+
+gEve->GetBrowser()->SetWindowName("HIP TMVA GUI");
 }
