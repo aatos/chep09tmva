@@ -423,7 +423,7 @@ bool sniffChainName(std::vector<std::string>& files, const std::string& treeName
   TList *keyList = file->GetListOfKeys();
   TIter next(keyList);
   TKey *key = 0;
-  while(key = dynamic_cast<TKey *>(next())) {
+  while((key = dynamic_cast<TKey *>(next()))) {
     if(std::strncmp(key->GetClassName(), "TTree", 5) == 0) {
       std::string name(key->GetName());
       if(name.find(treeName) == 0) {
