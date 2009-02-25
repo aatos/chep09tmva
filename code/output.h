@@ -32,15 +32,16 @@ private:
 class MyOutput {
 public:
   MyOutput();
-  MyOutput(std::string file);
+  MyOutput(const std::string& file);
 
-  void addMethod(std::string name);
-  void addResult(std::string method, std::string column, double value);
+  void addMethod(const std::string& name);
+  void addResult(const std::string& method, const std::string& column, double value);
+  void setComment(const std::string& column, const std::string& comment);
 
-  void print();
-  void print(std::ostream&);
+  void print() const;
+  void print(std::ostream&) const;
 
-  void writeFile();
+  void writeFile() const;
 
 private:
   std::string outputFile;
@@ -51,6 +52,9 @@ private:
   typedef std::map<std::string, double> ColumnData;
   typedef std::map<std::string, ColumnData> ValueData;
   ValueData values;
+
+  typedef std::map<std::string, std::string> CommentData;
+  CommentData comments;
 };
 
 #endif

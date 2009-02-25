@@ -616,18 +616,21 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
             << "For comparison with the jet efficiency numbers reported by TMVA" << Endl
             << "Signal and background event efficiencies have NOT been scaled with preselections" << Endl;
     printEffResults(efficiencies, csvOutput, "eventEffTmva");
+    csvOutput.setComment("eventEffTmva", "signal event efficiency at 1e-5 bkg event efficiency, both as given by TMVA (i.e. no scaling with preselection efficiencies");
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesBkgScaled") != config.reports.end()) {
     fLogger << kINFO << Endl
             << "Background event efficiency has been scaled with the preselection bkg event" << Endl
             << "efficiency (signal event efficiency is as given by TMVA)" << Endl;
     printEffResults(efficienciesBkgScaled, csvOutput, "eventEffBkgScaled", true);
+    csvOutput.setComment("eventEffBkgScaled", "signal event efficiency at 1e-5 bkg event efficiency, bkg efficiency scaled with preselection efficiency, signal efficiency as given by TMVA");
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesAllScaled") != config.reports.end()) {
     fLogger << kINFO << Endl 
             << "Signal and background event efficiencies have been scaled with the preselection" << Endl
             << "event efficiencies" << Endl;
     printEffResults(efficienciesAllScaled, csvOutput, "eventEffScaled", true);
+    csvOutput.setComment("eventEffScaled", "signal event efficiency at 1e-5 bkg event efficiency, both scaled with preselection efficiencies");
   }
 
   fLogger << kWARNING << " !!!  This module is still experimental  !!!" << Endl;

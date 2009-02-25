@@ -76,5 +76,7 @@ void MyFactory::printEfficiency(MyConfig& config, MyOutput& csvOutput,
     csvOutput.addResult(data->name, "jetEffTmva", data->eff);
     csvOutput.addResult(data->name, "jetEffScaled", eff);
   }
+  csvOutput.setComment("jetEffTmva", "signal jet efficiency at 1e-5 bkg jet efficiency as given by TMVA, event and jet preselection efficiencies have been applied for bkg jet efficiency");
+  csvOutput.setComment("jetEffScaled", "signal jet efficiency at 1e-5 bkg jet efficiency, event and jet preselection efficiencies have been applied for both signal and bkg jet efficiencies");
   fLogger << kINFO << hLine << Endl;
 }

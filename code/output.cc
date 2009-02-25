@@ -23,9 +23,9 @@ PrintValue::PrintValue(const std::string& value): type(kString), str(""), number
 }
 
 MyOutput::MyOutput(): outputFile("tmva-mvaresults.txt"), maxMethodParams(0) {}
-MyOutput::MyOutput(std::string file): outputFile(file), maxMethodParams(0) {}
+MyOutput::MyOutput(const std::string& file): outputFile(file), maxMethodParams(0) {}
 
-void MyOutput::addMethod(std::string name) {
+void MyOutput::addMethod(const std::string& name) {
   size_t start = 0;
   size_t stop = 0;
   std::vector<PrintValue> params;
@@ -42,7 +42,7 @@ void MyOutput::addMethod(std::string name) {
   methods.insert(std::make_pair(name, params));
 }
 
-void MyOutput::addResult(std::string method, std::string column, double value) {
+void MyOutput::addResult(const std::string& method, const std::string& column, double value) {
   ValueData::iterator columns = values.find(method);
   if(columns == values.end()) {
     ColumnData data;
@@ -54,6 +54,10 @@ void MyOutput::addResult(std::string method, std::string column, double value) {
   }
   if(std::find(this->columns.begin(), this->columns.end(), column) == this->columns.end()) 
     this->columns.push_back(column);
+}
+
+void MyOutput::setComment(const std::string& column, const std::string& comment) {
+  comments[column] = comment;
 }
 
 std::ostream& operator<<(std::ostream& s, const PrintValue& val) {
@@ -71,19 +75,20 @@ std::ostream& operator<<(std::ostream& s, const PrintValue& val) {
   return s;
 }
 
-void MyOutput::print() {
+void MyOutput::print() const {
   print(std::cout);
 }
 
-void MyOutput::writeFile() {
+void MyOutput::writeFile() const {
   std::ofstream output(outputFile.c_str());
   print(output);
   output.close();
 }
 
-void MyOutput::print(std::ostream& out) {
+void MyOutput::print(std::ostream& out) const {
   std::vector<bool> columnIsString;
   std::vector<unsigned int> columnWidth;
+  unsigned int maxColumnWidth = 0;
 
   columnIsString.resize(maxMethodParams+columns.size());
   columnWidth.resize(columnIsString.size());
@@ -98,7 +103,9 @@ void MyOutput::print(std::ostream& out) {
     columnWidth[i] = 3+int(log(double(i))+1);
   }
   for(unsigned int i=0; i<columns.size(); ++i) {
-    columnWidth[i+maxMethodParams] = columns[i].length();
+    unsigned int val = columns[i].length();
+    columnWidth[i+maxMethodParams] = val;
+    maxColumnWidth = std::max(val, maxColumnWidth);
   }
 
   std::vector<std::vector<PrintValue> > lines;
@@ -154,7 +161,28 @@ void MyOutput::print(std::ostream& out) {
 
   // My own header
   out << "########################################" << std::endl
+      << "#" << std::endl;
+  /*
+      << "# jetEffTmva         signal jet efficiency at 1e-5 bkg jet efficiency as given by TMVA, event" << std::endl
+      << "#                    and jet preselection efficiencies have been applied for bkg jet efficiency" << std::endl
       << "#" << std::endl
+      << "# jetEffScaled       signal jet efficiency at 1e-5 bkg jet efficiency, event and jet preselection" << std::endl
+      << "#                    efficiencies have been applied for both signal and bkg jet efficiencies" << std::endl
+      << "#" << std::endl
+      << "# eventEffTmva       " << std::endl
+      << "# eventEffBkgScaled" << std::endl
+      << "# eventEffScaled" << std::endl
+  */
+
+  for(unsigned int i=0; i<columns.size(); ++i) {
+    CommentData::const_iterator found = comments.find(columns[i]);
+    if(found != comments.end()) {
+      out << "# " << std::setw(maxColumnWidth) << std::left << columns[i]
+          << " " << found->second << std::endl;
+    }
+  }
+
+  out << "#" << std::endl
       << "# How to use in ROOT: " << std::endl
       << "#" << std::endl
     //<< "# TTree *tree = new TTree(\"data\", \"data\")" << std::endl
