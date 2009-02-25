@@ -26,7 +26,7 @@ void csv(TString input="tmva.csvoutput.txt", TString par1="par2", TString par2="
   tree->SetMarkerStyle(5);
   tree->SetMarkerColor(kRed);
   if(par2.Length() > 0) {
-    tree->Draw(Form("%s:%s", par1.Data(), par2.Data()));
+    tree->Draw(Form("%s:%s", par2.Data(), par1.Data()));
     TH1 *histo = tree->GetHistogram();
     if(!histo)
       return;

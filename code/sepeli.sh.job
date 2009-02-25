@@ -85,7 +85,7 @@ function replacedata {
 
 cd $WORKDIR
 
-for I in $LS_SUBCWD/tmva*conf; do
+for I in $LS_SUBCWD/*tmva*conf; do
     FILE=$(basename $I)
     copytoworkdir $FILE
     replacedata $FILE
