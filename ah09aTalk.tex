@@ -66,10 +66,9 @@ label=listing:boundary}}
 \makeatother
 \beamertemplatetransparentcoveredhigh
 \mytitle
-\author{\underline{A.~Heikkinen}, P.~Kaitaniemi, V. Karim\"{a}ki,
+\author{\underline{A.~Heikkinen}\footnote{Contact: aatos.heikkinen@cern.ch}, P.~Kaitaniemi, V. Karim\"{a}ki,
  R.~Kinnunen,  M.~J.~Kortelainen, T.~Lamp\'{e}n, S.~Lehti, T.~Lind\'{e}n, and L.~Wendland 
-\footnote{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.
-Contact: aatos.heikkinen@cern.ch}}
+\footnote{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.}}
 
 %\author{Aatos Heikkinen 
 %\footnote{Helsinki Institute of Physics, Helsinki, Finland.
@@ -108,15 +107,14 @@ The $\tau$ tagging efficiency and background rejection are studied with various 
 \item {\bf Motivation}: our experience on using ROOT package TMVA for multivariate data analysis.
 \item {\bf Use case:} $\tau$ tagging in the
 framework of heavy charged MSSM Higgs boson searches at the LHC.
-\item {\bf Data:} a generator level Pythia8 data for LHC 14 TeV and 10 TeV p-p collisions 
+\item {\bf Data:} a generator level Pythia/Tauola data for LHC 14 TeV p-p collisions.
 \begin{itemize}
-\item Hadronic $\tau$ decay signal
-\item Hadronic jets of QCD multi-jet background
+\item Signal: hadronic $\tau$ decay
+\item Background: hadronic QCD multi-jets
 \end{itemize}
 \item {\bf Goal:} 
-to investigate how in the ideal case (no detector effects ) $\tau$ tagging could be performed and 
-hadronic $\tau$ decays separated from the
-hadronic jets of QCD multi-jet background present in LHC experiments. 
+to investigate how in the ideal case (no detector effects) $\tau$ tagging could be performed and 
+separated from the background present.
 
 \item {\bf Method/Results:} The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
 \end{itemize}
@@ -129,8 +127,34 @@ hadronic jets of QCD multi-jet background present in LHC experiments.
 
 }
 
+\subsection{Data}
+\frame{
+\frametitle{Data}
+Data was generated using Pythia/Tauola for LHC 14 TeV p-p collisions.
+
+\vspace{0.5cm}
+Preselection cuts were applied to variables:
+
+\begin{tabular}{l*{2}{l}r}
+\hline
+Variable                                    & Selection                  \\
+\hline
+Jet $E_T$                                   & {\tt jetEt>119}            \\
+Jet $\eta$                                  & {\tt |jeteta|<1.7}         \\
+Leading track $p_T$                         & {\tt ldgPt>20}             \\
+Track isolation ($\Delta$R=0.50)            & {\tt isolMaxPt50<1.0}      \\
+Signal track (1-prog)                       & {\tt signalTracks==1}      \\
+ECAL isolation ($\Delta$R=0.10-0.50)        & {\tt ecalIsolEt10\_50<1.8} \\
+Electron rejection                          & {\tt hcalRatio>-0.9}       \\
+Neutral hadron rejection                    & {\tt hcalRatio<0.1}        \\
+$\tau$-helicity correlations \cite{roy00a}: &                            \\
+$R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
+\hline
+\end{tabular}
+}
+
 \bibliographystyle{alpha}  % Options plain, unsrt, alpha, abbrv
-\bibliography{refs} %10 p
+\bibliography{chep09} %10 p
 
 
 

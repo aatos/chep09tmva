@@ -17,7 +17,7 @@
 \pagestyle{fancy}
 \fancyhead{} % clear all fields
 
-\fancyhead[L]{\bf {Febuary 24, 2008}} % Left Odd, Right Even
+\fancyhead[L]{\bf {Febuary 26, 2008}} % Left Odd, Right Even
 \fancyfoot[L]{A.~Heikkinen {\em et al.}: 
 {\em Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}}
 
@@ -95,16 +95,34 @@ at the LHC \cite{heikkinen07lProceedings}.
 
 
 \section{DATA AND VARIABLES}
+
 \subsection{Event generation}
+Pythia6 and Tauola (a dedicated package to perform decays of tau-leptons) was used.
 %\subsection{Ideal case vs. detector effects}
 % smearing
 %\subsection{Discriminating variables}
 \subsection{Variables used in a standard analysis }
 
-In order to enable comparison between different MVA classifiers we prepared a standard
-analyis using six variabled with fixed preselections cuts.
+In order to enable comparison between different MVA classifiers 
+we prepared a standard
+analyis using variables with fixed preselections cuts:
 
-
+\begin{tabular}{l*{2}{l}r}
+\hline
+Variable                                    & Selection                  \\
+\hline
+Jet $E_T$                                   & {\tt jetEt>119}            \\
+Jet $\eta$                                  & {\tt |jeteta|<1.7}         \\
+Leading track $p_T$                         & {\tt ldgPt>20}             \\
+Track isolation ($\Delta$R=0.50)            & {\tt isolMaxPt50<1.0}      \\
+Signal track (1-prog)                       & {\tt signalTracks==1}      \\
+ECAL isolation ($\Delta$R=0.10-0.50)        & {\tt ecalIsolEt10\_50<1.8} \\
+Electron rejection                          & {\tt hcalRatio>-0.9}       \\
+Neutral hadron rejection                    & {\tt hcalRatio<0.1}        \\
+$\tau$-helicity correlations \cite{roy00a}: &                            \\
+$R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
+\hline
+\end{tabular}
 
 \subsection{IMPLEMENTATION \label{section:implementation}}
 [code example]
