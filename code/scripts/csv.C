@@ -6,6 +6,12 @@
 #include <TCanvas.h>
 #include <TLatex.h>
 
+int textColor(double value, double max) {
+  double f = value/max;
+  int ncolors = gStyle->GetNumberOfColors();
+  return gStyle->GetColorPalette(int(f*(ncolors-1)));
+}
+
 void csv(TString input="tmva.csvoutput.txt", TString par1="par2", TString par2="par3", TString value="eventEffScaled") {
   std::cout << "Usage:" << std::endl
             << ".x scripts/csv.C    with default arguments" << std::endl
@@ -21,12 +27,16 @@ void csv(TString input="tmva.csvoutput.txt", TString par1="par2", TString par2="
   TTree *tree = new TTree("data", "data");
   tree->ReadFile(input);
 
-  TCanvas *canvas = new TCanvas("csvoutput", "CSV Output", 600, 400);
+  gStyle->SetPalette(1);
+  gStyle->SetPadRightMargin(0.14);
 
-  tree->SetMarkerStyle(5);
+  TCanvas *canvas = new TCanvas("csvoutput", "CSV Output", 1200, 900);
+
+  tree->SetMarkerStyle(kFullDotMedium);
   tree->SetMarkerColor(kRed);
   if(par2.Length() > 0) {
-    tree->Draw(Form("%s:%s", par2.Data(), par1.Data()));
+    //tree->Draw(Form("%s:%s", par2.Data(), par1.Data()));
+    tree->Draw(Form("%s:%s:%s", par2.Data(), par1.Data(), value.Data()), "", "COLZ"); //, "", "Z");
     TH1 *histo = tree->GetHistogram();
     if(!histo)
       return;
@@ -34,10 +44,12 @@ void csv(TString input="tmva.csvoutput.txt", TString par1="par2", TString par2="
     histo->SetTitle(Form("%s with different classifier parameters", value.Data()));
     histo->GetXaxis()->SetTitle(Form("Classifier parameter %s", par1.Data()));
     histo->GetYaxis()->SetTitle(Form("Classifier parameter %s", par2.Data()));
+    histo->GetZaxis()->SetTitle("");
 
     float x = 0;
     float y = 0;
     float val = 0;
+    double maxVal = tree->GetMaximum(value);
 
     tree->SetBranchAddress(par1, &x);
     tree->SetBranchAddress(par2, &y);
@@ -50,7 +62,8 @@ void csv(TString input="tmva.csvoutput.txt", TString par1="par2", TString par2="
     for(Long64_t entry=0; entry < nentries; ++entry) {
       tree->GetEntry(entry);
     
-      l.DrawLatex(x, y, Form("%.3f %%", val*100));
+      l.SetTextColor(textColor(val, maxVal));
+      l.DrawLatex(x, y, Form("%.3f", val*100));
     }
   }
   else {
