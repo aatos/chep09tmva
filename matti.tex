@@ -248,12 +248,39 @@
 
 \subsubsection{TMVA Comments}
 \begin{itemize}
-\item The ROC curve for Cuts classifier is probably wrong. I guess
-  that the signal efficiency comes from \textbf{training} and not from
-  testing. For other classifiers the signal efficiency comes from
-  testing.
+\item The ROC curve for Cuts classifier is probably inconsistent with
+  the other classifiers. I guess that the signal efficiency comes from
+  \textbf{training} and not from testing. For other classifiers the
+  signal efficiency comes from testing.
+  \begin{itemize}
+  \item I created a set of figures (\ref{fig:mkCutsTmva},
+    \ref{fig:mkCutsEvalRoc}, \ref{fig:mkCutsEvalEff}) to demonstrate
+      this.
+  \item The ROC curve from TMVA is in Fig.~\ref{fig:mkCutsTmva}, and
+    the ROC curve by the custom evaluator is in
+    Fig.~\ref{fig:mkCutsEvalRoc} (the evaluator was modified to
+    evaluate jets instead of events for this particular exercise). A
+    few things can be seen.
+    \begin{itemize}
+    \item For some signal efficiency bins, TMVA reports zero for
+      backgound efficiency (more or less correct), but one for
+      background rejection (can \emph{not} be correct!)
+    \item There's also some difference in the signal efficiencies
+      (i.e. the $x$-axes of the figues)
+    \end{itemize}
+  \item Fig.~\ref{fig:mkCutsEvalEff} shows the evaluated background
+    and signal jet efficiencies as a function of the \emph{requested}
+    signal efficiency (i.e. the parameter given to the
+    \texttt{TMVA::Reader} for Cuts classifier).
+    \begin{itemize}
+    \item For some signal efficiency bins the trained Cuts classifiers
+      don't pass any signal/background jets.
+    \item The difference between the evaluated signal efficiency and
+      the requested signal efficiency is clear.
+    \end{itemize}
+  \end{itemize}
 
-  In the case of Cuts, also the background rejection could be wrong.
+\item In the case of Cuts, the background rejection could be wrong.
   E.g. it might happen that the cuts optimisation fails for some
   (training) signal efficiency or otherwise the cut values are
   non-valid. If this kind of cut is then applied to both signal and
@@ -268,3 +295,62 @@
     \emph{for all} signal efficiencies than the requested bkg eff
   \end{itemize}
 \end{itemize}
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-tmva-effBvsS}
+    \end{minipage}
+    \hspace{.02\textwidth}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-tmva-rejBvsS}
+    \end{minipage}
+  \end{center}
+  \caption{Background jet efficiency (left) and rejection (right)
+    function of signal jet efficiency as reported by TMVA. At high
+    signal efficiency there are some points where the background
+    efficiency (rejection) is zero (one) because the training of the
+    Cuts classifier for those signal efficiencies has produced a cut
+    ensemble which doesn't pass any jet.}
+  \label{fig:mkCutsTmva}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-eval-effBvsS}
+    \end{minipage}
+    \hspace{.02\textwidth}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-eval-rejBvsS}
+    \end{minipage}
+  \end{center}
+  \caption{Background jet efficiency (left) and rejection(right) as a
+    function of the evaluated signal jet efficiency as reported by our
+    custom evaluator. The background and signal efficiencies are the
+    efficiencies from the evaluation of all jets. The cases where the
+    Cuts classifier doesn't pass any jet were removed from the graphs.}
+  \label{fig:mkCutsEvalRoc}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-eval-effB}
+    \end{minipage}
+    \hspace{.02\textwidth}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mk_cuts-eval-effS}
+    \end{minipage}
+  \end{center}
+  \caption{Background (left) and signal (right) jet efficiencies as a
+    function of the requested signal jet efficiency as reported by our
+    custom evaluator. From the signal histogram it can be clearly seen
+    that for some requested signal efficiencies none of the jets pass
+    the Cuts classifier. It can also be seen that in general the
+    achieved signal jet efficiency does not correspond to the
+    requested signal jet efficiency.}
+  \label{fig:mkCutsEvalEff}
+\end{figure}
+
+\clearpage
