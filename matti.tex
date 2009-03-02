@@ -231,19 +231,28 @@
 \end{itemize}
 
 \subsubsection{SVM Notes}
+%% \begin{itemize}
+%% \item Training time scales as $O(n^2)$ where $n$ is the size of the
+%%   input data (i.e. number of events)
+%%   \begin{itemize}
+%%   \item 100 signal and 200 background events took 0.125 seconds
+%%   \item 200 signal and 400 background events took 0.542 seconds
+%%   \item 500 signal and 1000 background events took 3.41 seconds
+%%   \item 800 signal and 1600 background events took 10 seconds
+%%   \item 1000 signal and 2000 background events took 13.8 seconds
+%%   \item If the scaling law is correct, $10^4$ events would take about 2
+%%     minutes, $5\times 10^4$ events would take almost an hour and $10^5$
+%%     events would take more than 3,5 hours.
+%%   \end{itemize}
+%% \end{itemize}
+
 \begin{itemize}
-\item Training time scales as $O(n^2)$ where $n$ is the size of the
-  input data (i.e. number of events)
-  \begin{itemize}
-  \item 100 signal and 200 background events took 0.125 seconds
-  \item 200 signal and 400 background events took 0.542 seconds
-  \item 500 signal and 1000 background events took 3.41 seconds
-  \item 800 signal and 1600 background events took 10 seconds
-  \item 1000 signal and 2000 background events took 13.8 seconds
-  \item If the scaling law is correct, $10^4$ events would take about 2
-    minutes, $5\times 10^4$ events would take almost an hour and $10^5$
-    events would take more than 3,5 hours.
-  \end{itemize}
+\item So far the best achieved signal event efficiency is $5.2\;\%$
+  with parameters $\textrm{sigma}=4, \textrm{C}=7$.
+\item The parameters for the best signal jet efficiency are
+  $\textrm{sigma}=3,\textrm{C}=9$, which gives for event efficiency
+  $4.6\;\%$. This shows that there is a difference between
+  optimisation of jet and event efficiencies.
 \end{itemize}
 
 \subsubsection{TMVA Comments}
