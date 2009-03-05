@@ -21,7 +21,7 @@ all:
 	@echo :::document = $(d)
 	@echo :::preparing latex ...
 	@rm -f *.aux
-	@$(tex) $(d); bibtex $(d); $(tex) $(d); $(tex) $(d); $(tex) $(d)
+	@$(tex) $(d) && bibtex $(d) && $(tex) $(d) && $(tex) $(d) && $(tex) $(d)
 ifdef USEVIEWER
 	$(PDFVIEWER) $(d).pdf
 endif
