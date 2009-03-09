@@ -48,11 +48,11 @@ TString hLine = "---------------------------------------------------------------
 
 MyEvaluate *MyEvaluate::thisBase = 0;
 
-MyEvaluate::MyEvaluate(TFile *file):
+MyEvaluate::MyEvaluate(TFile *file, int rbins):
   outputFile(file),
   top(0),
-  histoBins(10000),
-  rocBins(100),
+  histoBins(100000),
+  rocBins(rbins),
   fLogger(std::string("MyEvaluate")) {
 
   top = file->mkdir("MyEvaluate");
@@ -481,11 +481,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 = getSignalEfficiency(1e-3, splEff, effBvsSgr);
     res.eff4 = getSignalEfficiency(1e-4, splEff, effBvsSgr);
     res.eff5 = getSignalEfficiency(1e-5, splEff, effBvsSgr);
+    res.eff6 = getSignalEfficiency(1e-6, splEff, effBvsSgr);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficiencies.push_back(res);
 
     res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff, effBvsSgr);
@@ -493,11 +495,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff, effBvsSgr);
     res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff, effBvsSgr);
     res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff, effBvsSgr);
+    res.eff6 = getSignalEfficiency(1e-6/bkgEventOverallEff, splEff, effBvsSgr);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficienciesBkgScaled.push_back(res);
 
     res.eff1 *= signalEventOverallEff;
@@ -505,11 +509,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 *= signalEventOverallEff;
     res.eff4 *= signalEventOverallEff;
     res.eff5 *= signalEventOverallEff;
+    res.eff6 *= signalEventOverallEff;
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficienciesAllScaled.push_back(res);
 
     sigEffSpline=0;
@@ -615,22 +621,25 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     fLogger << kINFO << Endl
             << "For comparison with the jet efficiency numbers reported by TMVA" << Endl
             << "Signal and background event efficiencies have NOT been scaled with preselections" << Endl;
-    printEffResults(efficiencies, csvOutput, "eventEffTmva");
-    csvOutput.setComment("eventEffTmva", "signal event efficiency at 1e-5 bkg event efficiency, both as given by TMVA (i.e. no scaling with preselection efficiencies");
+    printEffResults(efficiencies, csvOutput, "eventEffTmva_5", "eventEffTmva_6");
+    csvOutput.setComment("eventEffTmva_5", "signal event efficiency at 1e-5 bkg event efficiency, both as given by TMVA (i.e. no scaling with preselection efficiencies");
+    csvOutput.setComment("eventEffTmva_6", "signal event efficiency at 1e-6 bkg event efficiency, both as given by TMVA (i.e. no scaling with preselection efficiencies");
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesBkgScaled") != config.reports.end()) {
     fLogger << kINFO << Endl
             << "Background event efficiency has been scaled with the preselection bkg event" << Endl
             << "efficiency (signal event efficiency is as given by TMVA)" << Endl;
-    printEffResults(efficienciesBkgScaled, csvOutput, "eventEffBkgScaled", true);
-    csvOutput.setComment("eventEffBkgScaled", "signal event efficiency at 1e-5 bkg event efficiency, bkg efficiency scaled with preselection efficiency, signal efficiency as given by TMVA");
+    printEffResults(efficienciesBkgScaled, csvOutput, "eventEffBkgScaled_5", "eventEffBkgScaled_6", true);
+    csvOutput.setComment("eventEffBkgScaled_5", "signal event efficiency at 1e-5 bkg event efficiency, bkg efficiency scaled with preselection efficiency, signal efficiency as given by TMVA");
+    csvOutput.setComment("eventEffBkgScaled_6", "signal event efficiency at 1e-6 bkg event efficiency, bkg efficiency scaled with preselection efficiency, signal efficiency as given by TMVA");
   }
   if(std::find(config.reports.begin(), config.reports.end(), "EventEfficienciesAllScaled") != config.reports.end()) {
     fLogger << kINFO << Endl 
             << "Signal and background event efficiencies have been scaled with the preselection" << Endl
             << "event efficiencies" << Endl;
-    printEffResults(efficienciesAllScaled, csvOutput, "eventEffScaled", true);
-    csvOutput.setComment("eventEffScaled", "signal event efficiency at 1e-5 bkg event efficiency, both scaled with preselection efficiencies");
+    printEffResults(efficienciesAllScaled, csvOutput, "eventEffScaled_5", "eventEffScaled_6", true);
+    csvOutput.setComment("eventEffScaled_5", "signal event efficiency at 1e-5 bkg event efficiency, both scaled with preselection efficiencies");
+    csvOutput.setComment("eventEffScaled_6", "signal event efficiency at 1e-6 bkg event efficiency, both scaled with preselection efficiencies");
   }
 
   fLogger << kWARNING << " !!!  This module is still experimental  !!!" << Endl;
@@ -737,22 +746,25 @@ double MyEvaluate::getSignalEfficiencyError(double nevents_s, double eff_s) {
   return err;
 }
 
-void MyEvaluate::printEffResults(std::vector<EffResult>& results, MyOutput& csvOutput, std::string column, bool scaleBkg) {
+void MyEvaluate::printEffResults(std::vector<EffResult>& results, MyOutput& csvOutput, std::string column5, std::string column6, bool scaleBkg) {
   fLogger << kINFO 
           << "Evaluation results ranked by best signal efficiency at 1e-5" << Endl
           << hLine << Endl
           << "MVA              Signal event efficiency at bkg event efficiency (error):" << Endl
-          << "Methods:         @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01      " << (scaleBkg?"":"@B=0.1") <<  Endl
+    //<< "Methods:         @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01      " << (scaleBkg?"":"@B=0.1") <<  Endl
+          << "Methods:         @B=1e-6      @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01      " << (scaleBkg?"":"@B=0.1") <<  Endl
           << hLine << Endl;
 
   for(std::vector<EffResult>::const_iterator iter = results.begin(); iter != results.end(); ++iter) {
-    fLogger << kINFO << Form("%-15s: %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)",
+    fLogger << kINFO << Form("%-15s: %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)  %1.4f(%03d)",
                              iter->name.c_str(),
+                             iter->eff6, int(iter->eff6err*1e4),
                              iter->eff5, int(iter->eff5err*1e4), iter->eff4, int(iter->eff4err*1e4),
                              iter->eff3, int(iter->eff3err*1e4), iter->eff2, int(iter->eff2err*1e4))
             << (scaleBkg?"":Form("  %1.4f(%03d)", iter->eff1, int(iter->eff1err*1e4)))
             << Endl;
-    csvOutput.addResult(iter->name, column, iter->eff5);
+    csvOutput.addResult(iter->name, column5, iter->eff5);
+    csvOutput.addResult(iter->name, column6, iter->eff6);
   }
 
   fLogger << kINFO << hLine << Endl;

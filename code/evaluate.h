@@ -22,17 +22,19 @@ struct EffResult {
   double eff3;
   double eff4;
   double eff5;
+  double eff6;
   double eff1err;
   double eff2err;
   double eff3err;
   double eff4err;
   double eff5err;
+  double eff6err;
 };
 
 
 class MyEvaluate {
 public:
-  MyEvaluate(TFile *outputFile);
+  MyEvaluate(TFile *outputFile, int rocbins=100);
   virtual ~MyEvaluate();
 
   void setSignalTree(TTree *tree, double weight, const TCut& cut, bool isTestTree, long testEntries);
@@ -60,7 +62,7 @@ private:
 
   double getSignalEfficiency(double bkgEff, TMVA::TSpline1 *effSpl, TGraph *gr);
   double getSignalEfficiencyError(double nevents_s, double eff_s);
-  void printEffResults(std::vector<EffResult>& results, MyOutput& output, std::string column, bool scaleBkg=false);
+  void printEffResults(std::vector<EffResult>& results, MyOutput& output, std::string column5, std::string column6, bool scaleBkg=false);
 
   struct Data {
     TTree *tree;
