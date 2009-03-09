@@ -538,7 +538,7 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     for(int bin=1; bin <= iter->rocBins; ++bin) {
       double effS = iter->signalEff->GetBinContent(bin);
       double effB = iter->bkgEff->GetBinContent(bin);
-      if(effS > 1e-6)
+      if(effS > 1e-10)
         effBvsS.push_back(std::make_pair(effS, effB));
     }
     std::sort(effBvsS.begin(), effBvsS.end(), EffPairCompare());
@@ -574,11 +574,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 = getSignalEfficiency(1e-3, splEff, grEffBvsS);
     res.eff4 = getSignalEfficiency(1e-4, splEff, grEffBvsS);
     res.eff5 = getSignalEfficiency(1e-5, splEff, grEffBvsS);
+    res.eff6 = getSignalEfficiency(1e-6, splEff, grEffBvsS);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficiencies.push_back(res);
 
     res.eff1 = getSignalEfficiency(0.1 /bkgEventOverallEff, splEff, grEffBvsS);
@@ -586,11 +588,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 = getSignalEfficiency(1e-3/bkgEventOverallEff, splEff, grEffBvsS);
     res.eff4 = getSignalEfficiency(1e-4/bkgEventOverallEff, splEff, grEffBvsS);
     res.eff5 = getSignalEfficiency(1e-5/bkgEventOverallEff, splEff, grEffBvsS);
+    res.eff6 = getSignalEfficiency(1e-6/bkgEventOverallEff, splEff, grEffBvsS);
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficienciesBkgScaled.push_back(res);
 
     res.eff1 *= signalEventOverallEff;
@@ -598,11 +602,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     res.eff3 *= signalEventOverallEff;
     res.eff4 *= signalEventOverallEff;
     res.eff5 *= signalEventOverallEff;
+    res.eff6 *= signalEventOverallEff;
     res.eff1err = getSignalEfficiencyError(nevents_passed[1], res.eff1);
     res.eff2err = getSignalEfficiencyError(nevents_passed[1], res.eff2);
     res.eff3err = getSignalEfficiencyError(nevents_passed[1], res.eff3);
     res.eff4err = getSignalEfficiencyError(nevents_passed[1], res.eff4);
     res.eff5err = getSignalEfficiencyError(nevents_passed[1], res.eff5);
+    res.eff6err = getSignalEfficiencyError(nevents_passed[1], res.eff6);
     efficienciesAllScaled.push_back(res);
 
     sigEffSpline=0;
