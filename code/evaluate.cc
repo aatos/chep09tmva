@@ -51,7 +51,7 @@ MyEvaluate *MyEvaluate::thisBase = 0;
 MyEvaluate::MyEvaluate(TFile *file, int rbins):
   outputFile(file),
   top(0),
-  histoBins(100000),
+  histoBins(200000),
   rocBins(rbins),
   fLogger(std::string("MyEvaluate")) {
 

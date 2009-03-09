@@ -55,7 +55,9 @@ int main(int argc, char **argv) {
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
 
-  int rocbins = 100;
+  // A number this high in here could be a problem for Cuts, because a
+  // classifier is trained for each signal efficiency bin
+  int rocbins = 100000;
 
   TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = rocbins;
 
