@@ -230,31 +230,6 @@
   \end{description}
 \end{itemize}
 
-\subsubsection{SVM Notes}
-%% \begin{itemize}
-%% \item Training time scales as $O(n^2)$ where $n$ is the size of the
-%%   input data (i.e. number of events)
-%%   \begin{itemize}
-%%   \item 100 signal and 200 background events took 0.125 seconds
-%%   \item 200 signal and 400 background events took 0.542 seconds
-%%   \item 500 signal and 1000 background events took 3.41 seconds
-%%   \item 800 signal and 1600 background events took 10 seconds
-%%   \item 1000 signal and 2000 background events took 13.8 seconds
-%%   \item If the scaling law is correct, $10^4$ events would take about 2
-%%     minutes, $5\times 10^4$ events would take almost an hour and $10^5$
-%%     events would take more than 3,5 hours.
-%%   \end{itemize}
-%% \end{itemize}
-
-\begin{itemize}
-\item So far the best achieved signal event efficiency is $5.2\;\%$
-  with parameters $\textrm{sigma}=4, \textrm{C}=7$.
-\item The parameters for the best signal jet efficiency are
-  $\textrm{sigma}=3,\textrm{C}=9$, which gives for event efficiency
-  $4.6\;\%$. This shows that there is a difference between
-  optimisation of jet and event efficiencies.
-\end{itemize}
-
 \subsubsection{TMVA Comments}
 \begin{itemize}
 \item The ROC curve for Cuts classifier is probably inconsistent with
@@ -360,6 +335,109 @@
     achieved signal jet efficiency does not correspond to the
     requested signal jet efficiency.}
   \label{fig:mkCutsEvalEff}
+\end{figure}
+
+\subsubsection{SVM Notes}
+%% \begin{itemize}
+%% \item Training time scales as $O(n^2)$ where $n$ is the size of the
+%%   input data (i.e. number of events)
+%%   \begin{itemize}
+%%   \item 100 signal and 200 background events took 0.125 seconds
+%%   \item 200 signal and 400 background events took 0.542 seconds
+%%   \item 500 signal and 1000 background events took 3.41 seconds
+%%   \item 800 signal and 1600 background events took 10 seconds
+%%   \item 1000 signal and 2000 background events took 13.8 seconds
+%%   \item If the scaling law is correct, $10^4$ events would take about 2
+%%     minutes, $5\times 10^4$ events would take almost an hour and $10^5$
+%%     events would take more than 3,5 hours.
+%%   \end{itemize}
+%% \end{itemize}
+
+\begin{itemize}
+\item Training has been done with 2000 signal jets and 4000 background
+  jets selected randomly (same random seed ensures that the training
+  sample is actually the same every time).
+\item Results are presented in table~\ref{table:results_std}.
+\item Examples of ROC curves are shown in figures \ref{fig:mkRocTmvaEvent} and \ref{fig:mkRocEvent}
+\item There are a few things which should be noted
+  \begin{itemize}
+  \item The signal efficiency might be sensitive to the set of
+    training events (I haven't tested this yet)
+  \item The fact that the backgound data sample contains same events
+    multiple times (i.e. same seed has been used in event generation)
+    causes bias in the results
+  \end{itemize}
+
+\item The parameters for the best signal jet efficiency are
+  $\textrm{sigma}=3,\textrm{C}=9$, which gives for event efficiency
+  $4.6\;\%$. This shows that there is a difference between
+  optimisation of jet and event efficiencies.
+\end{itemize}
+
+\begin{table}[h]
+  \caption{Results for standard scenario. }
+  \label{table:results_std}
+  \begin{center}
+    \begin{tabular}{lc}
+      & Signal eff. at $10^{-5}$ bkg eff. (\%) \\
+      \hline
+      SVM Gauss & 5.2 \\ % sigma=4, C=7
+      SVM Linear & 3.1 \\ % C=8
+      SVM Polynomial & \\
+      SVM Sigmoid &
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{table}[h]
+  \caption{}
+  \label{table:results_free}
+  \begin{center}
+    \begin{tabular}{lc}
+      & Signal eff. at $10^{-5}$ bkg eff. (\%)\\
+      \hline
+      SVM Gauss & 5.
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mkRocTmvaSvm}
+    \end{minipage}
+    \hspace{.02\textwidth}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mkRocEventSvm}
+    \end{minipage}
+  \end{center}
+  \caption{Example comparison of ROC curves given by TMVA for jets
+    (left) and by our custom evaluator for events (right) for SVM
+    classifier with Gaussian kernel. The signal/background
+    efficiencies have not been scaled for taking into account the
+    preselection efficiencies.}
+  \label{fig:mkRocTmvaEvent}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mkRocEventSvm}
+    \end{minipage}
+    \hspace{.02\textwidth}
+    \begin{minipage}{.3\textwidth}
+      \includegraphics[width=\textwidth]{images/mkRocEventSvm_zoom}
+    \end{minipage}
+  \end{center}
+  \caption{ROC curve from our custom evaluator (left). On the right is
+    a zoomed version to the $10^{-5}$ overall background event
+    efficiency. The preselection efficiencies are $0.025$ for
+    background and $0.411$ for signal. Therefore the $10^{-5}$ overall
+    background efficiency corresponds to $1-4\times 10^{-4}=0.9996$
+    background rejection achieved in TMVA. The signal efficiency
+    should also be corrected with the preselection efficiency, which
+    then gives the final result of $0.1269\times 0.411 = 0.0521$.}
+  \label{fig:mkRocEvent}
 \end{figure}
 
 \clearpage
