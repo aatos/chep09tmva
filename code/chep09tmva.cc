@@ -55,7 +55,9 @@ int main(int argc, char **argv) {
   double signalWeight     = 1.0;
   double backgroundWeight = 1.0;
 
-  //TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = 200;
+  int rocbins = 100;
+
+  TMVA::gConfig().GetVariablePlotting().fNbinsXOfROCCurve = rocbins;
 
   // Parse command line arguments
   std::string confFile("tmva-common.conf");
@@ -339,7 +341,7 @@ int main(int argc, char **argv) {
       start = stop+1;
     }
 
-    MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"));
+    MyEvaluate evaluate(TFile::Open(outputfileName, "UPDATE"), rocbins);
     if(signalTestChain) 
       evaluate.setSignalTree(signalTestChain, signalWeight, signalCut_s, true, signalTestEntries);
     else
