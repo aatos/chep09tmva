@@ -201,8 +201,8 @@ int main(int argc, char **argv) {
     bkgEventsAll = 0;
     bkgEventsSelected = 0;
     std::cout << "Files for background testing TChain (name: " << bkgTestTreeName << ")" << std::endl;
-    createChain(config.bkgTrainFiles, bkgTrainChain, bkgTestDataset.c_str(), bkgEventsAll, bkgEventsSelected);
-    bkgEntries = bkgTrainChain->GetEntries();
+    createChain(config.bkgTestFiles, bkgTestChain, bkgTestDataset.c_str(), bkgEventsAll, bkgEventsSelected);
+    bkgEntries = bkgTestChain->GetEntries();
     std::cout << "Testing Chain has " << bkgEntries << " entries (jets)" << std::endl
               << bkgEventsAll << " events were generated, of which " << bkgEventsSelected << " events were selected as input" << std::endl
               << std::endl;
