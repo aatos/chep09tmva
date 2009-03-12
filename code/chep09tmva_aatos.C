@@ -253,9 +253,12 @@ factory->AddVariable("rtau", 'F');
       // load the signal and background event samples from ROOT trees
       TFile *input(0);       TFile *inputs(0);       TFile *inputb(0);
 //      TString fname = "./data.root"; 
-      TString fname = "mava-input.root"; //AH:::
-      TString fs = "../data/Pythia8_generatorLevel_HCh300_test.root"; //AH::
-      TString fb = "../data/Pythia8_generatorLevel_QCD_120_170_test.root"; //AH:::
+      TString fname = "mava-input.root"; 
+      TString fs = "../../../../data/tmvadata/pythia_h200_run6_train.root"; 
+      TString fb = "../../../../data/tmvadata/pythia_qcd_run24_train.root"; 
+
+//      TString fs = "../data/Pythia8_generatorLevel_HCh300_test.root"; 
+//      TString fb = "../data/Pythia8_generatorLevel_QCD_120_170_test.root"; 
 
       if (!gSystem->AccessPathName( fs )) {
          // first we try to find data in the local directory
@@ -285,8 +288,10 @@ inputb = TFile::Open( "http://www.helsinki.fi/~miheikki/system/refs/heikkinen/ah
 
       //TTree *signal     = (TTree*)input->Get("TreeS"); 
       //    TTree *background = (TTree*)input->Get("TreeB");
-      TTree *signal     = (TTree*)inputs->Get("TauID_Pythia8_generatorLevel_HCh300");
+      TTree *signal     = (TTree*)inputs->Get("TauID_Pythia6_generatorLevel_HCh200_Tauola");
       TTree *background = (TTree*)inputb->Get("TauID_Pythia8_generatorLevel_QCD_120_170");
+//      TTree *signal     = (TTree*)inputs->Get("TauID_Pythia8_generatorLevel_HCh300");
+//      TTree *background = (TTree*)inputb->Get("TauID_Pythia8_generatorLevel_QCD_120_170");
 
       // global event weights per tree (see below for setting event-wise weights)
       Double_t signalWeight     = 1.0;
