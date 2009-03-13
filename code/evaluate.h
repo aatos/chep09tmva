@@ -14,6 +14,7 @@
 
 #include "config.h"
 #include "output.h"
+#include "timer.h"
 
 struct EffResult {
   std::string name;
@@ -49,7 +50,7 @@ public:
     bkgEventsPreSelected = selected;
   }
 
-  void calculateEventEfficiency(MyConfig& config, MyOutput& output);
+  void calculateEventEfficiency(MyConfig& config, MyOutput& output, std::vector<std::pair<std::string, TimerData> >& timer_vector);
 
   // This is for RootFinder
   static MyEvaluate *getThisBase() { return thisBase; }

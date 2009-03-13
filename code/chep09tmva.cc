@@ -12,7 +12,6 @@
 #include <TString.h>
 #include <TSystem.h>
 #include <TH1.h>
-#include <TStopwatch.h>
 #include <TList.h>
 #include <TKey.h>
 
@@ -22,6 +21,7 @@
 #include "factory.h"
 #include "evaluate.h"
 #include "output.h"
+#include "timer.h"
 
 void print_usage(void);
 void createChain(std::vector<std::string>& files, TChain *chain, const char *datasetName,
@@ -30,11 +30,6 @@ void createChain(std::vector<std::string>& files, TChain *chain, const char *dat
 bool sniffChainName(std::vector<std::string>& files, const std::string& treeName,
                     std::string& chainName, std::string& dataset);
 
-
-struct TimerData {
-  double realtime;
-  double cputime;
-};
 
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
@@ -45,6 +40,7 @@ int main(int argc, char **argv) {
   timer_data.realtime = 0;
   timer_data.cputime = 0;
   std::vector<std::pair<std::string, TimerData> > timer_vector;
+  std::vector<std::pair<std::string, TimerData> > timer_vector_eval;
   timer.Start();
 
   // Configuration
@@ -355,7 +351,7 @@ int main(int argc, char **argv) {
       evaluate.setBackgroundTree(bkgTrainChain, backgroundWeight, bkgCut_s, false, bkgTestEntries);
     evaluate.setBackgroundEventNum(bkgEventsAll, bkgEventsSelected);
 
-    evaluate.calculateEventEfficiency(config, csvOutput);
+    evaluate.calculateEventEfficiency(config, csvOutput, timer_vector_eval);
     timer.Stop();
     timer_data.realtime = timer.RealTime();
     timer_data.cputime = timer.CpuTime();
@@ -376,11 +372,20 @@ int main(int argc, char **argv) {
                 << "seconds" << std::endl;
     }
     timer_total.Stop();
-    std::cout << "  " << "-------------------------------------" << std::endl
+    std::cout << "  " << "--------------------------------------------------" << std::endl
               << "  " << std::setw(22) << std::left << "Total" << ": " 
               << std::setw(9) << std::setprecision(4) << timer_total.CpuTime() << " " 
               << std::setw(9) << std::setprecision(4) << timer_total.RealTime() << " "
               << "seconds" << std::endl;
+
+    std::cout << std::endl
+              << "Event evaluation details  CPU time  real time" << std::endl;
+    for(std::vector<std::pair<std::string, TimerData> >::const_iterator iter = timer_vector_eval.begin(); iter != timer_vector_eval.end(); ++iter) {
+      std::cout << "  " << std::setw(22) << std::left << iter->first << ": " 
+                << std::setw(9) << std::setprecision(4) << iter->second.cputime << " " 
+                << std::setw(9) << std::setprecision(4) << iter->second.realtime << " "
+                << "seconds" << std::endl;
+    }
   }
 
   std::cout << "Created output file " << outputfileName << std::endl;

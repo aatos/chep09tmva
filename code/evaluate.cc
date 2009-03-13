@@ -79,7 +79,7 @@ void MyEvaluate::setBackgroundTree(TTree *tree, double weight, const TCut& cut, 
   background.testEntries = testEntries;
 }
 
-void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput) {
+void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput, std::vector<std::pair<std::string, TimerData> >& timer_vector) {
   fLogger << kINFO << Endl
           << Endl
           << "Testing classifiers in order to obtain signal/background efficiencies for EVENTS" << Endl
@@ -97,6 +97,17 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
             << "  => background efficiencies below are biased" << Endl
             << Endl;
   }
+
+  TStopwatch timer;
+  TStopwatch timer2;
+  TimerData timer_data;
+  TimerData timer_data_mva;
+  timer_data.realtime = 0;
+  timer_data.cputime = 0;
+  timer_data_mva.realtime = 0;
+  timer_data_mva.cputime = 0;
+
+  timer.Start();
 
   std::map<std::string, int> cutOrientation;
 
@@ -208,6 +219,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     reader->BookMVA(mvaName, Form("weights/chep09tmva_%s.weights.txt", mvaName));
   }
 
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Initialization", timer_data));
+  timer.Reset();
+  timer.Start();
+
   // Compute MVA outputs for all entries (=jets) in the input TTrees
   // (for both signal and background)
   long njets[2] = {0, 0};
@@ -283,17 +301,27 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
         else
           fillStarted = true;
 
+        timer2.Start();
         for(std::map<std::string, float *>::const_iterator iter = mvaValues.begin(); iter != mvaValues.end(); ++iter) {
           *(iter->second) = float(reader->EvaluateMVA(iter->first.c_str())), *(iter->second);
         }
+        timer2.Stop();
+        timer_data_mva.realtime += timer2.RealTime();
+        timer_data_mva.cputime += timer2.CpuTime();
+        timer2.Reset();
       }
       else {
+        timer2.Start();
         for(std::map<std::string, float *>::const_iterator iter = mvaValues.begin(); iter != mvaValues.end(); ++iter) {
           float mvaVal = reader->EvaluateMVA(iter->first.c_str());
           if(cutOrientation[iter->first] > 0) 
             *(iter->second) = std::max(mvaVal, *(iter->second)); 
           else
             *(iter->second) = std::min(mvaVal, *(iter->second)); 
+        timer2.Stop();
+        timer_data_mva.realtime += timer2.RealTime();
+        timer_data_mva.cputime += timer2.CpuTime();
+        timer2.Reset();
         }
       }
 
@@ -308,6 +336,8 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
       for(std::vector<CutData>::iterator iter = cutData.begin(); iter != cutData.end(); ++iter) {
         const char *cutName = iter->name.c_str();
         TH1 *histo = type ? iter->signalEff : iter->bkgEff;
+
+        timer2.Start();
         for(int bin=0; bin < iter->rocBins; ++bin) {
           float pass = reader->EvaluateMVA(cutName, float(bin)/iter->rocBins);
           if(pass > 0.5 && iter->hasBeenFilled[bin] == 0) {
@@ -315,6 +345,10 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
             iter->hasBeenFilled[bin] = 1;
           }
         }
+        timer2.Stop();
+        timer_data_mva.realtime += timer2.RealTime();
+        timer_data_mva.cputime += timer2.CpuTime();
+        timer2.Reset();
       }
 
       prevEvent = currentEvent;
@@ -330,6 +364,14 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
       delete treeFormulas[i];
     }
   }
+
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("MVA evaluation", timer_data));
+  timer_vector.push_back(std::make_pair("MVA eval (in MVA)", timer_data_mva));
+  timer.Reset();
+  timer.Start();
 
   TMVA::gConfig().SetSilent(kFALSE);
   double signalEventPreSeleEff = double(signalEventsPreSelected)/double(signalEventsAll);
@@ -385,6 +427,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
     dataMap[iter->first] = data;
   }
 
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Eff histo creation", timer_data));
+  timer.Reset();
+  timer.Start();
+
   // Fill efficiency histograms
   Long64_t entries = mvaOutput->GetEntries();
   for(Long64_t ientry=0; ientry < entries; ++ientry) {
@@ -422,6 +471,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
       }
     }
   }
+
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Eff histo filling", timer_data));
+  timer.Reset();
+  timer.Start();
 
   // Normalize efficiency histograms, compute ROC and signal
   // efficiencies at various background efficiency levels
@@ -619,6 +675,13 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
   }
 
 
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Eff/ROC computation", timer_data));
+  timer.Reset();
+  timer.Start();
+
   std::sort(efficiencies.begin(), efficiencies.end(), EffResultCompare());
   std::sort(efficienciesBkgScaled.begin(), efficienciesBkgScaled.end(), EffResultCompare());
   std::sort(efficienciesAllScaled.begin(), efficienciesAllScaled.end(), EffResultCompare());
@@ -663,6 +726,11 @@ void MyEvaluate::calculateEventEfficiency(MyConfig& config, MyOutput& csvOutput)
   delete sigCut;
   delete bkgCut;
   delete reader;
+
+  timer.Stop();
+  timer_data.realtime = timer.RealTime();
+  timer_data.cputime = timer.CpuTime();
+  timer_vector.push_back(std::make_pair("Final printing", timer_data));
 }
 
 double MyEvaluate::iGetEffForRoot(double cut) {
