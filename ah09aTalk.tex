@@ -130,11 +130,16 @@ separated from the background present.
 \subsection{Data}
 \frame{
 \frametitle{Data}
-Data was generated using Pythia/Tauola for LHC 14 TeV p-p collisions.
+The background QCD data was generated using Pythia8 for LHC 14 TeV p-p collisions.
+$H_{\pm}=200 GeV/c^2, \tan\beta = 30$ 
 
-\vspace{0.5cm}
-Preselection cuts were applied to variables:
+\vspace{0.2cm}
+The signal was generated with Pythia6, 
+and required to consist only of genuine $\tau$ jets from the 
+$H^{\pm} \rightarrow \tau^{\pm}\mu_{\tau}$ decay with $\tau$ polarization simulated with TAUOLA. 
 
+\vspace{0.2cm}
+Following preselection cuts were applied:
 \begin{tabular}{l*{2}{l}r}
 \hline
 Variable                                    & Selection                  \\
@@ -147,15 +152,32 @@ Signal track (1-prog)                       & {\tt signalTracks==1}      \\
 ECAL isolation ($\Delta$R=0.10-0.50)        & {\tt ecalIsolEt10\_50<1.8} \\
 Electron rejection                          & {\tt hcalRatio>-0.9}       \\
 Neutral hadron rejection                    & {\tt hcalRatio<0.1}        \\
-$\tau$-helicity correlations \cite{roy00a}: &                            \\
+$\tau$-helicity correlations \footnote{D.P. Roy, Phys. Lett. B 459 607-614}  &                            \\
+%\cite{roy00a}:
 $R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
 \hline
 \end{tabular}
+
 }
 
+\subsection{Data}
+\frame{
+\frametitle{Data}
+--- Factory        : You are running ROOT Version: 5.21/06, Nov 25, 2008
+--- Factory        : __________TMVA Version 3.9.5, Aug 09, 2008
+--- Factory        : Preparing trees for training and testing...
+--- DataSet        :     Signal tree     - number of events :  309607
+--- DataSet        :     Background tree - number of events :  4827382
+--- DataSet        : Preselection:
+--- DataSet        :     On signal input       : (tauDecayType == 4)&&(signalTracks == 1)
+--- DataSet        :     On background input   : signalTracks == 1
+--- DataSet        :     Signal          - number of events :  53550    weighted : 53550
+--- DataSet        :     Background      - number of events :  2477701    weighted : 2.4777e+06
+--- DataSet        :     Signal          - efficiency       :                   0.172961
+--- DataSet        :     Background      - efficiency       :                    0.51326
+}
 \bibliographystyle{alpha}  % Options plain, unsrt, alpha, abbrv
 \bibliography{chep09} %10 p
-
 
 
 \end{document}
