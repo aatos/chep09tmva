@@ -66,10 +66,11 @@ label=listing:boundary}}
 \makeatother
 \beamertemplatetransparentcoveredhigh
 \mytitle
-\author{\underline{A.~Heikkinen}\footnote{Contact: aatos.heikkinen@cern.ch}, P.~Kaitaniemi, V. Karim\"{a}ki,
+\author{\underline{A.~Heikkinen}\footnote{aatos.heikkinen@cern.ch}, P.~Kaitaniemi, V. Karim\"{a}ki,
  R.~Kinnunen,  M.~J.~Kortelainen, T.~Lamp\'{e}n, S.~Lehti, T.~Lind\'{e}n, and L.~Wendland 
-\footnote{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.}}
-
+%\footnote{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.}
+}
+\institute{Helsinki Institute of Physics, P.O. Box 64, FIN-00014 University of Helsinki, Finland.}
 %\author{Aatos Heikkinen 
 %\footnote{Helsinki Institute of Physics, Helsinki, Finland.
 %{\tt aatos.heikkinen@cern.ch}} and Ivica Puljak 
@@ -104,19 +105,32 @@ The $\tau$ tagging efficiency and background rejection are studied with various 
 \frametitle{Outline}
 
 \begin{itemize}
-\item {\bf Motivation}: our experience on using ROOT package TMVA for multivariate data analysis.
+\item {\bf Motivation}: our experience on using ROOT package TMVA for multivariate data analysis
+\footnote{T.~Lampen {\em et. al.}, Testing TMVA software in b-tagging 
+                  for the search of MSSM Higgs bosons at the LHC,
+CHEP’07, Journal of Physics: Conference Series 119 (2008) 032028}
+
+
 \item {\bf Use case:} $\tau$ tagging in the
 framework of heavy charged MSSM Higgs boson searches at the LHC.
+
+\item {\bf Goal:} 
+to investigate how in the ideal case (no detector effects) $\tau$ tagging could be performed and 
+Higgs signal separated from the background.
+
+\vspace{0.5cm}
+
 \item {\bf Data:} a generator level Pythia/Tauola data for LHC 14 TeV p-p collisions.
 \begin{itemize}
 \item Signal: hadronic $\tau$ decay
 \item Background: hadronic QCD multi-jets
 \end{itemize}
-\item {\bf Goal:} 
-to investigate how in the ideal case (no detector effects) $\tau$ tagging could be performed and 
-separated from the background present.
 
+\vspace{0.2cm}
 \item {\bf Method/Results:} The $\tau$ tagging efficiency and background rejection are studied with various MVA classifiers.
+\begin{itemize}
+\item Moderate customisation is required to map our problem into TMVA framework.
+\end{itemize}
 \end{itemize}
 \vspace{0.5cm}
 
@@ -127,19 +141,21 @@ separated from the background present.
 
 }
 
-\subsection{Data}
+\section{Data}
 \frame{
-\frametitle{Data}
-The background QCD data was generated using Pythia8 for LHC 14 TeV p-p collisions.
-$H_{\pm}=200 GeV/c^2, \tan\beta = 30$ 
+\frametitle{}
+The data for {\bf QCD background} was generated using Pythia8 for LHC 14 TeV p-p collisions.
 
-\vspace{0.2cm}
-The signal was generated with Pythia6, 
+\vspace{0.1cm}
+The  {\bf signal}  was generated with Pythia6, 
 and required to consist only of genuine $\tau$ jets from the 
-$H^{\pm} \rightarrow \tau^{\pm}\mu_{\tau}$ decay with $\tau$ polarization simulated with TAUOLA. 
+$H^{\pm} \rightarrow \tau^{\pm}\mu_{\tau}$ decay 
+with $\tau$ polarization simulated with TAUOLA. 
+(MSSM $H_{\pm}=200 GeV/c^2, \tan\beta = 30$)
 
-\vspace{0.2cm}
+\vspace{0.1cm}
 Following preselection cuts were applied:
+\begin{center}
 \begin{tabular}{l*{2}{l}r}
 \hline
 Variable                                    & Selection                  \\
@@ -157,13 +173,29 @@ $\tau$-helicity correlations \footnote{D.P. Roy, Phys. Lett. B 459 607-614}  &  
 $R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
 \hline
 \end{tabular}
+\end{center}
 %\cite{roy00a}:
 }
 
-\subsection{Data}
-\frame{
-\frametitle{Data}
 
+%\subsection{Data}
+\frame{
+\frametitle{}
+
+\begin{figure}[h]
+ \begin{minipage}{5.5cm}
+\includegraphics[width=1.0\textwidth]{images/jetet.png}
+\end{minipage}
+ \hfill
+\begin{minipage}{5.5cm}
+\includegraphics[width=1.0\textwidth]{images/jeteta.png}
+\end{minipage}
+%\begin{minipage}{3.0cm}
+
+Example of data used in $\tau$ tagging. \\Left: Jet $E_T$ ({\tt jetEt}) variable, Right: Jet $\eta$ ({\tt jeteta}).
+%\end{minipage}
+\label{fig:variables}
+\end{figure}
 
 
 }
