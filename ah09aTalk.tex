@@ -89,6 +89,8 @@ We report our experience on using ROOT package TMVA for
 multivariate data analysis, for a problem of $\tau$ tagging in the
 framework of heavy charged MSSM Higgs boson searches at the LHC.
 
+
+
 With a generator level analysis, 
 we investigate how in the ideal case $\tau$ tagging could be performed and 
 hadronic $\tau$ decays separated from the
@@ -116,7 +118,7 @@ framework of heavy charged MSSM Higgs boson searches at the LHC.
 
 \item {\bf Goal:} 
 to investigate how in the ideal case (no detector effects) $\tau$ tagging could be performed and 
-Higgs signal separated from the background.
+signal taus separated from the background.
 
 \vspace{0.5cm}
 
@@ -143,37 +145,70 @@ Higgs signal separated from the background.
 
 \section{Data}
 \frame{
-\frametitle{}
+%\frametitle{}
 The data for {\bf QCD background} was generated using Pythia8 for LHC 14 TeV p-p collisions.
 
 \vspace{0.1cm}
 The  {\bf signal}  was generated with Pythia6, 
 and required to consist only of genuine $\tau$ jets from the 
-$H^{\pm} \rightarrow \tau^{\pm}\mu_{\tau}$ decay 
-with $\tau$ polarization simulated with TAUOLA. 
-(MSSM $H_{\pm}=200 GeV/c^2, \tan\beta = 30$)
+(heavy charged) MSSM $H^{\pm} \rightarrow \tau^{\pm}\nu_{\tau}$ decay 
+with $\tau$ polarization simulated with TAUOLA\footnote{D.P. Roy, Phys. Lett. B 459 607-614}. 
+($m_{H_{\pm}}=200 GeV/c^2$, $\tan\beta = 30$, max. $m_H$ scenario \footnote{\href{http://arxiv.org/pdf/hep-ph/9912223}{arXiv:hep-ph/9912223}}.)
+
+
+%(jet ET, jet eta, charged track isolation (minimum track pT), 
+%ECAL isolation (maximum ET allowed in isolation annulus), 
+%neutral hadron rejection (i.e. track p matching to HCAL energy deposition), Rtau variable)
+
+%TMVA:ssa asetetaan lisaksi vaatimus, 
+%etta jetissa on vain yksi jalki 
+%(seka signaali- etta taustajeteille); 
+%lisaksi TMVA:ssa vaaditaan "signal tau jets are MC matched to H+ -> tau nu".
 
 \vspace{0.1cm}
-Following preselection cuts were applied:
+Analysis is based on bollowing variables:
+
+
 \begin{center}
 \begin{tabular}{l*{2}{l}r}
 \hline
-Variable                                    & Selection                  \\
+Variable                                          & Name                   \\
 \hline
-Jet $E_T$                                   & {\tt jetEt>119}            \\
-Jet $\eta$                                  & {\tt |jeteta|<1.7}         \\
-Leading track $p_T$                         & {\tt ldgPt>20}             \\
-Track isolation ($\Delta$R=0.50)            & {\tt isolMaxPt50<1.0}      \\
-Signal track (1-prog)                       & {\tt signalTracks==1}      \\
-ECAL isolation ($\Delta$R=0.10-0.50)        & {\tt ecalIsolEt10\_50<1.8} \\
-Electron rejection                          & {\tt hcalRatio>-0.9}       \\
-Neutral hadron rejection                    & {\tt hcalRatio<0.1}        \\
-$\tau$-helicity correlations \footnote{D.P. Roy, Phys. Lett. B 459 607-614}  &                            \\
-
-$R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
+Jet $E_T$                                         & {\tt jetEt}            \\
+Jet $\eta$                                        & {\tt |jeteta|}         \\
+Track isolation ($\Delta$R=0.50)                  & {\tt isolMaxPt50}      \\
+ECAL isolation ($\Delta$R=0.10-0.50)              & {\tt ecalIsolEt10\_50} \\
+Neutral hadron rejection                          & {\tt hcalRatio}        \\
+(i.e. track p matching to HCAL energy deposition) &                        \\
+$R_{\tau}$ = p(leading track) / E(jet)            & {\tt rtau}             \\
+Signal track (1-prog)                             & {\tt signalTracks==1}  \\
+Choose only MC matched tau jets coming from H+    & {\tt tauDecayType==4}  \\
 \hline
 \end{tabular}
 \end{center}
+
+
+
+%\begin{center}
+%\begin{tabular}{l*{2}{l}r}
+%\hline
+%Variable                                    & Selection                  \\
+%\hline
+%Jet $E_T$                                   & {\tt jetEt>119}            \\
+%Jet $\eta$                                  & {\tt |jeteta|<1.7}         \\
+%Leading track $p_T$                         & {\tt ldgPt>20}             \\
+%Track isolation ($\Delta$R=0.50)            & {\tt isolMaxPt50<1.0}      \\
+%Signal track (1-prog)                       & {\tt signalTracks==1}      \\
+%ECAL isolation ($\Delta$R=0.10-0.50)        & {\tt ecalIsolEt10\_50<1.8} \\
+%Electron rejection                          & {\tt hcalRatio>-0.9}       \\
+%Neutral hadron rejection                    & {\tt hcalRatio<0.1}        \\
+%$\tau$-helicity correlations \footnote{D.P. Roy, Phys. Lett. B 459 607-614}  &                            \\
+
+%$R_{\tau}$ = p(leading track) / E(jet)      & {\tt rtau>0.8}             \\
+%\hline
+%\end{tabular}
+%\end{center}
+
 %\cite{roy00a}:
 }
 
@@ -196,10 +231,79 @@ Example of data used in $\tau$ tagging. \\Left: Jet $E_T$ ({\tt jetEt}) variable
 %\end{minipage}
 \label{fig:variables}
 \end{figure}
+}
 
+\frame{
+\frametitle{TMVA}
+TMVA is a ROOT-integrated toolkit for parallel multivariate data analysis. 
+
+In factory mode TMVA performs the training, testing and performance evaluation 
+of a large variety of classifiers.
 
 }
 
+\frame{
+\frametitle{Customisation of TMVA for $\tau$ tagging}
+
+}
+
+\frame{
+\frametitle{Results - Neural Networks}
+
+}
+
+\frame{
+\frametitle{Results - Boosted Decision Trees}
+
+A decision tree is a binary tree classifier. 
+Repeated left/right (yes/no) decisions are performed on a single variable at a time. 
+
+\vspace{0.3cm}
+The phase space is split into regions that are classified as signal or
+background, depending on the majority of training events that end up in the final leaf nodes. 
+
+\vspace{0.3cm}
+{\bf Boosted Decision Trees (BDT) implemented in TMVA 
+represents an extension to a single decision tree to several decision trees}
+derived from the same training sample by reweighting events.
+
+\vspace{0.3cm}
+New combined classifier has stabilized response with respect to fluctuations in the training sample.
+
+% LW 090318
+%BDT:lla olen tehnyt joitakin ajoja ja huomannut, 
+%etta tulokset ovat hyvin samankaltaisia ajosta riippumatta 
+%ja myoskin opetusjoukosta riippumatta. 
+%Taydella opetusjoukolla ja evaluointijoukolla 
+%saan signaalieffisienssiksi 7.8 % (epavarmuus lienee korkeintaan +-0.1%), 
+%kun taustan rejektio on 1e5. 1e6 -rejektiolla signaalin effisienssi on 3.9 % 
+%(epavarmuus n. +- 0.1%). Aikaa yhteen ajoon menee n. 4 h 50 min.
+%
+
+%With full teaching data and testing sample signal efficiency
+%BDT was found to behave stable and only small fluctiations:
+%%was found to be 7.8$\pm$0.1\% for background rejection $10^5$.
+%%(For BG rejection $10^6$ signal efficiency was 3.9$\pm$0.1\%.)
+
+\vspace{0.3cm}
+For our $\tau$ tagging problem BDT method was found to give {\bf stable results 
+with only small fluctiations}:
+\begin{center}
+\begin{tabular}{l*{2}{l}r}
+\hline
+Signal efficiency (\%)  & Backround rejection factor \\
+\hline
+7.8$\pm$0.1        & $10^5$               \\
+3.9$\pm$0.1        & $10^6$               \\
+\hline
+\end{tabular}
+\end{center}
+}
+
+\frame{
+\frametitle{Conclusions}
+
+}
 \bibliographystyle{alpha}  % Options plain, unsrt, alpha, abbrv
 \bibliography{chep09} %10 p
 
