@@ -3,6 +3,7 @@ FILES := $(wildcard *.cc)
 OBJS := $(FILES:%.cc=%.o)
 
 INC :=
+ROOTVERSION := $(shell root-config --version)
 ROOTINC := $(shell root-config --cflags)
 ROOTLIBDIR := $(shell root-config --libdir)
 ROOTLIBS := $(shell root-config --glibs)
@@ -18,9 +19,13 @@ LDFLAGS := $(ROOTLIBS)
 # Targets which do not produce a file with the same name
 .PHONY: all test ah0 ah1 vk clean clean_all
 
-all: $(EXE)
+all: versioninfo $(EXE)
 $(EXE): $(OBJS)
 	$(CXX) $(LDFLAGS) -O $^ -o $@
+	@echo "Program $(EXE) has been compiled using ROOT version $(ROOTVERSION)"
+
+versioninfo:
+	@echo "Using ROOT version $(ROOTVERSION)"
 
 %.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
