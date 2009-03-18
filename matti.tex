@@ -440,4 +440,44 @@
   \label{fig:mkRocEvent}
 \end{figure}
 
+\subsubsection{Material to talk}
+
+\begin{itemize}
+\item I did the training with 5000 signal jets and 40000 background
+  jets
+  \begin{itemize}
+  \item For performance reasons, the training in SVM scales as
+    $O(n^2)$ where $n$ is the size of the training data
+  \item The training takes about an hour 
+  \end{itemize}
+\item SVM achieves $5.56\;\%$ signal event efficiency at $10^{-5}$
+  background event efficiency level, $2.11\;\%$ for $10^{-6}$ bkg eff
+  with same parameters%C=5, sigma=2
+\item Training with bkg sample 2 gives $5.50\;\%$ signal eff for
+  $10^{-5}$ bkg eff, from which we could estimate the systematic
+  uncertainty from the selection of the training data to be at least
+  on ther order of $0.06\;\%$; for $10^{-6}$ the signal eff is
+  $2.18\;\%$, and the systematic uncertainty would become $0.07\;\%$
+  \begin{itemize}
+  \item Statistical uncertainty in $10^{-5}$ case is $0.12\;\%$, and
+    $10^{-6}$ case $0.07\;\%$
+  \end{itemize}
+\item The definition of the optimization problem has an important role
+  (at least in the case of SVM)
+  \begin{itemize}
+  \item Signal jet efficiency has maximum in different point of parameter space than event efficiency
+  \item Same goes for different levels of background efficiency (in our case $10^{-5}$ and $10^{-6}$
+  \end{itemize}
+\item (Example) distribution of the SVM classifier output is in Fig.~\ref{fig:mkSvmGauss}
+\end{itemize}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.3\textwidth]{images/mk_svm_gauss}
+  \end{center}
+  \caption{The output of the SVM classifier with Gaussian kernel.}
+  \label{fig:mkSvmGauss}
+\end{figure}
+
+
 \clearpage
