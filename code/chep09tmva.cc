@@ -15,6 +15,8 @@
 #include <TList.h>
 #include <TKey.h>
 
+#include "TROOT.h"
+
 #include <TMVA/Config.h>
 
 #include "config.h"
@@ -33,6 +35,8 @@ bool sniffChainName(std::vector<std::string>& files, const std::string& treeName
 
 // See more usage examples about TMVA training in tmva/TMVA/examples/TMVAnalysis.C
 int main(int argc, char **argv) {
+  std::cout <<"Using ROOT version "<< gROOT->GetVersion() << std::endl;
+
   TStopwatch timer_total;
   timer_total.Start();
   TStopwatch timer;
