@@ -233,6 +233,7 @@ Example of data used in $\tau$ tagging. \\Left: Jet $E_T$ ({\tt jetEt}) variable
 \end{figure}
 }
 
+\section{TMVA}
 \frame{
 \frametitle{TMVA}
 TMVA is a ROOT-integrated toolkit for parallel multivariate data analysis. 
@@ -242,16 +243,94 @@ of a large variety of classifiers.
 
 }
 
+\section{Customisation of TMVA}
 \frame{
 \frametitle{Customisation of TMVA for $\tau$ tagging}
 
 }
 
+\section{Results}
 \frame{
 \frametitle{Results - Neural Networks}
+ were {\bf trained with 5k signal jets and 40k background jets}:
+}
+
+\frame{
+\frametitle{Results - Support Vector Machine 1/2}
+
+SVM were {\bf trained with 5k signal jets and 40k background jets}:
+  \begin{itemize}
+  \item The training in SVM scales as O(\# of events in training data$^2$)  
+\item In practice training took $\sim$1 h 
+  \end{itemize}
+
+\vspace{0.5cm}
+The definition of the efficiency {\bf optimization problem} has an important role in the case of SVM:
+\begin{itemize}
+\item Signal jet efficiency has maximum in different point of parameter space than event efficiency
+\item Same goes for different levels of background efficiency.
+\end{itemize}
+
+%\begin{center}
+%\begin{tabular}{l*{3}{l}r}
+%\hline
+%Signal efficiency (\%)  & & Background eff. \\
+%Background (BG) sample 1 & BG sample 2 & \\
+%\hline
+%5.56$\pm$0.12  & 5.50$\pm$0.12        & $10^{-5}$               \\
+%2.1$\pm$0.07   & 2.18$\pm$0.07        & $10^{-6}$               \\
+%\hline
+%\end{tabular}
+%\end{center}
+
+%\footnote{Independent background sample}
+
+
+%\item SVM achieves $5.56\;\%$ signal event efficiency at $10^{-5}$
+%  background event efficiency level, $2.11\;\%$ for $10^{-6}$ bkg eff
+%  with same parameters%C=5, sigma=2
+%\item Training with bkg sample 2 gives $5.50\;\%$ signal eff for
+%  $10^{-5}$ bkg eff, from which we could estimate the systematic
+%  uncertainty from the selection of the training data to be at least
+%  on ther order of $0.06\;\%$; for $10^{-6}$ the signal eff is
+%  $2.18\;\%$, and the systematic uncertainty would become $0.07\;\%$
+%  \begin{itemize}
+%  \item Statistical uncertainty in $10^{-5}$ case is $0.12\;\%$, and
+%    $10^{-6}$ case $0.07\;\%$
+%  \end{itemize}
+
+%\end{itemize}
 
 }
 
+\frame{
+\frametitle{Results - Support Vector Machine 2/2}
+
+%Example distribution of the SVM classifier output is in Fig.~\ref{fig:mkSvmGauss}
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.55\textwidth]{images/mk_svm_gauss}
+  \end{center}
+%  \caption{}
+{\color{dark-blue}The output of the SVM classifier with Gaussian kernel}.
+  \label{fig:mkSvmGauss}
+\end{figure}
+
+
+Independent data samples were used to estimate systematic uncertainty:
+\begin{center}
+\begin{tabular}{l*{2}{l}r}
+\hline
+Signal efficiency (\%)  & Background eff. \\
+\hline
+5.56$\pm$0.12 (stat.) $\pm$ 0.06 (syst.)        & $10^{-5}$               \\
+2.11$\pm$0.07 (stat.) $\pm$ 0.07 (syst.)        & $10^{-6}$               \\
+\hline
+\end{tabular}
+\end{center}
+
+
+}
 \frame{
 \frametitle{Results - Boosted Decision Trees}
 
@@ -291,15 +370,16 @@ with only small fluctiations}:
 \begin{center}
 \begin{tabular}{l*{2}{l}r}
 \hline
-Signal efficiency (\%)  & Backround rejection factor \\
+Signal efficiency (\%)  & Background eff. \\
 \hline
-7.8$\pm$0.1        & $10^5$               \\
-3.9$\pm$0.1        & $10^6$               \\
+7.8$\pm$0.1        & $10^{-5}$               \\
+3.9$\pm$0.1        & $10^{-6}$               \\
 \hline
 \end{tabular}
 \end{center}
 }
 
+\section{Conclusions}
 \frame{
 \frametitle{Conclusions}
 
