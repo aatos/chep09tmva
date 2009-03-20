@@ -30,7 +30,32 @@ FDA GA
 
 \subsection{k-nearest neighbour method, kNN}
 
- 
+The multidimensional k-nearest neighbour, also known as k-NN, method
+is conceptually fairly similar to the PDERS method. The k-NN is an
+adaptive algorithm which searches for a fixed number of adjacent
+events. These events define the volume for the metric, i.e. the
+distance, that is used. The simplest metric is the Euclidean one. The
+$k$ events with the smallest values of $R$ are called
+\emph{k-nearest neighbours}.
+
+ The number of variables in feature space and the number of
+neighbours investigated, depend on the particular data at
+hand. Generally larger values of investigated neighbours reduce the
+effect of noise in the classification but it also makes the boundaries
+between classes less distinct. The k-NN classifier performance
+surpasses that of parametric learning methods when the boundary
+separating signal from background contains irregular features.
+
+Internally k-NN uses so called k-dimensional trees, or kd-trees, for
+sorting the training events. The kd-tree is a data structure for
+organizing the points in a k-dimensional space. The TMVA
+implementation of kd-trees is reasonably fast one.
+
+It should be noted that TMVA developers do not recommend using this
+classifier for problems with more than about 10 variables. In general
+the larger the data set the more this algorithm probes the small scale
+differences in signal and background.
+
 \begin{figure}[h]
  \begin{minipage}{8.5cm}
 \includegraphics[width=1.0\textwidth]{images/pkMva_KNN.png}
