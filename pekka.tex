@@ -1,5 +1,23 @@
 \subsection{Function discriminant analysis, FDA}
 
+The FDA, also known as function discriminant analysis, is an
+intermediate solution between analytical solutions in the linear case
+such as Fisher discriminant and non-linear ones such as artificial
+neural networks. The aim of the FDA method is to solve relatively
+simple or partially non-linear problems. The user must provide a
+desired function with adjustable parameters via TMVA option
+string. The formula must be in format accepted by ROOT TFormula. FDA
+algorithm then fits parameters to it with the requirement that the
+function value for the signal is as close as possible to 1 and for
+background as close as possible to 0.
+
+The advantage of this method is the simplicity and transparency of the
+expression that is used for discrimination. However its performance
+depends heavily on the user defined discriminator function. This is
+certainly a disadvantage in problems where phase space dependent
+nonlinear correlations exist. FDA should reproduce the performance of
+any linear discriminant analysis method. In non-linear domain the
+discriminator must include more complicated non-linear terms.
  
 \begin{figure}[h]
  \begin{minipage}{8.5cm}
