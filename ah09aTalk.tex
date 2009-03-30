@@ -125,7 +125,7 @@ signal $\tau$s separated from the background
 \item {\bf Data:} a generator level Pythia/Tauola data for  14 TeV  p-p collisions
 \begin{itemize}
 \item Signal: hadronic $\tau$ decay
-\item Background: hadronic QCD multi-jets
+\item Background: hadronic jets from QCD multi-jets (p$\mathrm{_T}$ = 120-170 GeV/c)
 \end{itemize}
 
 \vspace{0.2cm}
@@ -147,14 +147,14 @@ background rejection are studied with various MVA classifiers
 \section{Data}
 \frame{
 \frametitle{Data}
-{\bf The data for  QCD background} was generated using Pythia8.108 for LHC 14 TeV p-p collisions.
+{\bf The data for  QCD multi-jet background} was generated using Pythia8.108 for LHC 14 TeV p-p collisions.
 
 \vspace{0.1cm}
 {\bf The signal}  was generated with Pythia6.4.19,
 and required to consist only of genuine $\tau$ jets from the 
 (heavy charged) MSSM $H^{\pm} \rightarrow \tau^{\pm}\nu_{\tau}$ decay 
 with $\tau$ polarization simulated with Tauola 2.6\footnote{D.P. Roy, Phys. Lett. B 459 607-614}.
-\\($m_{H_{\pm}}=200 GeV/c^2$, $\tan\beta = 30$, max. $m_H$ SUSY scenario \footnote{\href{http://arxiv.org/pdf/hep-ph/9912223}{arXiv:hep-ph/9912223}}.)
+\\($m_{H_{\pm}}=217 GeV/c^2$, $\tan\beta = 30$, max. $m_H$ SUSY scenario \footnote{\href{http://arxiv.org/pdf/hep-ph/9912223}{arXiv:hep-ph/9912223}}.)
 
 
 %(jet ET, jet eta, charged track isolation (minimum track pT), 
@@ -173,15 +173,15 @@ Our analysis is based on the following variables:
 \begin{center}
 \begin{tabular}{l*{2}{l}r}
 \hline
-Variable                                                 & Name                   \\
+Variable                                                  & Name                   \\
 \hline
-Jet $E_T$                                                & {\tt jetEt}            \\
-Jet $\eta$                                               & {\tt jeteta}           \\
-Track isolation ($\Delta$R=0.50)                         & {\tt isolMaxPt50}      \\
-ECAL isolation ($\Delta$R=0.04-0.50)                     & {\tt ecalIsolEt10\_50} \\
-Neutral hadron rejection                                 & {\tt hcalRatio}        \\
-(i.e. track p matching to HCAL energy deposition)        &                        \\
-$R_{\tau}$ = p(leading track) / E(jet)                   & {\tt rtau}             \\
+Jet $E_T$                                                 & {\tt jetEt}            \\
+Jet $\eta$                                                & {\tt jeteta}           \\
+Track isolation ($\Delta$R=0.50)                          & {\tt isolMaxPt50}      \\
+Isolation of electromagnetic energy ($\Delta$R=0.10-0.50) & {\tt ecalIsolEt10\_50} \\   
+Neutral hadron rejection                                  & {\tt hcalRatio}        \\
+(i.e. track p matching to hadronic energy deposition)     &                        \\
+$R_{\tau}$ = p(leading track) / E(jet)                    & {\tt rtau}             \\
 \hline
 \end{tabular}
 \end{center}
@@ -213,10 +213,14 @@ $R_{\tau}$ = p(leading track) / E(jet)                   & {\tt rtau}           
 \frame{
 \frametitle{Production and Preselection Cuts}
 
-At Monte Carlo level the following preselection cuts were used:
+At Monte Carlo level the following preselection cuts were used\footnote{
+$\tau$ jet tagging:
+ The European Physical Journal C - Particles and Fields, Volume 46, Supplement 1, July 2006;
+$H^{+} \rightarrow \tau  \nu$:
+ J. Phys. G: Nucl. Part. Phys. 34 (2007) 2307-2455}:
 \begin{itemize}
-\item {\tt jetEt $>$ 100}
-\item {\tt abs(jeteta) $<$ 2.2} {\color{dark-blue}(Fig.~1)}
+\item {\tt jetEt $>$ 100} {\color{dark-blue}(Fig.~1)}
+\item {\tt abs(jeteta) $<$ 2.2} 
 \item Jet leading track p$_T$ $>$ 20 GeV, matching cone 0.1
 \item Isolation:
 
@@ -311,7 +315,7 @@ to guarantee an unbiased performance comparison between the classifiers}, such a
  
 
 \vspace{0.5cm}
-In this presentation, we are focusing to following classifiers applied to problem of $\tau$ tagging:
+In this presentation, we are focusing to following classifiers:
 \begin{itemize}
 \item Artificial neural networks (ANN)
 \item Boosted/Bagged decision trees (BDT)
@@ -320,22 +324,34 @@ In this presentation, we are focusing to following classifiers applied to proble
 }
 
 \section{Customisation of TMVA}
-\begin{frame}[fragile]
+\begin{frame}
 %\frame{
 \frametitle{Customisation of TMVA for $\tau$ tagging 1/2}
-\vspace{0.5cm}
-We added:
+\vspace{0.4cm}
+Customisation of TMVA included:
 \begin{itemize}
-\item Evaluation of event efficiencies with {\tt TMVA::Reader}, taking into account
-   the MC-level preselection efficiencies and TMVA preselection efficiencies
+\item Configuration files
 
+\vspace{0.4cm}
 \item Timing profiling with {\tt TStopwatch}
 
-\vspace{0.5cm}
-\item Signal (event) efficiency at background (event) efficiency levels $10^{-5}$ and $10^{-6}$
-\item Signal (jet) efficiency at $10^{-5}$,  background (jet) efficiency
+\vspace{0.4cm}
+\item Evaluation of {\bf event efficiencies} with {\tt TMVA::Reader}, taking into account
+   the MC-level preselection efficiencies and TMVA preselection efficiencies:
 
+\begin{itemize}
+\vspace{0.4cm}
+\item Using signal (event) efficiency at background (event) {\bf efficiency level $10^{-5}$} and $10^{-6}$
 \end{itemize}
+
+\vspace{0.4cm}
+\item Also we tabulating data related to  signal and background {\bf jet efficiency} at $10^{-5}$
+\end{itemize}
+
+\vspace{0.6cm}
+{\color{dark-blue}(See example listing on next slide)} 
+%Tabulation of event efficiencies at $10^{-5}$ level, are shown for signal and  background 
+
 %\scriptsize
 %\begin{verbatim}
 %\end{verbatim}
@@ -383,19 +399,25 @@ MyEvaluate : -------------------------------------------------------------------
 
 \begin{itemize}
 \item {\bf ANN:} Of the three Multilayer Perceptrons (MLP) implementations supported by TMVA
-we used {\tt kMLP} ({\tt TMVA::Types::kMLP}).
+we used {\tt MLP} ({\tt TMVA::Types::kMLP}).
 %\item {\bf Varaibles:} {\tt jetEt, jeteta, log(isolMaxPt50), log(ecalIsolEt10\_50), log(hcalRatio), rtau}
-\item {\bf Variables:} {\tt jetEt, jeteta, isolMaxPt50, ecalIsolEt10\_50, hcalRatio, rtau}
-
 
 \vspace{0.5cm}
-\item {\bf Training:} Data for 6-13-1 MLP configuration with neurons of tanh type we trained 1k cycles
+\item {\bf Variables:} {\tt jetEt, jeteta, isolMaxPt50, ecalIsolEt10\_50, hcalRatio}, and {\tt rtau}
 \begin{itemize}
-\item 5k signal jets and 40k background jets 
+\item Transformation: {\tt log(jetEt)} and 
+Principal Component Analysis ({\tt  VarTransform=PCA})
+\end{itemize}
+\vspace{0.5cm}
+%\item {\bf Training:} Data for 6-13-1 MLP configuration with neurons of tanh type we trained 1k cycles
+\item {\bf Training:} Data for 6-15-1 MLP configuration with neurons of sigmoid type we trained 1k cycles
+\begin{itemize}
+\item 10k signal jets and 40k background jets 
 \end{itemize}
 
 \vspace{0.5cm}
-\item {\bf Testing:} Rest of the data was used for testing \\(35k signal and 2230k background events)
+\item {\bf Testing:} Rest of the data was used for testing \\(30k signal and 2230k background jets)
+% 1087k events
 \begin{itemize}
 \item Systematic uncertainty was estimated by repeating the full analysis with independent background data
 \end{itemize}
@@ -422,7 +444,7 @@ we used {\tt kMLP} ({\tt TMVA::Types::kMLP}).
 \end{minipage}
 %\begin{minipage}{3.0cm}
 
-{\color{dark-blue} Fig.~2: Convergence of ANN over 1000 training cycles and background rejection vs. signal efficiency.}
+{\color{dark-blue} Convergence of ANN over 1000 training cycles and background rejection vs. signal efficiency.}
 %\end{minipage}
 \label{fig:variables}
 \end{figure}
@@ -431,8 +453,8 @@ we used {\tt kMLP} ({\tt TMVA::Types::kMLP}).
 \hline
 Signal efficiency (\%)  & Background eff. \\
 \hline
-4.6$\pm$0.1 (stat.) $\pm$ 0.1 (syst.)       & $10^{-5}$               \\
-1.3$\pm$0.3 $\pm$ 0.1       & $10^{-6}$               \\
+7.6$\pm$0.2 (stat.) $\pm$ 0.3 (syst.)       & $10^{-5}$               \\
+2.3$\pm$0.1 $\pm$ 0.3       & $10^{-6}$               \\
 \hline
 \end{tabular}
 \end{center}
@@ -444,7 +466,7 @@ Signal efficiency (\%)  & Background eff. \\
 \frametitle{Results - Boosted Decision Trees}
 
 A decision tree is a binary tree classifier. 
-Repeated left/right (yes/no) decisions are performed on a single variable at a time.:
+Repeated left/right (yes/no) decisions are performed on a single variable at a time:
 \begin{itemize}
 \item The phase space is split into regions that are classified as signal or
 background, depending on the majority of training events that end up in the final leaf nodes
@@ -537,7 +559,7 @@ Signal efficiency (\%)  & Background eff. \\
 SVM were {\bf trained with 5k signal jets} and {\bf 40k background jets}:
 \vspace{0.5cm}
   \begin{itemize}
-  \item The training in SVM scales as {\em O(\# of events in training data$^2$)}  
+  \item The SVM training time scales as O($n^2$), where $n$ is the number of events in the training sample  
 \item In practice training took $\sim$1 h 
   \end{itemize}
 
@@ -570,18 +592,24 @@ SVM were {\bf trained with 5k signal jets} and {\bf 40k background jets}:
 \hline
 Signal efficiency (\%)  & Background eff. \\
 \hline
-5.56$\pm$0.12 $\pm$ 0.06        & $10^{-5}$               \\
-2.11$\pm$0.07 $\pm$ 0.07        & $10^{-6}$               \\
+%5.56$\pm$0.12 $\pm$ 0.06        & $10^{-5}$               \\
+%2.11$\pm$0.07 $\pm$ 0.07        & $10^{-6}$               \\
+
+5.6$\pm$0.1 $\pm$ 0.1        & $10^{-5}$               \\
+2.1$\pm$0.1 $\pm$ 0.1        & $10^{-6}$               \\
 \hline
 \end{tabular}
 \end{center}
 }
 
 \section{Conclusions}
+
 \frame{
 \frametitle{Conclusions}
 \begin{itemize}
-\item Since CHEP'07, TMVA has matured and is now fully integrated to ROOT
+\item We have discussed from the user point of view how TMVA package in ROOT can be used in $\tau$ tagging
+
+\item We have seen that since CHEP'07 TMVA has matured, and is now fully integrated to ROOT
 \begin{itemize}
 \item An {\bf interface for adding new classifiers} is provided
 \end{itemize}
@@ -589,10 +617,11 @@ Signal efficiency (\%)  & Background eff. \\
 \vspace{0.5cm}
 \item Multivariate data-analysis techniques show a promise in $\tau$ tagging:
 \begin{itemize}
-\item At  $10^{-5}$ background efficiency, TMVA classifiers have 4.6-7.8~\% signal efficiency
+\item At  $10^{-5}$ background efficiency, TMVA classifiers have 5.6-7.8~\% signal efficiency
 \end{itemize}
-\item Finally, we have defined areas where our approach can be improved (e.g. using extra variables), 
-and are planning to perform additional research on this
+\item Finally, we have defined areas where our approach can be improved 
+\\(e.g. using additional variables, and yet unused classifiers available in TMVA), 
+and are planning additional research on $\tau$ tagging
 
 \end{itemize}
 }
@@ -604,4 +633,26 @@ and are planning to perform additional research on this
 \fi %slides
 
 
+% For possible discussion
+% LW about commenting detector (CMSSW) effects:
+% Q: HOW ABOUT DETECTOR EFFECTS?
 
+% A: "TAKING the detector effects into account, 
+% the signal efficiency at a 10^-5 background level is expected to be a few percent; 
+% thus the results of ideal simulation are in good agreement 
+% with the results obtained with full simulation."
+
+
+% Q: CAN WE SEE CHARGED HIGGSIN BOSON?
+
+% A: "WE EXPECT to obtain a further rejection factor of ~10^4 against 
+% the QCD multi-jet events with missing ET measurement, 
+% tagging of one associated b-jet, 
+% associated top and W mass reconstruction and 
+% cut on the reconstructed transverse mass of the charged Higgs boson." 
+
+
+% Q: WHY OTHER BACKGROUND WERE NOT STUDIED?
+
+% A: "THE QCD CROSS-SECTION is by several orders of 
+% magnitude larger than the cross-section of other backgrounds". 

@@ -1,4 +1,79 @@
 \begin{appendix}
+\section{Talk Notes}
+% 4 questions (NNs pre-processing,)
+% 20 listeners, 60 on the room.
+% I was suprisingly relaxed went OK. I was able to dicuss well the parallel coordinates sissue.
+% timing only on min. extra. + 4 guestions!
+
+From b tagging we not turn to tau tagging.
+
+For this channel QCD is dominating background.
+"The QCD cross-section is by several orders of 
+magnitude larger than the cross-section of other backgrounds". 
+
+Cross sections are such than, against QCD we need a 10$^9$ rejektin, if we want to see the  signal. 
+This can be achieved, 
+when we join other methods (10$^4$), such and b-tagging dicussed in previous talk, 
+with tau tagging (10$^5$).
+
+Other methods:
+1) missing ET measurement, 
+
+2) mass reconstruction for associated top and W , and 
+
+3) cut on the reconstructed transverse mass of the charged Higgs boson.
+
+
+Analyysis is based on Physics TDR -papereihin (CMS physics TDR-I and II):
+
+
+
+Test data:
+signaalia 35k jets (equal numbert events), and background 2230k jets (1087k events).
+
+
+Customization:
+
+By default TMVA reports signal (jet) efficiencies at 1 \%, 10 \% and 30 \% background
+(jet) efficiency levels.
+
+We used jets for training, but want to know the efficiencies in events
+In practice signal data has one jet / event (the tau jet), and
+background data has multiple jets / event.
+So, we added software TMVA:
+
+1) Signal (jet) efficiency at 1e-5 bkg (jet) efficiency
+
+2) Evaluation of event efficiencies with TMVA::Reader, taking into account
+   the MC-level preselection efficiencies and TMVA preselection
+   (Signal (event) efficiency at bkg (event) efficiency levels 1e-6, 1e-5)
+
+Profiling with TStopwatch 
+
+BDT took 5~h.
+
+Informally: 
+"taking the detector effects into account, 
+the signal efficiency at a 10$^-5$ background level is expected to be a few percent; 
+thus the results of ideal simulation are in good agreement 
+with the results obtained with full simulation."
+
+or 
+
+these result  can be reflected against rew percent acheived with full CMS simulation
+and traditional analysis using hard cuts.
+
+Future improvments
+1) Muuttujien määrä on varsin pieni. Add more variable.
+
+2) Preselektio saattaa olla hieman liian tiukka. Loosing preselction cuts.
+
+3) Understanding weak variable. 
+  Strong correlation begtween neutr. hadron rejektio with Rtau-leikkauksen kanssa, when Rtau$>$0.80. 
+
+\section{Proceedings Deadline }
+Will be publised on-line by IOP max.~10 pages latest on May 15th. 
+Organizers ask us to propose two possible reviewers for our paper.
 
 \lstset{ % General settings
 language=c++,                   % choose the language of the code
@@ -317,16 +392,18 @@ To be done:
 \begin{itemize}
 \item 090400 Preparing the paper
 \item 090326 Giving the talk 15+5 min? Post talk update.
-\item 090325 Last tuning.
-\item 090322 Integratin material received 090319-090321, and sending forward asking last comments.
-
-\item Update variable images, log data, varibale transformation, try nn grouping, update slides.
+\item Update varibale transformation (log/image)
 %\item Template code for  analysis using latest ROOT, and TMVA inside it.
 %\item Revise title, abtract and paper structure including appendix.
 \end{itemize}
 
 \section{HISTORY}
 \begin{itemize}
+\item 090330  Merge with PK (no updates). Committing to git repository.
+\item 090326 Preparing for the talk and giving it. Post talk updated.
+\item 090325 Last tuning (comments from Lauri and Matti). release
+\item 090324 Asking last comments latest on Wednesday (090325) morning. 
+\item 090323 Adding fixes provided by Ritva, Lauri, Matti. NN run.
 \item 090321 Preparing backup version of the talk. First release.
 \item 090320 Merge with PK (receiving material/comments from Lauri, Ritva, Matti, Pekka)
 \item 090319 Adding talk material from Matti and Sami. 

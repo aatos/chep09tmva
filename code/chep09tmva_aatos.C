@@ -200,18 +200,9 @@ void chep09tmva_aatos( TString myMethodList = "" )
 
 
 
-
-
-
-
-
-
-
-   
-
 // jet eta (|eta| < 2.0)
 // jetEt
-factory->AddVariable("jetEt", 'F');
+factory->AddVariable("log(jetEt)", 'F');
 
 // jeteta
 factory->AddVariable("jeteta", 'F');
@@ -219,17 +210,17 @@ factory->AddVariable("jeteta", 'F');
 // tracker isolation: pT threhold for tracks to be ignored in isolation annulus
 // (trigger uses cone of 0.50, signal cone=0.04, default: max pT < 0.9 GeV/c)
 // isolMaxPt50
-factory->AddVariable("log(isolMaxPt50)", 'F');
+factory->AddVariable("log(isolMaxPt50+2)", 'F');
 
 // ECAL isolation: energy threshold for maximum energy in isolation annulus
 // (optimum isolation annulus 0.10-0.50, max ET < 1.9 GeV)
 // ecalIsolEt10_50
-factory->AddVariable("log(ecalIsolEt10_50)", 'F');
+factory->AddVariable("log(ecalIsolEt10_50+2)", 'F');
 
 // Rejection of electrons and neutral hadrons (K0's):
 // variable: ET^(HCAL_0-0.40)/pT^(track)-1, default: -0.98 < hcalRatio < 0.10
 // hcalRatio
-factory->AddVariable("log(hcalRatio)", 'F');
+factory->AddVariable("log(hcalRatio+2)", 'F');
 
 // tau helicity correlations (D.P.Roy, Phys.Lett.B459:607-614):
 // variable: Rtau = P(leading track) / E(jet), default: Rtau < 0.80
