@@ -479,5 +479,108 @@
   \label{fig:mkSvmGauss}
 \end{figure}
 
+\subsubsection{Material to paper}
+
+\begin{itemize}
+\item Training 4000 signal jets, 32000 background jets
+\item Optimization was a 2D scan in the $\sigma, C$ parameter space
+  \begin{itemize}
+  \item A grid was set up in this space
+  \item The training and evaluation for each point was run in parallel in a Linux cluster
+  \end{itemize}
+\item Results
+  \begin{itemize}
+  \item Background 1
+    \begin{itemize}
+    \item $10^{-5}$ bkg eff: $5.68\pm 0.12\;\%$
+    \item $10^{-6}$ bkg eff: $1.66\pm 0.06\;\%$
+    \end{itemize}
+  \item Background 2
+    \begin{itemize}
+    \item $10^{-5}$ bkg eff: $5.49\pm 0.12\;\%$
+    \item $10^{-6}$ bkg eff: $1.80\pm 0.07\;\%$
+    \end{itemize}
+  \item Figures \ref{fig:mkSvmGauss2} and \ref{fig:mkSvmParallels}
+  \end{itemize}
+\end{itemize}
+
+Pseudo-pseudocode of the event evaluation
+\begin{verbatim}
+Infer cut orientation for each classifier from TMVA classifier output distributions
+
+Separate classifiers to cuts and non-cuts classifiers
+
+Create TTreeFormula objects corresponding to the TMVA preselection cuts
+
+Initialize TMVA Reader
+
+Initialize temporary TTree for non-cuts classifier output values
+
+Book classifiers on reader and set branches for classifier output values
+
+For each entry in signal and background testing TTree
+  If entry doesn't pass preselection cuts
+    Continue to next entry
+
+  Get variable values from TTreeFormula
+
+  For each non-cuts classifier
+    Compute classifier output from the entry
+
+  If current entry belongs to a different event as the previous entry
+    Fill the non-cuts classifier outputs from the previous event to the temporary TTree
+    Store classifier outputs from current event to the buffer
+  Else
+    For each non-cuts classifier
+      Take min/max (depending on the cut orientation) of the buffered output value and the value from this entry,
+      and store it to the buffer
+
+  For each cuts classifier
+    For each ROC bin
+      If entry passes the cuts corresponding the signal efficiency value of the ROC bin
+        If this event has not yet been marked as added for this ROC bin
+          Add event as passed for this ROC bin
+
+Fill the non-cuts classifier outputs from the last event to the temporary TTree
+
+Calculate event/jet preselection efficiencies and print them
+
+For each entry in the temporary TTree
+  For each non-cuts classifier
+    Fill classifier output histogram
+    Fill classifier efficiency histogram
+
+For each non-cuts classifier
+  Normalize efficiency histogram
+  For each ROC bin
+    Get the signal efficiency value of the ROC bin
+    Find the classifier output cut value corresponding to the signal efficiency
+    Obtain background efficiency by imposing the the cut on background distribution
+    Add background efficiency value to the ROC bin
+
+For each cuts classifier
+  Normalize efficiency histogram
+  For each ROC bin
+    Get the signal and background efficiencies for that bin
+    Add the point to the ROC curve 
+
+Print efficiency tables
+\end{verbatim}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.3\textwidth]{images/mk_svm_gauss2}
+  \end{center}
+  \caption{The output of the SVM classifier with Gaussian kernel.}
+  \label{fig:mkSvmGauss2}
+\end{figure}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[width=.3\textwidth]{images/svm_parallels}
+  \end{center}
+  \caption{SVM parallel coordinates}
+  \label{fig:mkSvmParallels}
+\end{figure}
 
 \clearpage
