@@ -40,10 +40,11 @@ pdf:
 paper:
 	@echo :::CHEP09 TMVA paper = $(d1)
 	@rm -f *.aux
-	@latex $(d1) && latex $(d1) 
+#	@latex $(d1) && latex $(d1) 
+	@pdflatex $(d1) && pdflatex $(d1) 
 #	@$(tex) $(d1) && $(tex) $(d1) 
-	@dvips -R0 $(d1).dvi -o $(d1).ps
-	@ps2pdf $(d1).ps
+#	@dvips -R0 $(d1).dvi -o $(d1).ps
+#	@ps2pdf $(d1).ps
 ifdef USEVIEWER
 	$(PDFVIEWER) $(d1).pdf
 endif
