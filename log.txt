@@ -1,0 +1,25 @@
+MyEvaluate : Testing classifiers in order to obtain signal/background efficiencies for EVENTS
+MyEvaluate : (not jets, which are the input to TMVA)
+MyEvaluate :
+MyEvaluate : -----------------------------------------------------------------------------
+MyEvaluate :              |             Events             |               Jets
+MyEvaluate :              |   Signal   eff       Bkg   eff |   Signal  eff       Bkg  eff
+MyEvaluate : -----------------------------------------------------------------------------
+MyEvaluate : Generated    :   200000        89799840       |      N/A            N/A
+MyEvaluate : Event presel :    47866 0.239   1470627 0.016 |   206079        4345182
+MyEvaluate : TMVA  presel :    35615 0.744   1087375 0.739 |    35615 0.17   2230315 0.51
+MyEvaluate : Total presel :          0.178           0.012 |
+MyEvaluate : -----------------------------------------------------------------------------
+MyEvaluate :
+MyEvaluate : Thus 1e-5 overall bkg event efficiency corresponds to 8.3e-04 bkg event
+MyEvaluate : efficiency by TMVA.
+MyEvaluate :
+MyEvaluate : Signal and background event efficiencies have been scaled with the preselection
+MyEvaluate : event efficiencies
+MyEvaluate : Evaluation results ranked by best signal efficiency at 1e-5
+MyEvaluate : -----------------------------------------------------------------------------
+MyEvaluate : MVA              Signal event efficiency at bkg event efficiency (error):
+MyEvaluate : Methods:         @B=1e-6      @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01
+MyEvaluate : -----------------------------------------------------------------------------
+MyEvaluate : SVM_Gauss_2_5  : 0.0212(007)  0.0556(012)  0.1096(016)  0.1670(019)  0.1774(020)
+MyEvaluate : -----------------------------------------------------------------------------

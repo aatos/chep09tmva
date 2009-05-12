@@ -1,0 +1,59 @@
+Infer cut orientation for each classifier from TMVA classifier output distributions
+
+Separate classifiers to cuts and non-cuts classifiers
+
+Create TTreeFormula objects corresponding to the TMVA preselection cuts
+
+Initialize TMVA Reader
+
+Initialize temporary TTree for non-cuts classifier output values
+
+Book classifiers on reader and set branches for classifier output values
+
+For each entry in signal and background testing TTree
+  If entry doesn't pass preselection cuts
+    Continue to next entry
+
+  Get variable values from TTreeFormula
+
+  For each non-cuts classifier
+    Compute classifier output from the entry
+
+  If current entry belongs to a different event as the previous entry
+    Fill the non-cuts classifier outputs from the previous event to the temporary TTree
+    Store classifier outputs from current event to the buffer
+  Else
+    For each non-cuts classifier
+      Take min/max (depending on the cut orientation) of the buffered output value and the value from this entry,
+      and store it to the buffer
+
+  For each cuts classifier
+    For each ROC bin
+      If entry passes the cuts corresponding the signal efficiency value of the ROC bin
+        If this event has not yet been marked as added for this ROC bin
+          Add event as passed for this ROC bin
+
+Fill the non-cuts classifier outputs from the last event to the temporary TTree
+
+Calculate event/jet preselection efficiencies and print them
+
+For each entry in the temporary TTree
+  For each non-cuts classifier
+    Fill classifier output histogram
+    Fill classifier efficiency histogram
+
+For each non-cuts classifier
+  Normalize efficiency histogram
+  For each ROC bin
+    Get the signal efficiency value of the ROC bin
+    Find the classifier output cut value corresponding to the signal efficiency
+    Obtain background efficiency by imposing the the cut on background distribution
+    Add background efficiency value to the ROC bin
+
+For each cuts classifier
+  Normalize efficiency histogram
+  For each ROC bin
+    Get the signal and background efficiencies for that bin
+    Add the point to the ROC curve 
+
+Print efficiency tables
