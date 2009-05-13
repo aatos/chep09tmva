@@ -33,8 +33,8 @@ void mvas( TString fin = "TMVA.root", HistType htype = MVAType, Bool_t useTMVASt
    // this defines how many canvases we need
    TCanvas *c = 0;
 
-   //int rebin = 1000;
-   int rebin = 1;
+   int rebin = 1000;
+   //int rebin = 1;
 
    // counter variables
    Int_t countCanvas = 0;
