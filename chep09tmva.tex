@@ -228,7 +228,7 @@ ID & Variable                                                       \\
 %\begin{minipage}{3.0cm}
 
 \caption{Example of data used in $\tau$ tagging.
-Distributions of jet ${\rm E}_{\rm T}$ and ${\rm R}_{\tau}$ ({\tt rtau}) variables are shown.}
+Distributions of jet ${\rm E}_{\rm T}$ and ${\rm R}_{\tau}$  variables are shown.}
 %\end{minipage}
 \label{fig:variables}
 \end{figure}
@@ -247,7 +247,7 @@ Distributions of jet ${\rm E}_{\rm T}$ and ${\rm R}_{\tau}$ ({\tt rtau}) variabl
 %\verb"150~MeV -"&Projectile energies from $\sim$ 150 MeV up to 2.5 GeV $\sim$ 3 GeV.\\
 %\br
 %\end{tabular}
-%\label{tab:AH:::}
+%\label{tab:}
 %\end{table}
 %\end{center}
 
@@ -278,8 +278,10 @@ background rejection 10$^{-5}$ and 10$^{-6}$, the TMVA package had to
 be customized slightly for the analysis.
 Firstly, since the root trees contained jets, and since a single event
 could contain several jets, a functionality to evaluate the $\tau$
-identification efficiency calculated per event was added to 
-{\tt TMVA::Reader}.  
+identification efficiency calculated per event was added to  {\tt TMVA::Reader}.  
+Customization was made to TMVA distributed with ROOT 5.21/06.
+
+
 The algorithm is described in pseudocode in
 Appendix~A. %Listing~\ref{listing:eventcode}.
 The algorithm had to take into account also the preselection
@@ -289,7 +291,7 @@ timing profiling with {\tt TStopwatch} was added.
 Also the evaluation of the signal efficiency at high background rejection
 level required some customization.
 
-(describe here in more detail what was done)
+[describe here in more detail what was done]
 
 % what is the point of the following sentence? please clarify
 Example Listing~\ref{listing:log} in Appendix A from analysis run demonstrates these customisations.
@@ -352,8 +354,11 @@ the output of the SVM classifier with Gaussian kernel.}
 
 
 \subsection{Boosted Decision Trees}
-The boosted decision tree (BDT) method is based on binary decision
-trees. Repeated yes/no decisions are made on the variable with the
+Recently, the Boosted Decision Trees (BDTs) have been advocated as an alternative to 
+artificial neural networks for particle identification~\cite{bdt}.
+
+The BDT method is based on binary decision trees. 
+Repeated yes/no decisions are made on the variable with the
 best separation power until the subsamples become small or until the
 subsamples are declared as signal or background. The variable
 phase-space is hence divided into a large number of hypercubes, which is
@@ -366,16 +371,21 @@ samples.
 In order to make the decision trees robust against statistical
 fluctuations of the training sample, boosting, i.e. reweighting, is
 applied to the training sample. After each reweighting, a new decision
-tree is constructed. The outcome of a tested event is then carried out
+tree is constructed. 
+The boosting thus combines iteratively many weak classifiers or hypotheses 
+into a single stronger rule called the combined hypothesis \cite{bdt}.
+
+The outcome of a tested event is carried out
 by evaluating the decisions of typically hundreds of
 trees. Overtraining is countered by pruning nodes with insignificant
 separation. 
+
 
 The BDT method was evaluated with a set of 400 trees. Increasing the
 tree number was found not to yield significant improvement. The number
 of cuts was set to 20 and the pruning strength
 parameter of 4.0 was chosen. An example of a decision tree generated
-with these parameters is shown in Fig.~\ref{fig:}. The signal efficiency was
+with these parameters is shown in Fig.~\ref{fig:bdt}. The signal efficiency was
 found to be 1.12$\pm$0.05\% at background rejection of 10$^5$.
 Decorrelation and principal component analysis were tried out for the
 input variables, but they were found to yield only minimal changes in
@@ -384,9 +394,36 @@ the signal efficiency for the evaluated background rejection points.
 % Figure of a decision tree to be added here
 
 
+\begin{figure}[h]
+ \begin{minipage}{7.8cm}
+\includegraphics[width=0.9\textwidth]{images/bdt.png}
+\end{minipage}
+ \hfill
+\begin{minipage}{7.8cm}
+%\includegraphics[width=1.0\textwidth]{images/png}
+\end{minipage}
+%\begin{minipage}{3.0cm}
+
+\caption{An example of a boosted decision trees.}
+%\end{minipage}
+\label{fig:bdt}
+\end{figure}
+
 \subsection{Support Vector Machine}
-Support Vector Machine (SVM) in TMVA
-was trained with 4k signal jets and 32k background jets.
+The Support Vector Machine (SVM) learning algorithm is a recent alternative to MVA methods.
+One of the first applications in HEP was the classification problem 
+of signal/background discrimination in the $t\bar{t}$ dilepton channel~\cite{svmtt}.
+
+
+The SVM maps the input vectors into the feature space through some
+non-linear mapping. 
+In this space an optimal hyperplane is constructed  and evaluated by using kernel function
+${\rm K(u,v)}$~\cite{svmintro}. 
+Potential advantages of the SVM method compared to the ANN method
+include the existence of only few user chosen parameters, ability to find global minimum, and
+correspondence to a linear method which makes the SVM theoretically easy to analyse.
+
+For $\tau$ tagging the SVM was trained with 4k signal jets and 32k background jets.
 The SVM training time  scales as O($n^2$), where $n$ is the number of events in the training sample,
 so data sample size was kept small for this discriminator.
 
@@ -461,19 +498,46 @@ represent on event, possibly giving insight to better variable selection.
 
 
 \subsection{Neural Networks}
+An interesting study related to our $\tau$ tagging is given in~\cite{tauneural}, 
+where a artificial network network (ANN ) was trained to choose the polarity of $\tau$ particles from they decay angles.
+It was shown that $\tau$ helicity found by the ANN 
+approximated well the optimal Bayesian classifier.
+
+%obtain correct polarization for the $\tau$ lepton and
+%its decay products~
+
+
+%Results for MLP discriminator are shown for {\tt jetEt} transformation $log({\rm E}_{\rm T})$ and 
+%Principal Component Analysis ({\tt  VarTransform=PCA}).
+
 
 Of the three Multilayer Perceptrons (MLP) implementations supported by TMVA
 {\tt TMVA::Types::kMLP} was selected.
-Results for MLP discriminator are shown for {\tt jetEt} transformation $log({\rm E}_{\rm T})$ and 
-Principal Component Analysis ({\tt  VarTransform=PCA}).
-
 Data for 6-15-1 MLP configuration with neurons of sigmoid type was trained 1k cycles using
 10k signal jets and 40k background jets. 
-Rest of the data was used for testing (30k signal and 2230k background jets)
+Rest of the data was used for testing (30k signal and 2230k background jets).
+A ROOT TMVA script for these settings can be written as follows:
+ 
+\begin{verbatim}
+NSigTrain=10000:NBkgTrain=40000:SplitMode=Random:NormMode=NumEvents:!V
+
+MLP_v0  H:!V:!Normalise:NeuronType=sigmoid:NCycles=1000:HiddenLayers=N+9,N:
+TestRate=5:VarTransform=PCA
+\end{verbatim}
+
+In addition to variable transformation $log({\rm E}_{\rm T})$ 
+Principal Component Analysis, PCA, (see {\tt  VarTransform=PCA} above) was found to improve 
+classification power.
+In our $\tau$ tagging problem the PCA method simply performs a rotation 
+in the 6-dimensional orthogonal parameter space to a new coordinate system whose unit vectors
+are the eigenvectors of the system. 
+
+
 Systematic uncertainty was estimated by repeating the full analysis with independent background data.
 Convergence of the neural network training and 
 background rejection vs. signal efficiency plot  for test data are shown in Fig.~\ref{fig:nn}.
 
+The signal efficiency for MLP discriminator was found to be  6.5$\pm$0.1\% at background rejection of 10$^5$.
 \begin{figure}[h]
  \begin{minipage}{8.1cm}
 \includegraphics[width=1.0\textwidth]{images/MLPConvergenceTest.png}
@@ -507,7 +571,7 @@ Discriminator & Signal efficiency (\%) & \\
 Fisher   & 3.5$\pm$0.9 (stat) $\pm$ 0.0 (syst)   & 1.6 $\pm$ 0.1 $\pm$ 0.1  \\
 BDT      & 1.12$\pm$0.05  $\pm$ 0.1 & NN$\pm$NN $\pm$ 0.1\\
 SVM      & 5.6$\pm$0.1  $\pm$ 0.1   & 1.7$\pm$0.1 $\pm$ 0.1   \\
-MLP      & 7.6$\pm$0.2  $\pm$ 0.3   & 2.3$\pm$0.1 $\pm$ 0.3   \\
+MLP      & 6.5$\pm$0.1  $\pm$ 0.2   & 2.2$\pm$0.1 $\pm$ 0.2   \\
 \br
 \end{tabular}
 \end{center}
@@ -525,7 +589,7 @@ Some customisation was needed to evaluate the study case in the TMVA
 framework. The multivariate data-analysis techniques were found to
 be promising in $\tau$ identification.
 At $10^{-5}$ background efficiency, TMVA classifiers were found to
-yield 3.5--7.8~\% signal efficiency. 
+yield 1.1--6,5~\% signal efficiency. 
 
 % tama kaipaa muokkausta
 Areas where our approach can be improved are identified
@@ -593,19 +657,38 @@ label=listing:log
 \bibitem{chep07tmva} T.~Lampen {\em et. al.}, \emph{Testing TMVA software in b-tagging 
                   for the search of MSSM Higgs bosons at the LHC},
 CHEP’07 proceedings, Journal of Physics: Conference Series 119 (2008) 032028
+
 \bibitem{ptdrII} {CMS Collaboration}, \emph{{CMS} Physics Technical Design Report, Volume {II}:
              Physics Performance}, J. Phys. G: Nucl. Part. Phys. 34 (2007) 995-1579
+
 \bibitem{pythia} T. Sj\"ostrand et al., \emph{High-Energy-Physics
   Event Generation with {PYTHIA} 6.1}, Comp. Phys. Comm. 135 (2001) 238-259
+
 \bibitem{tauola} S.~Jadach et al., \emph{The $\tau$ decay library
   {TAUOLA}: Version 2.4}, Comp. Phys. Comm. 76 (1993) 361-380
+
 \bibitem{maxsusy} M.~Carena et al. \emph{Suggestions for Improved Benchmark Scenarios for Higgs-Boson Searches at LEP2}, 
 {\tt arXiv:hep-ph/9912223} %\href{http://arxiv.org/pdf/hep-ph/9912223}{arXiv:hep-ph/9912223}
+
 \bibitem{taupolarization} D.~P.~Roy, \emph{The hadronic tau decay signature of a heavy charged Higgs
               boson at {LHC}}, Phys. Lett. B 459 (1999) 607-614
 
 \bibitem{tautagging} S.~Gennai et al., \emph{Tau jet reconstruction
   and tagging with {CMS}}, Eur. Phys. Jour. C 46 (2006) 1-21
+
+\bibitem{bdt} B.~Roe et al. \emph{Boosted Decision Trees as an 
+Alternative to Artificial Neural Networks for Particle Identification},
+{\tt arXiv:physics/0408124}
+
+\bibitem{svmtt} A.~Vaiciulis, \emph{Support vector machines in analysis of top quark production},
+Nucl. Instr. and Meth. A 502 (2003) 492-494
+
+\bibitem{svmintro}N.~Cristianini and J.~Shawe-Taylor, \emph{An Introduction to Support Vector Machines},
+Cambridge University Press, UK 2000
+
+\bibitem{tauneural} L.~Garrido and V.~Gaitan, 
+\emph{Use of Neural Nets to Measure the Tau Polarization and its Bayesian Interpretation},
+UAB-LFAE-91-04, April, 1991 Universitat Atonoma de Barcelona
 %\bibitem{htau} {CMS Collaboration}, \emph{{CMS} Physics Technical Design Report, Volume {II}:
 %             Physics Performance}, J. Phys. G: Nucl. Part. Phys. 34 (2007) 995-1579
 %\bibitem{abla} J. Benlliure et al., \emph{Calculated nuclide
