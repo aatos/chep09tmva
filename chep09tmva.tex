@@ -54,7 +54,7 @@ The $\tau$ tagging efficiency and background rejection are studied with various 
 The ROOT package TMVA for multivariate data analysis was previously demonstrated
 to be usable to b-tagging~\cite{chep07tmva}. In this study, the TMVA
 package is applied to $\tau$ identification in the heavy charged MSSM Higgs
-boson decay \Hplustaunu~$\to {\rm hadr.}$. In previous studies
+boson decay \Hplustaunu~$\to {\rm hadrons}$. In previous studies
 conducted in the CMS experiment, this channel has been found to
 provide an interesting possibility do discover the charged Higgs
 boson~\cite{ptdrII}, should it exist.
@@ -489,10 +489,10 @@ background rejection vs. signal efficiency plot  for test data are shown in Fig.
 \label{fig:nn}
 \end{figure}
 
+Performance of various TMVA discriminators for the ideal $\tau$ tagging problem
+are summarised in Table~\ref{table:eff}.
 
-\subsection{Summary of results}
-Summary of performance of various TMVA discriminators for the ideal $\tau$ tagging problem
-are shown in Table~\ref{table:eff}.
+%\subsection{Summary of results}
 
 \begin{table}[h]
 \caption{\label{table:eff}Summary of performance of various TMVA discriminators for the ideal $\tau$ tagging problem.}
@@ -504,8 +504,8 @@ Discriminator & Signal efficiency (\%) & \\
               & for background efficiency & \\
               &  $10^{-5}$    & $10^{-6}$              \\
 \mr
-Fisher   & 3.5$\pm$0.9  $\pm$ 0.0   & NN $\pm$ NN $\pm$ NN  \\
-BDT      & 1.12$\pm$0.05  $\pm$ 0.1(?)& NN$\pm$NN $\pm$ 0.1(?)\\
+Fisher   & 3.5$\pm$0.9 (stat) $\pm$ 0.0 (syst)   & 1.6 $\pm$ 0.1 $\pm$ 0.1  \\
+BDT      & 1.12$\pm$0.05  $\pm$ 0.1 & NN$\pm$NN $\pm$ 0.1\\
 SVM      & 5.6$\pm$0.1  $\pm$ 0.1   & 1.7$\pm$0.1 $\pm$ 0.1   \\
 MLP      & 7.6$\pm$0.2  $\pm$ 0.3   & 2.3$\pm$0.1 $\pm$ 0.3   \\
 \br
