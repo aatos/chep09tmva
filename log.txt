@@ -14,12 +14,12 @@ MyEvaluate :
 MyEvaluate : Thus 1e-5 overall bkg event efficiency corresponds to 1.4e-03 bkg event
 MyEvaluate : efficiency by TMVA.
 MyEvaluate :
-MyEvaluate : Signal and background event efficiencies have been scaled with the preselection
+MyEvaluate : Signal and bkg event efficiencies have been scaled with the preselection
 MyEvaluate : event efficiencies
 MyEvaluate : Evaluation results ranked by best signal efficiency at 1e-5
 MyEvaluate : -----------------------------------------------------------------------------
 MyEvaluate : MVA              Signal event efficiency at bkg event efficiency (error):
 MyEvaluate : Methods:         @B=1e-6      @B=1e-5      @B=1e-4      @B=1e-3      @B=0.01
 MyEvaluate : -----------------------------------------------------------------------------
-MyEvaluate : SVM_Gauss_0.5_17: 0.0166(006)  0.0568(012)  0.1083(016)  0.1643(019)  0.1733(020)
+MyEvaluate : SVM_Gauss_0.5_17:0.0166(006) 0.0568(012) 0.1083(016) 0.1643(019) 0.1733(020)
 MyEvaluate : -----------------------------------------------------------------------------
