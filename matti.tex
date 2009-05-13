@@ -502,6 +502,23 @@
     \end{itemize}
   \item Figures \ref{fig:mkSvmGauss2} and \ref{fig:mkSvmParallels}
   \end{itemize}
+\item Few paragraphs for the section about TMVA customisation
+
+  The event based evaluation algorithm is very similar to the
+  evaluation in TMVA. The biggest differences are the use of
+  \texttt{TMVA::Reader} and the bookkeeping of events. For each event
+  only the jet with best classifier output value is considered in
+  efficiency evaluation. Here the best is defined as the minimum or
+  maximum of the classifier outputs of all jets passing preselection
+  cuts in an event. The cut orientations are deduced from the
+  classifier output histograms, as is also done in TMVA.
+
+  It should be noted that this approach works only for classifiers
+  giving a discriminator value rather than the decision whether an
+  event passes the classfier or not. In the case of TMVA this means
+  all classifiers except Rectangular cuts. Cuts should be treated
+  differently, but that is not discussed further since Rectangular
+  cuts classifier is not used in this paper.
 \end{itemize}
 
 Pseudo-pseudocode of the event evaluation
