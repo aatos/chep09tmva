@@ -1,12 +1,14 @@
+% don't use 'we' from instead use passive
 \documentclass[a4paper]{jpconf}
 %\bibliographystyle{iopart-num}
 %\usepackage{citesort}
 \usepackage{listings}
 \usepackage{graphicx}
 
+%basicstyle=\ttfamily \scriptsize,    % the size of the fonts that are used for the code \footnotsize
 \lstset{ % General settings
-language=c++,                   % choose the language of the code
-basicstyle=\ttfamily \scriptsize,    % the size of the fonts that are used for the code \footnotsize
+language=,                   % choose the language of the code
+basicstyle= \sffamily \scriptsize,        % the size of the fonts that are used for the code \footnotsize
 showspaces=false,               % show spaces adding particular underscores
 showstringspaces=false,         % underline spaces within strings
 showtabs=false,                 % show tabs within strings adding particular underscores
@@ -20,6 +22,9 @@ caption=footnote,
 label=listing:relRef
 }
 
+\newcommand{\Hplustaunu}{\mbox{${\rm H}^{\pm} \to \tau^{\pm}\nu_{\tau}$}}
+\newcommand{\pT}{\mbox{${\rm p}_{\rm T}$}}
+
 \begin{document}
 \title{Ideal $\tau$ tagging with TMVA multivariate data-analysis toolkit}
 
@@ -32,8 +37,8 @@ M~J Kortelainen, T~Lamp\'{e}n, S Lehti, T Lind\'{e}n and L Wendland}
 
 
 \begin{abstract}
-We report our experience on using ROOT package TMVA for
-multivariate data analysis, for a problem of $\tau$ tagging in the
+The experience on using ROOT package TMVA for
+multivariate data analysis is reported for a problem of $\tau$ tagging in the
 framework of heavy charged MSSM Higgs boson searches at the LHC.
 With a generator level analysis,
 we investigate how in the ideal case $\tau$ tagging could be performed and
@@ -46,29 +51,39 @@ The $\tau$ tagging efficiency and background rejection are studied with various 
 
 
 \section{Introduction}
+The ROOT package TMVA for multivariate data analysis was previously demonstrated
+to be usable to b-tagging~\cite{chep07tmva}. In this study, the TMVA
+package is applied to $\tau$ identification in the heavy charged MSSM Higgs
+boson decay \Hplustaunu~$\to {\rm hadrons}$. In previous studies
+conducted in the CMS experiment, this channel has been found to
+provide an interesting possibility do discover the charged Higgs
+boson~\cite{ptdrII}, should it exist.
 
+The challenge of this physics channel is, that the cross-section of
+the largest background, i.e. QCD multi-jets, which could fake
+hadronically decaying $\tau$'s, is up to 10$^7$ times
+greater than the signal cross-section at the 14~TeV center of mass
+collision energy of the LHC. 
+Since the production of such large Monte Carlo samples is not
+currently feasible with full detector simulation, generator level
+simulation was used to obtain an estimate for the
+benefit of the use of multivariate methods to separate the signal and
+background.
 
-Our motivation stems from experience on using ROOT package TMVA for multivariate data analysis
-\cite{chep07tmva}.
-The chosen use case is $\tau$ tagging in the
-framework of heavy charged MSSM Higgs boson searches at the LHC and our
-goal is
-to investigate how in the ideal case (no detector effects) $\tau$ tagging could be performed and 
-signal $\tau$s separated from the background.
+It is estimated, that a rejection factor of 10$^{-5}$ is needed with
+$\tau$ identification in order to make the charged Higgs boson signal
+visible~\cite{ptdrII}. Therefore, the performance of the selected MVA
+classifiers was evaluated for background rejection of 10$^{-5}$ and
+10$^{-6}$. Moderate customisation was required to map the study into
+the TMVA framework.
 
+This paper is organised as follows: Section~\ref{sec:tmva} introduces
+TMVA toolkit for parallel multivariate data analysis,
+Section~\ref{sec:data} describes the Monte Carlo data prepared for this study,
+Section~\ref{sec:customization} outlines a customization of TMVA for $\tau$ tagging,
+and Section~\ref{sec:results} gives results using various TMVA discriminators.
 
-More substantial set of Monte Carlo data was prepared compared to our previous study.
-This data consists a generator level Pythia/Tauola data for  14 TeV  p-p collisions:
-signal is hadronic $\tau$ decay and
-background consists of hadronic jets from QCD multi-jets (p$\mathrm{_T}$ = 120-170 GeV/c).
-
-
-%Method/Results
-The $\tau$ tagging efficiency and 
-background rejection are studied with various MVA classifiers.
-Moderate customisation was required to map our problem into the TMVA framework.
-
-\section{TMVA - Toolkit for Parallel Multivariate Data Analysis}
+\section{TMVA - Toolkit for Parallel Multivariate Data Analysis}\label{sec:tmva}
 
 ROOT-integrated TMVA is a framework the training, testing and performance evaluation
 of multivariate classification techniques.
@@ -87,26 +102,137 @@ to guarantee an unbiased performance comparison between the classifiers, such as
  
 
 \vspace{0.5cm}
-In this presentation, we are focusing to following classifiers:
+The following MVA methods were selected for evaluating the TMVA performance:
 \begin{itemize}
-\item Linear discriminant analysis (LDA) based on H-Matrix and Fisher discriminants
+\item Linear discriminant analysis (LDA) based on Fisher discriminants
 \item Boosted/Bagged decision trees (BDT)
 \item Support Vector Machine (SVM) 
 \item Artificial neural networks (ANN)
 \end{itemize}
 
 
-\section{Data}
+\section{Data}\label{sec:data}
+The signal was generated with Pythia~\cite{pythia} version 6.4.19
+through the process ${\rm gg} \to {\rm tbH^\pm}$,
+\Hplustaunu\ in the maximal 
+${\rm m}_{\rm H}$ SUSY scenario~\cite{maxsusy} with 
+${\rm m}_{{\rm H}^{\pm}}=217~{\rm GeV/c}^2$ and $\tan\beta = 30$.
+The $\tau$ leptons were forced to decay hadronically. The decay of the
+$\tau$ leptons was simulated with the Tauola program~\cite{tauola}
+version 2.6 to obtain correct polarization for the $\tau$ lepton and
+its decay products~\cite{taupolarization}. $10^5$ and $2\times 10^5$
+signal events were produced for training and evaluation of the
+multivariate analyzers, respectively.
 
-The data for  dominating QCD multi-jet background was generated using Pythia8.108 for LHC 14 TeV p-p collisions.
-The signal  was generated with Pythia6.4.19,
-and required to consist only of genuine $\tau$ jets from the 
-(heavy charged) MSSM $H^{\pm} \rightarrow \tau^{\pm}\nu_{\tau}$ decay 
-with $\tau$ polarization simulated with Tauola 2.6~\cite{taola}.
-In our maximal $m_H$ SUSY 
-scenario \cite{maxsusy}  $m_{H_{\pm}}=217~GeV/c^2$ and $\tan\beta = 30$.
+The dominating background for this physics channel is the QCD
+multi-jet background. This background was generated with 
+Pythia version 8.108. The transverse momentum of the hadronic jets was
+limited to the bin $120 < \hat{\rm p}_{\rm T} < 170$~GeV/$c$, which
+has been found to be the most difficult $\hat{\rm p}_{\rm T}$
+range~\cite{ptdrII}. Training and evaluation samples of $5\times 10^6$
+and $10^8$ QCD multi-jet events were produced respectively. Another
+independent sample of $5\times 10^6$ events was used as a second
+training sample to estimate the bias caused by the training.
 
-Our analysis is based on the variables listed in Table~\ref{tab:variables}.
+The events were generated with p-p collisions at center of mass energy
+of 14~TeV. The jets were reconstructed with the PYCELL-method in a
+cone of 0.5 in $(\eta$,$\phi)$ space. For the signal, only the jets
+corresponding to the $\tau$ decay, i.e. $\tau$ jets were taken as
+$\tau$-jet candidates. For the background events, all jets obtained
+with PYCELL-methods were taken as $\tau$-jet candidates.
+
+%\subsection{Production and Preselection Cuts}
+In order to save CPU time and disk space, a set of preselection cuts
+was applied to the $\tau$-jet candidates. These are standard cuts,
+which are used for $\tau$ identification~\cite{tautagging}. Care was
+taken, that the preselection cuts were loose enough in order not to
+bias the MVA performance. The following preselections were used:
+\begin{itemize}
+\item jet ${\rm E}_{\rm T} >$ 100 (Fig.~\ref{fig:variables})
+\item jet $|\eta|<$~2.2 
+\item the leading track, i.e. the track with the highest \pT, within a
+  cone of 0.1 of the jet direction in $(\eta$,$\phi)$ space
+\item cut on the \pT\ of the leading track, \pT~$>$~20~GeV/$c$
+\item $\eta$ of tracks, $|\eta|<$~2.5
+\item minimum \pT\ of charged tracks,
+  ${\rm p}_{\rm T}^{\rm min} >$~0.5~GeV/$c$
+\item track matching to primary vertex along the beam axis, $|{\rm
+  IP}_{\rm z}^{\rm track}-z|<2$~mm
+\item one or two tracks in a signal cone size of 0.04 in $(\eta$,$\phi)$
+  space around the leading track
+\item zero or one tracks in an isolation annulus between the signal
+  cone and a cone of 0.5 in $(\eta$,$\phi)$ space around the leading track 
+\end{itemize} 
+The preselection efficiencies were found to be ??? and ??? for the
+signal and background samples used for the evaluation of the MVA
+methods, respectively.
+
+The number of tracks in the signal cone of 0.04 in $(\eta$,$\phi)$ space
+around the leading track was set as one in order to select the
+one-prong final state of $\tau$ decays, which is dominant of the
+hadronic $\tau$ decay final states.
+Of variables, which are standardly used for $\tau$ idenfitication in
+the \Hplustaunu\ decay, the most important ones were used as input to
+the MVA methods.
+These variables include a cut on the transverse energy and
+pseudo-rapidity of the $\tau$-jet candidate, maximum track \pT\ in the
+isolation annulus between cones of 0.04 and 0.50 around the leading
+track direction in $(\eta$,$\phi)$ space to impose charged track
+isolation, sum of electromagnetic energy in the region between cones
+of 0.10 and 0.50 around the jet axis in $(\eta$,$\phi)$ space and
+matching of the hadronic energy deposition to the leading track
+momentum to reject electrons~\cite{tautagging}. Furthermore, the 
+${\rm R}_\tau = {\rm p}_{\rm track} / {\rm E}_{\tau}$ variable, where 
+${\rm E}_{\tau}$ is the reconstructed $\tau$-jet candidate energy
+(excl. neutrinoes), was used to take advantage of the boost of the
+$\tau$ due to polarization~\cite{taupolarization}.
+The variables are summarized in Table~\ref{tab:variables}.
+Figure~\ref{fig:variables} shows
+the distributions of the jet ${\rm E}_{\rm T}$ and ${\rm R}_\tau$
+variables, which were found to have the best separation
+power. The input variables were used without transformations as well
+as with decorrelation or principal component analysis applied.
+
+\begin{table}[h]
+\begin{center}
+\caption{\label{tab:variables}Variables used in the analysis.}
+\begin{tabular}{l*{2}{l}r}
+%\hline
+\br
+ID & Variable                                                       \\
+%\hline
+\mr
+0 & Jet ${\rm E}_{\rm T}$                                        \\
+1 & Jet $\eta$                                                   \\
+2 & Charged track isolation in annulus                           \\
+3 & Isolation of electromagnetic energy ($\Delta$R=0.10 - 0.50)  \\   
+4 & Neutral hadron rejection                                     \\
+  & (i.e. track p matching to hadronic energy deposition)        \\
+5 & ${\rm R}_{\tau}$ = p(leading track) / E(jet)                 \\
+%\hline
+\br
+\end{tabular}
+\end{center}
+\end{table}
+
+
+
+\begin{figure}[h]
+ \begin{minipage}{7.8cm}
+\includegraphics[width=0.9\textwidth]{images/jetet.png}
+\end{minipage}
+ \hfill
+\begin{minipage}{7.8cm}
+\includegraphics[width=1.0\textwidth]{images/rtau.png}
+\end{minipage}
+%\begin{minipage}{3.0cm}
+
+\caption{Example of data used in $\tau$ tagging.
+Distributions of jet ${\rm E}_{\rm T}$ and ${\rm R}_{\tau}$ ({\tt rtau}) variables are shown.}
+%\end{minipage}
+\label{fig:variables}
+\end{figure}
+
 
 %\begin{center}
 %\begin{table}[h]
@@ -127,76 +253,7 @@ Our analysis is based on the variables listed in Table~\ref{tab:variables}.
 
 
 
-\begin{table}[h]
-\begin{center}
-\caption{\label{tab:variables}Variables used in the analysis.}
-\begin{tabular}{l*{2}{l}r}
-%\hline
-\br
-Variable                                                  & Name                   \\
-%\hline
-\mr
-Jet $E_T$                                                 & {\tt jetEt}            \\
-Jet $\eta$                                                & {\tt jeteta}           \\
-Track isolation ($\Delta$R=0.50)                          & {\tt isolMaxPt50}      \\
-Isolation of electromagnetic energy ($\Delta$R=0.10 - 0.50) & {\tt ecalIsolEt10\_50} \\   
-Neutral hadron rejection                                  & {\tt hcalRatio}        \\
-(i.e. track p matching to hadronic energy deposition)     &                        \\
-$R_{\tau}$ = p(leading track) / E(jet)                    & {\tt rtau}             \\
-%\hline
-\br
-\end{tabular}
-\end{center}
-\end{table}
 
-
-
-\subsection{Production and Preselection Cuts}
-
-At Monte Carlo level the following preselection cuts were 
-used following guidelines previously published for $\tau$ jet tagging \cite{tautagging} and 
-$H^{+} \rightarrow \tau  \nu$~\cite{htau}:
-\begin{itemize}
-\item {\tt jetEt $>$ 100} (Fig.~\ref{fig:variables})
-\item {\tt abs(jeteta) $<$ 2.2} 
-\item Jet leading track p$_T$ $>$ 20 GeV, matching cone 0.1
-\item Isolation:
-
-\begin{itemize} 
-\item track p$_T$ $>$ 0.5
-\item {\tt abs(track $\eta$) $<$ 2.5}
-\item {\tt abs(d$_{IP}$-z) $<$ 0.2}
-\item around the leading track:
-\begin{itemize}
-\item signal cone $\Delta$R $<$ 0.04 
-\item isolation cone 0.04 - 0.5 
-\end{itemize} 
-\item signal tracks 0, 1 or 2
-\item isolation tracks 0 or 1
-\end{itemize} 
-\end{itemize} 
-
-Further, before analysis we choose:
-\begin{itemize}
-\item 1-prong signal final states ({\tt signalTracks==1} )
-\item MC matched $\tau$ jets coming from $H^{\pm}$ ({\tt tauDecayType==4})
-\end{itemize}
-
-\begin{figure}[h]
- \begin{minipage}{7.5cm}
-\includegraphics[width=0.9\textwidth]{images/jetet.png}
-\end{minipage}
- \hfill
-\begin{minipage}{7.5cm}
-\includegraphics[width=1.0\textwidth]{images/rtau.png}
-\end{minipage}
-%\begin{minipage}{3.0cm}
-
-\caption{Example of data used in $\tau$ tagging.
-Distributions of jet $E_T$ ({\tt jetEt}) and $R_{\tau}$ ({\tt rtau}) variables are shown.}
-%\end{minipage}
-\label{fig:variables}
-\end{figure}
 
 %{\sf QGSP\_\-INCL\_ABLA} with
 
@@ -215,65 +272,56 @@ Distributions of jet $E_T$ ({\tt jetEt}) and $R_{\tau}$ ({\tt rtau}) variables a
 %\label{fig:ahCorrelationMatrix}
 %\end{figure}
 
-\section{Customisation of TMVA for $\tau$ tagging}
+\section{Customization of TMVA for $\tau$ tagging}\label{sec:customization}
+Since the performance of the MVA methods was to be evaluated at a
+background rejection 10$^{-5}$ and 10$^{-6}$, the TMVA package had to
+be customized slightly for the analysis.
+Firstly, since the root trees contained jets, and since a single event
+could contain several jets, a functionality to evaluate the $\tau$
+identification efficiency calculated per event was added to 
+{\tt TMVA::Reader}.  
+The algorithm is described in pseudocode in
+Appendix~A. %Listing~\ref{listing:eventcode}.
+The algorithm had to take into account also the preselection
+efficiencies of the event samples used for evaluation. Additionally,
+timing profiling with {\tt TStopwatch} was added.
 
-Customisation of TMVA included preparation of
-configuration files, timing profiling with {\tt TStopwatch}
-and evaluation of event efficiencies with {\tt TMVA::Reader}, taking into account
-   the MC-level preselection efficiencies, and TMVA preselection efficiencies
-Pseudo-pseudocode for the event evaluation is shown in  Appendix A Listing~\ref{listing:eventcode}.
+Also the evaluation of the signal efficiency at high background rejection
+level required some customization.
 
-Using signal (event) efficiency at background (event) efficiency level $10^{-5}$ and $10^{-6}$
-Also we tabulating data related to  signal and background jet efficiency at $10^{-5}$
+(describe here in more detail what was done)
+
+% what is the point of the following sentence? please clarify
 Example Listing~\ref{listing:log} in Appendix A from analysis run demonstrates these customisations.
 
 
-\section{Results}
+\section{Results}\label{sec:results}
 
-\subsection{Classifying with H-Matrix and Fisher discriminants}
-Linear discriminant analysis  based on H-Matrix and Fisher discriminants
+\subsection{Classifying with Fisher discriminant}
+Linear discriminant analysis  based Fisher discriminant
 was performed with basic TMVA settings:
 
 %Perusasetus, ei VarTransformia
 %\scriptsize
 \begin{verbatim}
 Fisher H:!V:!Normalise:CreateMVAPdfs:Fisher:NbinsMVAPdf=50:NsmoothMVAPdf=1
-HMatrix H:!V:CreateMVAPdfs
 \end{verbatim}
 %\normalsize
+%HMatrix H:!V:CreateMVAPdfs
 
-The response of TMVA to Fisher classifier id shown in Fig.~\ref{fig:fishersvm} 
+The response of TMVA to Fisher classifier is shown in Fig.~\ref{fig:fishersvm}. 
 %and \ref{fig:hmatrix},
-and signal efficiencies are shown in Table~\ref{table:eff} together with other discrimination methods tested.
+The signal efficiency was found to be 3.5$\pm$0.1\% at background rejection of 10$^5$.
+Signal efficiencies are also shown in Table~\ref{table:eff} together with other discrimination methods tested.
  
-
-\begin{table}[h]
-\caption{\label{table:eff}Summary of performance of various TMVA discriminators for the ideal $\tau$ tagging problem.}
-\begin{center}
-%\begin{tabular}{l*{2}{l}r}
-\begin{tabular}{l*{2}{l}{l}r}
-\br
-Discriminator & Signal efficiency (\%) & \\
-              & for background efficiency & \\
-              &  $10^{-5}$    & $10^{-6}$              \\
-\mr
-H-Matrix & 1.1$\pm$0.5 (stat.) $\pm$ 0.1 (syst.)  & NN $\pm$ NN $\pm$ NN    \\
-Fisher   & 3.5$\pm$0.9  $\pm$ 0.0   & NN $\pm$ NN $\pm$ NN  \\
-BDT      & 7.8$\pm$0.1  $\pm$ 0.1(?)& 3.9$\pm$0.1 $\pm$ 0.1(?)\\
-SVM      & 5.6$\pm$0.1  $\pm$ 0.1   & 1.7$\pm$0.1 $\pm$ 0.1   \\
-MLP      & 7.6$\pm$0.2  $\pm$ 0.3   & 2.3$\pm$0.1 $\pm$ 0.3   \\
-\br
-\end{tabular}
-\end{center}
-\end{table}
 
 
 \begin{figure}[h]
- \begin{minipage}{7.5cm}
+ \begin{minipage}{8.0cm}
 \includegraphics[width=1.0\textwidth]{images/mva_Fisher.png}
 \end{minipage}
  \hfill
-\begin{minipage}{7.5cm}
+\begin{minipage}{8.0cm}
 \includegraphics[width=1.0\textwidth]{images/mk_svm_gauss2.png}
 
 %  \label{fig:mkSvmGauss2}
@@ -304,36 +352,56 @@ the output of the SVM classifier with Gaussian kernel.}
 
 
 \subsection{Boosted Decision Trees}
+The boosted decision tree (BDT) method is based on binary decision
+trees. Repeated yes/no decisions are made on the variable with the
+best separation power until the subsamples become small or until the
+subsamples are declared as signal or background. The variable
+phase-space is hence divided into a large number of hypercubes, which is
+why BDT is effective for both with linear and non-linear
+samples.
+%Because the splitting is always based on the variable with
+%best separation, variables with small separation power can be input to
+%the method without risking loss of performance.
 
-A decision tree is a binary tree classifier. 
-Repeated left/right (yes/no) decisions are performed on a single variable at a time.
-The phase space is split into regions that are classified as signal or
-background, depending on the majority of training events that end up in the final leaf nodes.
+In order to make the decision trees robust against statistical
+fluctuations of the training sample, boosting, i.e. reweighting, is
+applied to the training sample. After each reweighting, a new decision
+tree is constructed. The outcome of a tested event is then carried out
+by evaluating the decisions of typically hundreds of
+trees. Overtraining is countered by pruning nodes with insignificant
+separation. 
 
-Boosted Decision Trees (BDT) implemented in TMVA 
-represents an extension to a single decision tree to several decision trees
-derived from the same training sample by re-weighting events.
-New combined classifier has stabilized response with respect to fluctuations in the training sample.
+The BDT method was evaluated with a set of 400 trees. Increasing the
+tree number was found not to yield significant improvement. The number
+of cuts was set to 20 and the pruning strength
+parameter of 4.0 was chosen. An example of a decision tree generated
+with these parameters is shown in Fig.~\ref{fig:}. The signal efficiency was
+found to be 1.12$\pm$0.05\% at background rejection of 10$^5$.
+Decorrelation and principal component analysis were tried out for the
+input variables, but they were found to yield only minimal changes in
+the signal efficiency for the evaluated background rejection points.
 
-For our $\tau$ tagging problem the BDT method was found to give stable results 
-with only small fluctuations (see Table~\ref{table:eff}).
+% Figure of a decision tree to be added here
+
 
 \subsection{Support Vector Machine}
 Support Vector Machine (SVM) in TMVA
 was trained with 4k signal jets and 32k background jets.
-The $\sigma, C$ parameter space
-was optimized with 2D scan,  
-a grid was set up in this space, and 
-the training and evaluation for each point was run in parallel in a Linux cluster.
+The SVM training time  scales as O($n^2$), where $n$ is the number of events in the training sample,
+so data sample size was kept small for this discriminator.
 
-The SVM training time scales as O($n^2$), where $n$ is the number of events in the training sample  
-and in practice training took $\sim$1 h. 
+The SVM parameter space $(\sigma, C)$
+was optimized with 2-dimensional grid scan,  
+and evaluation for each point was run in parallel in a Linux cluster.
+
+The signal efficiency was found to be 5.6$\pm$0.1\% at background rejection of 10$^5$.
 Figures 
 %\ref{fig:mkSvmGauss2}
 \ref{fig:fishersvm}
  and \ref{fig:mkSvmParallels} demonstrate the TMVA output of the SVM classifier
 with Gaussian kernel.
 
+%and in practice training took roughly one hour. 
 %\begin{itemize}
 %\item Training 4000 signal jets, 32000 background jets
 
@@ -378,8 +446,13 @@ with Gaussian kernel.
 %\begin{minipage}[b]{14pc}
   \caption{TMVA plot for parallel coordinates. 
 Poorly classified background events with value 0.9-1.0 are selected from vertical histogram on left. 
-In this kind of plot each line going through variables represent on event, 
-possibly giving insight to better variable selection.}
+In this kind of plot each line going through variables,
+as explained in Table~\ref{tab:variables}, 
+represent on event, possibly giving insight to better variable selection.
+%Variables {\tt jetEt, jeteta, isolMaxPt, ecalIsolEt, hcalRatio}, and {\tt rtau} 
+%are represented with Var00-Var05 in the figure.
+
+}
   \label{fig:mkSvmParallels}
 
 %\end{minipage}
@@ -390,13 +463,11 @@ possibly giving insight to better variable selection.}
 \subsection{Neural Networks}
 
 Of the three Multilayer Perceptrons (MLP) implementations supported by TMVA
-we used ({\tt TMVA::Types::kMLP}).
-
-Usual cariables {\tt jetEt, jeteta, isolMaxPt50, ecalIsolEt10\_50, hcalRatio}, and {\tt rtau}
-were used. Results for MLP discriminator are shown for {\tt jetEt} transformation {\tt log(jetEt)} and 
+{\tt TMVA::Types::kMLP} was selected.
+Results for MLP discriminator are shown for {\tt jetEt} transformation $log({\rm E}_{\rm T})$ and 
 Principal Component Analysis ({\tt  VarTransform=PCA}).
 
-Data for 6-15-1 MLP configuration with neurons of sigmoid type we trained 1k cycles using
+Data for 6-15-1 MLP configuration with neurons of sigmoid type was trained 1k cycles using
 10k signal jets and 40k background jets. 
 Rest of the data was used for testing (30k signal and 2230k background jets)
 Systematic uncertainty was estimated by repeating the full analysis with independent background data.
@@ -404,11 +475,11 @@ Convergence of the neural network training and
 background rejection vs. signal efficiency plot  for test data are shown in Fig.~\ref{fig:nn}.
 
 \begin{figure}[h]
- \begin{minipage}{7.5cm}
+ \begin{minipage}{8.1cm}
 \includegraphics[width=1.0\textwidth]{images/MLPConvergenceTest.png}
 \end{minipage}
  \hfill
-\begin{minipage}{7.5cm}
+\begin{minipage}{8.1cm}
 
 \includegraphics[width=1.0\textwidth]{images/roc.png}
 \end{minipage}
@@ -418,27 +489,63 @@ background rejection vs. signal efficiency plot  for test data are shown in Fig.
 \label{fig:nn}
 \end{figure}
 
-\section{Conclusion}
-We have discussed from the user point of view how TMVA package in ROOT can be used in $\tau$ tagging.
-We have seen that since CHEP'07 TMVA has matured, and is now fully integrated to ROOT
-and an interface for adding new classifiers is provided.
+Performance of various TMVA discriminators for the ideal $\tau$ tagging problem
+are summarised in Table~\ref{table:eff}.
 
-Some customisation was needed to cast our problem into the TMVA framework.
-We find multivariate data-analysis techniques show a promise in $\tau$ tagging.
-At  $10^{-5}$ background efficiency, TMVA classifiers have 1.1-7.8~\% signal efficiency.
-Finally, we have defined areas where our approach can be improved. 
+%\subsection{Summary of results}
+
+\begin{table}[h]
+\caption{\label{table:eff}Summary of performance of various TMVA discriminators for the ideal $\tau$ tagging problem.}
+\begin{center}
+%\begin{tabular}{l*{2}{l}r}
+\begin{tabular}{l*{2}{l}{l}r}
+\br
+Discriminator & Signal efficiency (\%) & \\
+              & for background efficiency & \\
+              &  $10^{-5}$    & $10^{-6}$              \\
+\mr
+Fisher   & 3.5$\pm$0.9 (stat) $\pm$ 0.0 (syst)   & 1.6 $\pm$ 0.1 $\pm$ 0.1  \\
+BDT      & 1.12$\pm$0.05  $\pm$ 0.1 & NN$\pm$NN $\pm$ 0.1\\
+SVM      & 5.6$\pm$0.1  $\pm$ 0.1   & 1.7$\pm$0.1 $\pm$ 0.1   \\
+MLP      & 7.6$\pm$0.2  $\pm$ 0.3   & 2.3$\pm$0.1 $\pm$ 0.3   \\
+\br
+\end{tabular}
+\end{center}
+\end{table}
+%H-Matrix & 1.1$\pm$0.5 (stat.) $\pm$ 0.1 (syst.)  & NN $\pm$ NN $\pm$ NN    \\
+
+\section{Conclusion}
+The usage of TMVA package in ROOT for $\tau$ identification in the
+framework of a charged Higgs boson study was discussed from the
+point of view of a user. It was observed, that the TMVA package has
+matured since CHEP'07 and it is now fully integrated to ROOT. It also
+provides an interface for adding new classifiers.
+
+Some customisation was needed to evaluate the study case in the TMVA
+framework. The multivariate data-analysis techniques were found to
+be promising in $\tau$ identification.
+At $10^{-5}$ background efficiency, TMVA classifiers were found to
+yield 3.5--7.8~\% signal efficiency. 
+
+% tama kaipaa muokkausta
+Areas where our approach can be improved are identified
 (e.g. using additional variables, and yet unused classifiers available in TMVA), 
-and are planning additional research on $\tau$ tagging
+additional research on $\tau$ identification is planned.
 
 
 % \ack %command \ack sets the acknowledgments heading as an unnumbered section.
 
 
 \appendix % The command \appendix" is used to signify the start of the appendixes.
-\section{Customisation of TMVA event eavaluation}
+\section{Customisation of TMVA event evaluation}
 
-\lstset{emph={Jog},emphstyle=\underbar,
-caption=Pseudo-pseudocode for the event evaluation.,
+Customisation of TMVA for simulated $\tau$ tagging events is demonstrated in 
+Listing~\ref{listing:eventcode} and corresponding example from TMVA run is
+shown in Listing~\ref{listing:log}.
+
+
+\lstset{emph={If,For,Else},emphstyle=\underbar,
+caption=Pseudocode for the event evaluation.,
 breaklines=true,
 stepnumber=99999,  %trick to remove line numbering
 showlines=false,
@@ -446,7 +553,7 @@ label=listing:eventcode
 }
 \lstinputlisting{eventcode.txt}
 
-
+\newpage
 
 \lstset{emph={Jog},emphstyle=\underbar,
 caption=Example listing from TMVA analysis showing customisations done.,
@@ -483,12 +590,21 @@ label=listing:log
 \bibitem{chep07tmva} T.~Lampen {\em et. al.}, \emph{Testing TMVA software in b-tagging 
                   for the search of MSSM Higgs bosons at the LHC},
 CHEP’07 proceedings, Journal of Physics: Conference Series 119 (2008) 032028
-\bibitem{taola} D.~P.~Roy, Phys. Lett. B 459 607-614
-\bibitem{maxsusy} M.~Carena et al. \emph{Suggestions for Improved Benchmark Scenarios for Higgs-Boson Searches at LEP2} 
+\bibitem{ptdrII} {CMS Collaboration}, \emph{{CMS} Physics Technical Design Report, Volume {II}:
+             Physics Performance}, J. Phys. G: Nucl. Part. Phys. 34 (2007) 995-1579
+\bibitem{pythia} T. Sj\"ostrand et al., \emph{High-Energy-Physics
+  Event Generation with {PYTHIA} 6.1}, Comp. Phys. Comm. 135 (2001) 238-259
+\bibitem{tauola} S.~Jadach et al., \emph{The $\tau$ decay library
+  {TAUOLA}: Version 2.4}, Comp. Phys. Comm. 76 (1993) 361-380
+\bibitem{maxsusy} M.~Carena et al. \emph{Suggestions for Improved Benchmark Scenarios for Higgs-Boson Searches at LEP2}, 
 {\tt arXiv:hep-ph/9912223} %\href{http://arxiv.org/pdf/hep-ph/9912223}{arXiv:hep-ph/9912223}
+\bibitem{taupolarization} D.~P.~Roy, \emph{The hadronic tau decay signature of a heavy charged Higgs
+              boson at {LHC}}, Phys. Lett. B 459 (1999) 607-614
 
-\bibitem{tautagging}  The European Physical Journal C - Particles and Fields, Volume 46, Supplement 1, July 2006
-\bibitem{htau} J. Phys. G: Nucl. Part. Phys. 34 (2007) 2307-2455
+\bibitem{tautagging} S.~Gennai et al., \emph{Tau jet reconstruction
+  and tagging with {CMS}}, Eur. Phys. Jour. C 46 (2006) 1-21
+%\bibitem{htau} {CMS Collaboration}, \emph{{CMS} Physics Technical Design Report, Volume {II}:
+%             Physics Performance}, J. Phys. G: Nucl. Part. Phys. 34 (2007) 995-1579
 %\bibitem{abla} J. Benlliure et al., \emph{Calculated nuclide
 %    production yields in relativistic collisions of fissile nuclei},
 %  Nuc. Phys. A628 (1998) 458
