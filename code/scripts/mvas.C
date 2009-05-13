@@ -33,6 +33,9 @@ void mvas( TString fin = "TMVA.root", HistType htype = MVAType, Bool_t useTMVASt
    // this defines how many canvases we need
    TCanvas *c = 0;
 
+   //int rebin = 1000;
+   int rebin = 1;
+
    // counter variables
    Int_t countCanvas = 0;
 
@@ -65,6 +68,9 @@ void mvas( TString fin = "TMVA.root", HistType htype = MVAType, Bool_t useTMVASt
          else if (htype == RarityType ) hname += "_Rarity";
          TH1* sig = dynamic_cast<TH1*>(titDir->Get( hname + "_S" ));
          TH1* bgd = dynamic_cast<TH1*>(titDir->Get( hname + "_B" ));
+
+         sig->Rebin(rebin);
+         bgd->Rebin(rebin);
 
          if (sig==0 || bgd==0) {
             if     (htype == MVAType)     
@@ -170,7 +176,7 @@ void mvas( TString fin = "TMVA.root", HistType htype = MVAType, Bool_t useTMVASt
             TString ovname = hname += "_Train";
             sigOv = dynamic_cast<TH1*>(titDir->Get( ovname + "_S" ));
             bgdOv = dynamic_cast<TH1*>(titDir->Get( ovname + "_B" ));
-      
+
             if (sigOv == 0 || bgdOv == 0) {
                cout << "+++ Problem in \"mvas.C\": overtraining check histograms do not exist" << endl;
             }
@@ -186,6 +192,11 @@ void mvas( TString fin = "TMVA.root", HistType htype = MVAType, Bool_t useTMVASt
                legend2->SetMargin( 0.1 );
                legend2->Draw("same");
             }
+            sigOv->Rebin(rebin);
+            bgdOv->Rebin(rebin);
+            // normalise both signal and background
+            TMVAGlob::NormalizeHists(sigOv, bgdOv);
+
             Int_t col = sig->GetLineColor();
             sigOv->SetMarkerColor( col );
             sigOv->SetMarkerSize( 0.7 );
