@@ -18,7 +18,7 @@ ifndef PDFVIEWER
 PDFVIEWER = firefox
 endif
 #pdfviewer = gv
-dviviewer = xdvi -allowshell -geometry 700x900+750+100 
+dviviewer = xdvi -allowshell -geometry 700x900+750+100
 
 all: 
 	@echo :::document = $(d)
