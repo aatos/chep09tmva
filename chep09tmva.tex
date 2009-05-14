@@ -51,6 +51,13 @@ The $\tau$ tagging efficiency and background rejection are studied with various 
 
 
 \section{Introduction}
+Multivariate analysis methods have rapidly become important in high energy physics.
+The rare and subtle signals are hidden within voluminous data, 
+and their analysis calls for multivariate algorithms, since taking
+full correlations into account can greatly increase the ability to separate signal
+from background~\cite{statlearn}.
+
+
 The ROOT package TMVA for multivariate data analysis was previously demonstrated
 to be usable to b-tagging~\cite{chep07tmva}. In this study, the TMVA
 package is applied to $\tau$ identification in the heavy charged MSSM Higgs
@@ -77,7 +84,7 @@ classifiers was evaluated for background rejection of 10$^{-5}$ and
 10$^{-6}$. Moderate customisation was required to map the study into
 the TMVA framework.
 
-This paper is organised as follows: Section~\ref{sec:tmva} introduces
+This article is organised as follows. Section~\ref{sec:tmva} introduces
 TMVA toolkit for parallel multivariate data analysis,
 Section~\ref{sec:data} describes the Monte Carlo data prepared for this study,
 Section~\ref{sec:customization} outlines a customization of TMVA for $\tau$ tagging,
@@ -93,13 +100,49 @@ to guarantee an unbiased performance comparison between the classifiers, such as
 \begin{itemize}
 \item Rectangular cut optimisation
 \item Projective likelihood estimation (PDE approach)
-\item Multidimensional probability density estimation (PDE - range-search approach)
+\item Multidimensional probability density estimation (PDE - range-search approach, PDERS)
 \item Multidimensional k-nearest neighbour classifier
-
 \item Function discriminant analysis (FDA)
 \item Predictive learning via rule ensembles (RuleFit)
 \end{itemize}
  
+Main characteristics of different TMVA classifiers are summarised in Table~\ref{tab:characteristics}.
+
+\begin{center}
+\begin{table}[h]
+\footnotesize
+\caption{\label{tab:characteristics} Main characteristics of different
+classifiers~\cite{tmvaPhystat}.}
+%\footnotesize\rm
+\centering
+%\begin{tabular}{@{}*{7}{l}}
+\begin{tabular}{lll}
+\br
+Method & Pros & Cons\\
+\mr
+Cuts & Easy to understand & Possibly inefficient \\
+Likelihood methods & Fast to train and evaluate & Non-linear
+correlations treated badly \\
+HMatrix, Fisher & Very fast and transparent & fail if PDFs have same
+mean,\\
+      &                           & and if non-linear correlations\\
+PDERS, kNN & Handles well complex class boundaries & Impractical with more
+than 10 variables\\
+ANN & Very good with non-linear correlations & Black box, needs tuning\\
+BDT & Very good out-of-the-box performance & Needs tuning to avoid
+overtraining \\
+RuleFit & Like BDT but simpler, fast evaluation & Often needs some
+tuning\\
+SVM & Good with non-linear problems,   & Not
+transparent\\
+   &          insensitive to overtraining &  \\
+FDA & Very good classification if boundary is known & Classification
+boundary function needed\\
+\br
+\end{tabular}
+\end{table}
+\normalsize
+\end{center}
 
 \vspace{0.5cm}
 The following MVA methods were selected for evaluating the TMVA performance:
@@ -300,7 +343,28 @@ Example Listing~\ref{listing:log} in Appendix A from analysis run demonstrates t
 \section{Results}\label{sec:results}
 
 \subsection{Classifying with Fisher discriminant}
-Linear discriminant analysis  based Fisher discriminant
+The method of Fisher discriminants is a computationally easy method,
+which determines the discriminating function analytically in the
+multivariate space represented by the input variables.  It has been
+used in analyses of several HEP experiments, for instance in BaBar \cite{fisherbabar} and
+Belle \cite{fisherbelle}
+
+The Fisher method works in a transformed variable space with zero
+linear correlations, by distinguishing the mean values of the signal
+and background distributions. An axis in the (correlated) hyperspace
+of the input variables is chosen so that when projecting the output
+classes (signal and background) upon this axis, they are pushed as far
+as possible away from each other compared to the average mutual
+distance of events belonging to the same class\cite{tmvasite}.
+
+Fisher discriminants are optimal for Gaussian distributed variables
+with linear correlations. However, when a variable has the same sample
+mean for signal and background, no discrimination is achieved. If the
+shapes of the distributions are different a suitable transformation
+can then be applied~\cite{tmvasite}.
+
+
+Our solution to ideal $\tau$ tagging with linear discriminant analysis  using Fisher discriminant
 was performed with basic TMVA settings:
 
 %Perusasetus, ei VarTransformia
@@ -394,20 +458,20 @@ the signal efficiency for the evaluated background rejection points.
 % Figure of a decision tree to be added here
 
 
-\begin{figure}[h]
- \begin{minipage}{7.8cm}
-\includegraphics[width=0.9\textwidth]{images/bdt.png}
-\end{minipage}
- \hfill
-\begin{minipage}{7.8cm}
-%\includegraphics[width=1.0\textwidth]{images/png}
-\end{minipage}
-%\begin{minipage}{3.0cm}
 
-\caption{An example of a boosted decision trees.}
+\begin{figure}[h]
+ \begin{minipage}{9.0cm}
+\includegraphics[width=1.0\textwidth]{images/bdt.png}
+\end{minipage}
+% \hfill
+%\begin{minipage}{7.0cm}
 %\end{minipage}
-\label{fig:bdt}
+\begin{minipage}{6.0cm}
+\caption{An example of a boosted decision trees.}
+  \label{fig:bdt}
+\end{minipage}
 \end{figure}
+
 
 \subsection{Support Vector Machine}
 The Support Vector Machine (SVM) learning algorithm is a recent alternative to MVA methods.
@@ -417,8 +481,9 @@ of signal/background discrimination in the $t\bar{t}$ dilepton channel~\cite{svm
 
 The SVM maps the input vectors into the feature space through some
 non-linear mapping. 
-In this space an optimal hyperplane is constructed  and evaluated by using kernel function
-${\rm K(u,v)}$~\cite{svmintro}. 
+In this space an optimal hyperplane is constructed  and evaluated by using kernel function.
+%${\rm K(u,v)}$~\cite{svmintro}. 
+
 Potential advantages of the SVM method compared to the ANN method
 include the existence of only few user chosen parameters, ability to find global minimum, and
 correspondence to a linear method which makes the SVM theoretically easy to analyse.
@@ -548,18 +613,23 @@ The signal efficiency for MLP discriminator was found to be  6.5$\pm$0.1\% at ba
 \includegraphics[width=1.0\textwidth]{images/roc.png}
 \end{minipage}
 %\begin{minipage}{3.0cm}
-\caption{Convergence of ANN over 1000 training cycles and background rejection vs. signal efficiency.}
+\caption{Evolution of training and validation errors of ANN during 1000 training cycles and 
+background rejection vs. signal efficiency.}
 %\end{minipage}
 \label{fig:nn}
 \end{figure}
 
+\subsection{Summary of results}
 Performance of various TMVA discriminators for the ideal $\tau$ tagging problem
 are summarised in Table~\ref{table:eff}.
 
-%\subsection{Summary of results}
+Overall discrimination performance of selected TMVA classifiers are
+demonstrated with Receiver Operating Characteristics (ROC) curves in
+Fig.~\ref{fig:roc}.
 
 \begin{table}[h]
-\caption{\label{table:eff}Summary of performance of various TMVA discriminators for the ideal $\tau$ tagging problem.}
+\caption{\label{table:eff}Summary of performance of various 
+TMVA discriminators for the ideal $\tau$ tagging problem.}
 \begin{center}
 %\begin{tabular}{l*{2}{l}r}
 \begin{tabular}{l*{2}{l}{l}r}
@@ -578,6 +648,22 @@ MLP      & 6.5$\pm$0.1  $\pm$ 0.2   & 2.2$\pm$0.1 $\pm$ 0.2   \\
 \end{table}
 %H-Matrix & 1.1$\pm$0.5 (stat.) $\pm$ 0.1 (syst.)  & NN $\pm$ NN $\pm$ NN    \\
 
+\begin{figure}[h]
+ \begin{minipage}{8.0cm}
+\includegraphics[width=1.0\textwidth]{images/mk_roc.png}
+\end{minipage}
+ \hfill
+\begin{minipage}{8.0cm}
+\includegraphics[width=1.0\textwidth]{images/mk_roc_zoomed.png}
+\end{minipage}
+%\begin{minipage}{3.0cm}
+
+\caption{Overall discrimination performance of selected TMVA classifiers.}
+%Receiver Operating Characteristics (ROC) Curve
+%\end{minipage}
+\label{fig:roc}
+\end{figure}
+
 \section{Conclusion}
 The usage of TMVA package in ROOT for $\tau$ identification in the
 framework of a charged Higgs boson study was discussed from the
@@ -590,13 +676,18 @@ framework. The multivariate data-analysis techniques were found to
 be promising in $\tau$ identification.
 At $10^{-5}$ background efficiency, TMVA classifiers were found to
 yield 1.1--6,5~\% signal efficiency. 
+Several methods give results comparable, suggesting that they close to the Bayesian limit
+of achievable ideal separation.
 
-% tama kaipaa muokkausta
-Areas where our approach can be improved are identified
-(e.g. using additional variables, and yet unused classifiers available in TMVA), 
-additional research on $\tau$ identification is planned.
+Areas where our approach can be improved have been identified.
+%(e.g. using additional variables, and yet unused classifiers available in TMVA), 
+One possibility would be to use more fundamental set of variables, 
+instead of those chosen in this study, 
+such as the momenta ${\rm p_x}$, ${\rm p_y}$, ${\rm p_z}$ of the final state particles. 
+This kind of jet analysis based on neural networks has been shown to simulate a sophisticated 
+jet algorithm ${\rm k_\bot}$~\cite{jetanalysis}.
 
-
+%Additional research on $\tau$ identification is planned.
 % \ack %command \ack sets the acknowledgments heading as an unnumbered section.
 
 
@@ -619,7 +710,7 @@ label=listing:eventcode
 }
 \lstinputlisting{eventcode.txt}
 
-\newpage
+%\newpage
 
 \lstset{emph={Jog},emphstyle=\underbar,
 language=,
@@ -654,6 +745,11 @@ label=listing:log
 %{\em Implementation of INCL4 cascade and ABLA evaporation codes in Geant4},
 %Journal of Physics: Conference Series 119 (2008) 032024, 
 %{\sf [doi:10.1088/1742-6596/119/3/032024]}
+
+\bibitem{statlearn} J.~Zimmermann and C.~Kiesling,
+\emph{Statistical learning methods in high-energy and astrophysics analysis},
+Nucl. Instr. and Meth. A 534 (2004) 204-210
+
 \bibitem{chep07tmva} T.~Lampen {\em et. al.}, \emph{Testing TMVA software in b-tagging 
                   for the search of MSSM Higgs bosons at the LHC},
 CHEP’07 proceedings, Journal of Physics: Conference Series 119 (2008) 032028
@@ -676,6 +772,16 @@ CHEP’07 proceedings, Journal of Physics: Conference Series 119 (2008) 032028
 \bibitem{tautagging} S.~Gennai et al., \emph{Tau jet reconstruction
   and tagging with {CMS}}, Eur. Phys. Jour. C 46 (2006) 1-21
 
+
+ in analyses of several HEP experiments, for instance in BaBar \cite{fisherbabar} and
+Belle \cite{fisherbelle}
+
+\bibitem{fisherbabar} {\tt hep-ex/0105018} (2001)
+
+\bibitem{fisherbelle} Phys. Lett. B 517, 309-318 (2001)
+
+\bibitem{tmvasite} TMVA documentation at {\tt http://tmva.sourceforge.net}
+
 \bibitem{bdt} B.~Roe et al. \emph{Boosted Decision Trees as an 
 Alternative to Artificial Neural Networks for Particle Identification},
 {\tt arXiv:physics/0408124}
@@ -689,6 +795,15 @@ Cambridge University Press, UK 2000
 \bibitem{tauneural} L.~Garrido and V.~Gaitan, 
 \emph{Use of Neural Nets to Measure the Tau Polarization and its Bayesian Interpretation},
 UAB-LFAE-91-04, April, 1991 Universitat Atonoma de Barcelona
+
+\bibitem{tmvaPhystat} F.~Tegenfeldt, \emph{TMVA - Toolkit for multivariate
+data analysis with ROOT}, presentation at PHYSTAT-LHC Workshop on
+Statistical Issues for LHC Physics, June 27--29 2007.
+
+\bibitem{jetanalysis} P.~De Felice at al., 
+\emph{Jet analysis by neural networks in high energy hadron-hadron collisions},
+Physics Letters B 354 (1995) 473-480
+
 %\bibitem{htau} {CMS Collaboration}, \emph{{CMS} Physics Technical Design Report, Volume {II}:
 %             Physics Performance}, J. Phys. G: Nucl. Part. Phys. 34 (2007) 995-1579
 %\bibitem{abla} J. Benlliure et al., \emph{Calculated nuclide
