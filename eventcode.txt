@@ -19,7 +19,7 @@ for tree in [signal_test_tree, background_test_tree]:
     else:
       for mva in classifiers:
         # below min/max is taken depending which is better for the classifier in question
-        output[mva] = min_or_max(output[mva], reader->EvaluateMVA(mva, entry))
+        output[mva] = min_or_max(output[mva], reader.EvaluateMVA(mva, entry))
 
     prev_entry_event = entry.event
   tempTree.Fill(output)
